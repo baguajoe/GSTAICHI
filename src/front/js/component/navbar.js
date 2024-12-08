@@ -2,51 +2,59 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 export const Navbar = () => {
-	return (
-		<nav className="navbar navbar-light bg-light">
-			<div className="container-fluid">
-				<div className="row">
-					<Link to="/">
-						<span className="navbar-brand mb-0 h1">React Boilerplate</span>
-					</Link>
-				</div>
+    return (
+        <nav className="navbar navbar-expand-lg bg-body-tertiary">
+            <div className="container-fluid">
+                {/* Logo Section */}
+                <a className="navbar-brand" href="/">
+                    <img
+                        src="/assets/images/fedbanner3.gif" // Adjust path based on where you place the image
+                        alt="Gin Soon Tai Chi Chuan Federation Logo"
+                        style={{ height: "50px", marginRight: "10px" }} // Adjust height as needed
+                    />
+                </a>
 
-				<div className="row mt-3">
-					<div className="col-12">
-						<Link to="/about-us">
-							<button className="btn btn-primary w-100">About Us</button>
-						</Link>
-					</div>
-				</div>
-				<div className="row mt-2">
-					<div className="col-12">
-						<Link to="/classes">
-							<button className="btn btn-primary w-100">Classes</button>
-						</Link>
-					</div>
-				</div>
-				<div className="row mt-2">
-					<div className="col-12">
-						<Link to="/curriculum">
-							<button className="btn btn-primary w-100">Curriculum</button>
-						</Link>
-					</div>
-				</div>
-				<div className="row mt-2">
-					<div className="col-12">
-						<Link to="/events">
-							<button className="btn btn-primary w-100">Events</button>
-						</Link>
-					</div>
-				</div>
-				<div className="row mt-2">
-					<div className="col-12">
-						<Link to="/contact-us">
-							<button className="btn btn-primary w-100">Contact Us</button>
-						</Link>
-					</div>
-				</div>
-			</div>
-		</nav>
-	);
+                <button
+                    className="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span className="navbar-toggler-icon"></span>
+                </button>
+                <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <ul className="navbar-nav">
+                        <li className="nav-item">
+                            <Link className="nav-link active" to="/about-us">
+                                About Us
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/classes">
+                                Classes
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/curriculum">
+                                Curriculum
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/events">
+                                Events
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/contact-us">
+                                Contact Us
+                            </Link>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    );
 };
