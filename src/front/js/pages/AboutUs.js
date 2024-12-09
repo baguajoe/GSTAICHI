@@ -71,10 +71,7 @@ export const AboutUs = () => {
                         />
                         {/* Text Content */}
                         <p>
-                            The Gin Soon Tai Chi Club is different from others because its founder, Master Gin Soon Chu,
-                            is a disciple who studied with and was authorized to teach by Grandmaster Yang Sau-Chung,
-                            the firstborn and heir of the legendary Yang Cheng-Fu. Master Chu received comprehensive
-                            training that covered all aspects of Classical Yang Family Tai Chi Chuan.
+                        Although there are many schools of Tai Chi Chuan available in the United States, the Gin Soon Tai Chi Club is different from others because its founder Master Gin Soon Chu, is a disciple who studied with and was authorized to teach by Grandmaster Yang Sau-Chung, firstborn and heir of the legendary Yang Cheng-Fu. Master Chu received a deep and well-rounded training, first from Master Lai Hok Soon and then Grandmaster Yang Sau-Chung, a training that covered all aspects of Classical Yang Family Tai Chi Chuan.
                         </p>
                     </div>
                 )}
@@ -89,10 +86,9 @@ export const AboutUs = () => {
                         />
                         {/* Text Content */}
                         <p>
-                            Over the years, many students have graduated from the school and became instructors themselves.
-                            In 1995, the Gin Soon Tai Chi Chuan Federation was established to better serve members from
-                            different countries. Training emphasizes correct forms, personal development, and integration
-                            of body, chi, and intent.
+                        Over the years, many students have graduated from the school and became instructors themselves. In 1995, the Gin Soon Tai Chi Chuan Federation was established to better serve our members who come from different countries.
+
+All instructions at the headquarters, private and group, are taught by Master Gin Soon Chu and his son Vincent Chu, who studied from his father when he was very young.
                         </p>
                     </div>
                 )}

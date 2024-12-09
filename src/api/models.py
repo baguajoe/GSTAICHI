@@ -3,13 +3,11 @@ from datetime import datetime
 
 db = SQLAlchemy()
 
-
-
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(256), unique=False, nullable=False)
-    is_active = db.Column(db.Boolean(), unique=False, nullable=False)
+    password = db.Column(db.String(256), nullable=False)
+    is_active = db.Column(db.Boolean(), default=True)
 
     def __repr__(self):
         return f'<User {self.email}>'
@@ -18,10 +16,8 @@ class User(db.Model):
         return {
             "id": self.id,
             "email": self.email,
-            # do not serialize the password, its a security breach
         }
 
-# Event Model
 class Classes(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
@@ -30,11 +26,17 @@ class Classes(db.Model):
     location = db.Column(db.String(300), nullable=False)
 
     def __repr__(self):
-        return f"<Event {self.name}>"
+        return f"<Classes {self.name}>"
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "date": self.date.strftime('%Y-%m-%d'),
+            "location": self.location,
+        }
 
-
-# Book Model
 class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
@@ -48,8 +50,18 @@ class Book(db.Model):
     def __repr__(self):
         return f"<Book {self.title}>"
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "author": self.author,
+            "description": self.description,
+            "price": str(self.price),
+            "publication_date": self.publication_date.strftime('%Y-%m-%d'),
+            "download_url": self.download_url,
+            "is_pod_available": self.is_pod_available,
+        }
 
-# Video Model
 class Video(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
@@ -61,16 +73,34 @@ class Video(db.Model):
     def __repr__(self):
         return f"<Video {self.title}>"
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "description": self.description,
+            "url": self.url,
+            "duration": str(self.duration) if self.duration else None,
+            "is_downloadable": self.is_downloadable,
+        }
 
-# Article Model
 class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
-    content = db.Column(db.Text, nullable=False)
+    content_part1 = db.Column(db.Text, nullable=False)
+    content_part2 = db.Column(db.Text, nullable=False)
     author = db.Column(db.String(100), nullable=False)
     publication_date = db.Column(db.Date, nullable=False)
     download_url = db.Column(db.String(2083), nullable=True)
     is_downloadable = db.Column(db.Boolean, default=True)
 
-    def __repr__(self):
-        return f"<Article {self.title}>"
+    def serialize(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "content_part1": self.content_part1,
+            "content_part2": self.content_part2,
+            "author": self.author,
+            "publication_date": self.publication_date.strftime("%Y-%m-%d"),
+            "download_url": self.download_url,
+            "is_downloadable": self.is_downloadable,
+        }
