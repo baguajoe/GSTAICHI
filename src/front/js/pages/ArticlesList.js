@@ -9,12 +9,13 @@ export const ArticlesList = () => {
     useEffect(() => {
         const fetchArticles = async () => {
             try {
-                const response = await fetch("/api/articles");
+                const response = await fetch(process.env.BACKEND_URL + "/api/articles");
                 if (!response.ok) {
                     throw new Error("Failed to fetch articles");
                 }
                 const data = await response.json();
                 setArticles(data);
+                console.log("articles", data )
             } catch (err) {
                 setError(err.message);
             }
