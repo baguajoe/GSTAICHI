@@ -1,8 +1,8 @@
 // Import React and ReactDOM into the bundle
 import React from "react";
 import ReactDOM from "react-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
+// import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 // Include your index.css file into the bundle
 import "../styles/index.css";

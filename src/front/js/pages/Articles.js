@@ -45,17 +45,8 @@ export const Articles = () => {
     return (
         <div className="container mt-5">
             <h1 className="mb-4">Articles</h1>
-            <h2>test</h2>
-            <div className="dropdown">
-                <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Dropdown button
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a className="dropdown-item" href="#">Action</a></li>
-                    <li><a className="dropdown-item" href="#">Another action</a></li>
-                   
-                </ul>
-            </div>
+            
+           
 
             {/* Dropdown Menu */}
             <div className="dropdown mb-4">

@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import logo from "/workspaces/GSTAICHI/public/fedbanner3.gif"
 
 export const Navbar = () => {
     return (
@@ -8,7 +9,7 @@ export const Navbar = () => {
                 {/* Logo Section */}
                 <a className="navbar-brand" href="/">
                     <img
-                        src="/assets/images/fedbanner3.gif" // Adjust path based on where you place the image
+                        src= {logo} // Adjust path based on where you place the image
                         alt="Gin Soon Tai Chi Chuan Federation Logo"
                         style={{ height: "50px", marginRight: "10px" }} // Adjust height as needed
                     />
