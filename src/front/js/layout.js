@@ -50,7 +50,7 @@ const Layout = () => {
                                 <Route element={<Instructors />} path="/instructors" />
                                 <Route element={<Articles />} path="/articles" /> {/* Dropdown and default content */}
                                 <Route element={<Articles />} path="/articles/:id" /> {/* Single article view */}
-                                <Route element={<ArticlesList />} path="/articles/list" /> {/* List of articles */}
+                                <Route element={<ArticlesList />} path="/articles-list" /> {/* List of articles */}
                                 <Route element={<Single />} path="/single/:theid" />
                                 <Route element={<h1>Not found!</h1>} />
                             </Routes>

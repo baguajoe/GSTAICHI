@@ -37,7 +37,7 @@ export const Sidebar = () => {
                 </Link>
 
                 {/* Articles */}
-                <Link className="nav-link mt-2" to="/articles">
+                <Link className="nav-link mt-2" to="/articles-list">
                     Articles
                 </Link>
             </nav>
