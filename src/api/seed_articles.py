@@ -1,10 +1,14 @@
-from api.models import db, Articles
+from models import db, Article
 from datetime import datetime
 from flask import Flask
-from api.models import db  # Ensure you import your database correctly
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from src.app import app
+
 
 # Import your app setup
-from app import app  # Replace `app` with the name of your Flask app instance if different
+# from app import app  # Replace `app` with the name of your Flask app instance if different
 
 def add_article():
     with app.app_context():  # Ensure the app context is active
@@ -92,12 +96,22 @@ Kindness does not mean weakness.
 """
 
         # Combine both parts into a single content variable
-        content = part_one + part_two
+        # content = part_one + part_two
 
         # Create the article
-        article = Articles(
+        # article = Article(
+        #     title="Combat Tai Chi Chuan",
+        #     content=content,
+        #     author="Vincent Chu",
+        #     publication_date=datetime.strptime("2024-01-01", "%Y-%m-%d"),
+        #     download_url=None,
+        #     is_downloadable=True
+        # )
+
+        article = Article(
             title="Combat Tai Chi Chuan",
-            content=content,
+            content_part1=part_one,
+            content_part2=part_two,  # Note: changed from content to content_part1 and content_part2
             author="Vincent Chu",
             publication_date=datetime.strptime("2024-01-01", "%Y-%m-%d"),
             download_url=None,

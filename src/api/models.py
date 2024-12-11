@@ -93,6 +93,9 @@ class Article(db.Model):
     download_url = db.Column(db.String(2083), nullable=True)
     is_downloadable = db.Column(db.Boolean, default=True)
 
+    def __repr__(self):
+        return f"<Article3 {self.title}>"
+
     def serialize(self):
         return {
             "id": self.id,
