@@ -1,27 +1,23 @@
 import React, { useContext } from "react";
 import { Context } from "../store/appContext";
-import rigoImageUrl from "../../img/rigo-baby.jpg";
+import imageUrl from "../../img/ginssonvincentdalu.png"; // Ensure correct filename
 import "../../styles/home.css";
 
 export const Home = () => {
-	const { store, actions } = useContext(Context);
+    const { store, actions } = useContext(Context);
 
-	return (
-		<div className="text-center mt-5">
-			<h1>Hello Rigo!!</h1>
-			<p>
-				<img src={rigoImageUrl} />
-			</p>
-			<div className="alert alert-info">
-				{store.message || "Loading message from the backend (make sure your python backend is running)..."}
-			</div>
-			<p>
-				This boilerplate comes with lots of documentation:{" "}
-				<a href="https://start.4geeksacademy.com/starters/react-flask">
-					Read documentation
-				</a>
-			</p>
-			
-		</div>
-	);
+    return (
+        <div className="text-center mt-5 home-container">
+            <h1 className="text-white">Gin Soon Tai Chi Chuan Federation</h1>
+            <p>
+                <img src={imageUrl} alt="Uploaded Martial Arts Image" className="custom-image" />
+            </p>     
+			<div className="hours-container">
+                <h2 className="text-white">Hours</h2>
+                <p className="text-white">Monday - Friday: 4PM - 8PM</p>
+                <p className="text-white">Monday and Thursday: 11AM - 1PM</p>
+                <p className="text-white">Saturday: 1PM - 4PM</p>
+            </div>
+        </div>
+    );
 };

@@ -1,0 +1,100 @@
+/* navbar.css */
+.navbar {
+    padding: 10px 20px;
+    background-color: white !important;
+    border-bottom: 2px solid #ddd;
+}
+
+.navbar-content {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+    min-height: 100px; /* Ensure minimum height to accommodate logo */
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: flex-start;
+}
+
+.navbar-logo {
+    height: 125px;
+    margin-left: 20px;
+}
+
+.banner-container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex: 2;
+    padding: 0 20px;
+}
+
+.banner-image {
+    max-width: 500px;
+    height: auto;
+}
+
+.nav-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    flex: 1;
+    align-self: flex-end; /* Align to bottom of parent */
+}
+
+.navbar-nav {
+    margin-left: auto;
+}
+
+.navbar-nav .nav-link {
+    font-size: 1rem;
+    color: black !important;
+    transition: color 0.3s ease-in-out;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #d9534f;
+}
+
+.navbar-toggler {
+    border-color: rgba(0, 0, 0, 0.1);
+    margin-left: auto;
+    align-self: flex-end; /* Align toggle button to bottom when collapsed */
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 991px) {
+    .navbar-content {
+        flex-direction: column;
+        min-height: auto;
+    }
+
+    .logo-container,
+    .banner-container,
+    .nav-section {
+        flex: none;
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .navbar-logo {
+        margin: 0 auto;
+    }
+
+    .banner-container {
+        padding: 10px 0;
+    }
+
+    .nav-section {
+        align-items: center;
+        align-self: stretch; /* Reset alignment for mobile */
+    }
+
+    .navbar-nav {
+        text-align: center;
+        width: 100%;
+    }
+}

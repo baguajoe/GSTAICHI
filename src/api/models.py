@@ -66,9 +66,17 @@ class Video(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    url = db.Column(db.String(2083), nullable=False)
+    url = db.Column(db.String(2083), nullable=False)  # URL for video file
+    streaming_url = db.Column(db.String(2083), nullable=True)  # URL for streaming (HLS or DASH)
     duration = db.Column(db.Interval, nullable=True)
     is_downloadable = db.Column(db.Boolean, default=True)
+    is_streamable = db.Column(db.Boolean, default=True)  # New field: Streamable option
+    category = db.Column(db.String(100), nullable=True)
+    tags = db.Column(db.String(300), nullable=True)
+    price = db.Column(db.Float, nullable=False, default=0.0)
+    uploaded_at = db.Column(db.DateTime, default=datetime.utcnow)
+    views = db.Column(db.Integer, default=0)
+    purchases = db.Column(db.Integer, default=0)
 
     def __repr__(self):
         return f"<Video {self.title}>"
@@ -79,27 +87,39 @@ class Video(db.Model):
             "title": self.title,
             "description": self.description,
             "url": self.url,
+            "streaming_url": self.streaming_url,
             "duration": str(self.duration) if self.duration else None,
             "is_downloadable": self.is_downloadable,
+            "is_streamable": self.is_streamable,
+            "category": self.category,
+            "tags": self.tags.split(',') if self.tags else [],
+            "price": self.price,
+            "uploaded_at": self.uploaded_at.isoformat() if self.uploaded_at else None,
+            "views": self.views,
+            "purchases": self.purchases,
         }
 
 class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
-    content_part1 = db.Column(db.Text, nullable=False)
-    content_part2 = db.Column(db.Text, nullable=False)
+    section=db.Column(db.Text, nullable=True, default="Other")
+    # content_part1 = db.Column(db.Text, nullable=False)
+    # content_part2 = db.Column(db.Text, nullable=False)
+    content_part1 = db.Column(db.Text(collation='utf8mb4_unicode_ci'), nullable=False)
+    content_part2 = db.Column(db.Text(collation='utf8mb4_unicode_ci'))
     author = db.Column(db.String(100), nullable=False)
     publication_date = db.Column(db.Date, nullable=False)
     download_url = db.Column(db.String(2083), nullable=True)
     is_downloadable = db.Column(db.Boolean, default=True)
 
     def __repr__(self):
-        return f"<Article3 {self.title}>"
+        return f"<Article {self.title}>"
 
     def serialize(self):
         return {
             "id": self.id,
             "title": self.title,
+            "section": self.section,
             "content_part1": self.content_part1,
             "content_part2": self.content_part2,
             "author": self.author,

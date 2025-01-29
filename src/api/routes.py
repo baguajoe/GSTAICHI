@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, abort
 from api.models import db, User, Classes, Book, Video, Article
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+# from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 
@@ -110,3 +111,174 @@ def delete_article(id):
     db.session.delete(article)
     db.session.commit()
     return jsonify({'message': 'Article deleted successfully'})
+
+
+
+
+# #@api.route('/video', methods=['POST'])
+# def create_video():
+#     if 'file' not in request.files:
+#         return jsonify({"error": "No file part"}), 400
+
+#     file = request.files['file']
+#     if file.filename == '':
+#         return jsonify({"error": "No selected file"}), 400
+
+#     # Check if the file type is allowed
+#     ALLOWED_EXTENSIONS = {'mp4', 'mov', 'avi', 'mkv'}
+#     def allowed_file(filename):
+#         return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+#     if not allowed_file(file.filename):
+#         return jsonify({"error": "Invalid file type"}), 400
+
+#     # Save the uploaded file
+#     from werkzeug.utils import secure_filename
+#     UPLOAD_FOLDER = './uploads/videos'  # Define the upload folder
+#     os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Ensure the folder exists
+
+#     filename = secure_filename(file.filename)
+#     file_path = os.path.join(UPLOAD_FOLDER, filename)
+#     file.save(file_path)
+
+#     # Get additional data from the form
+#     data = request.form  # Use form data for additional fields
+#     if not data.get('title'):
+#         return jsonify({"error": "Title is required"}), 400
+
+#     # Create a new video entry in the database
+#     new_video = Video(
+#         title=data['title'],
+#         description=data.get('description', ''),
+#         url=file_path,  # Save the file path in the database
+#         streaming_url=data.get('streaming_url', None),
+#         duration=data.get('duration', None),
+#         is_downloadable=data.get('is_downloadable', True),
+#         is_streamable=data.get('is_streamable', True),
+#         category=data.get('category', None),
+#         tags=data.get('tags', None),
+#         price=data.get('price', 0.0)
+#     )
+
+#     # Save to the database
+#     db.session.add(new_video)
+#     db.session.commit()
+
+#     return jsonify({"message": "Video uploaded and created successfully", "video": new_video.serialize()}), 201
+
+
+
+
+# # Route to delete a video
+# @api.route('/video/<int:video_id>', methods=['DELETE'])
+# def delete_video(video_id):
+#     video = Video.query.get(video_id)
+
+#     # Check if the video exists
+#     if not video:
+#         return jsonify({"error": "Video not found"}), 404
+
+#     # Delete the video
+#     db.session.delete(video)
+#     db.session.commit()
+
+#     return jsonify({"message": f"Video with ID {video_id} has been deleted successfully"}), 200
+
+# @api.route('/stream/<video_id>', methods=['GET'])
+# def stream_video(video_id):
+#     user_id = request.args.get('user_id')
+#     video = Video.query.get(video_id)
+
+#     if not video:
+#         return jsonify({"error": "Video not found"}), 404
+
+#     if not video.is_streamable:
+#         return jsonify({"error": "This video is not available for streaming"}), 403
+
+#     if not user_has_access(user_id, video_id):
+#         return jsonify({"error": "Unauthorized access"}), 403
+
+#     # Return the streaming URL
+#     return jsonify({"streaming_url": video.streaming_url})
+
+
+
+# @api.route('/video/<video_id>', methods=['GET'])
+# def get_video(video_id):
+#     user_id = request.args.get('user_id')
+#     video = Video.query.get(video_id)
+
+#     if not video:
+#         return jsonify({"error": "Video not found"}), 404
+
+#     if not user_has_access(user_id, video_id):
+#         return jsonify({"error": "Unauthorized access"}), 403
+
+#     # Return the direct video URL (e.g., .mp4 file)
+#     return jsonify({"video_url": video.url})
+
+# @api.route('/admin/upload-video', methods=['POST'])
+# def admin_upload_video():
+#     """Admin-only route to upload videos"""
+#     # Ensure the admin provides a file
+#     if 'file' not in request.files:
+#         return jsonify({"error": "No file part"}), 400
+
+#     file = request.files['file']
+#     if file.filename == '':
+#         return jsonify({"error": "No selected file"}), 400
+
+#     if not allowed_file(file.filename):
+#         return jsonify({"error": f"Invalid file type. Allowed: {', '.join(ALLOWED_EXTENSIONS)}"}), 400
+
+#     # Secure the filename and save it
+#     filename = secure_filename(file.filename)
+#     file_path = os.path.join(UPLOAD_FOLDER, filename)
+#     file.save(file_path)
+
+#     # Get additional metadata from the request form
+#     data = request.form
+#     if not data.get('title'):
+#         return jsonify({"error": "Title is required"}), 400
+
+#     # Create a new video entry in the database
+#     new_video = Video(
+#         title=data['title'],
+#         description=data.get('description', ''),
+#         url=file_path,  # Path to the uploaded file
+#         streaming_url=data.get('streaming_url', None),
+#         duration=data.get('duration', None),
+#         is_downloadable=data.get('is_downloadable', True),
+#         is_streamable=data.get('is_streamable', True),
+#         category=data.get('category', None),
+#         tags=data.get('tags', None),
+#         price=data.get('price', 0.0)
+#     )
+
+#     # Save to the database
+#     db.session.add(new_video)
+#     db.session.commit()
+
+#     return jsonify({"message": "Video uploaded successfully", "video": new_video.serialize()}), 201
+
+# @api.route('/admin/upload-video', methods=['POST'])
+# @jwt_required()
+# def admin_upload_video():
+#     current_user = get_jwt_identity()
+
+#     # Check if the current user is an admin
+#     if not current_user.get("is_admin"):
+#         return jsonify({"error": "Unauthorized"}), 403
+
+    # Proceed with video upload logic
+    ...
+
+
+# @api.route('/admin/upload-video', methods=['POST'])
+# @login_required
+# def admin_upload_video():
+#     if not current_user.is_admin:
+#         return jsonify({"error": "Unauthorized"}), 403
+
+#     # Proceed with video upload logic
+#     ...
