@@ -1,9 +1,12 @@
 // navbar.js
 import React from "react";
 import { Link } from "react-router-dom";
-import logo from "../../img/GinSoonLogo.png";
+// import logo from "../../img/GinSoonLogo.png";
+import logo from "../../img/gstaichi_sm.gif";
+
 import banner from "../../img/fedbanner3.gif";
 import "../../styles/navbar.css";
+
 
 export const Navbar = () => {
     return (

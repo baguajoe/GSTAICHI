@@ -9,7 +9,8 @@
     display: flex;
     width: 100%;
     align-items: stretch;
-    min-height: 100px; /* Ensure minimum height to accommodate logo */
+    min-height: 100px;
+    /* Ensure minimum height to accommodate logo */
 }
 
 .logo-container {
@@ -20,13 +21,17 @@
 }
 
 .navbar-logo {
-    height: 125px;
     margin-left: 20px;
+    height: 85px;
+    border: 2.5px solid #70604c;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .banner-container {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
     flex: 1.8;
     padding: 0 20px;
@@ -80,7 +85,7 @@
         padding-left: 0.5rem;
         padding-right: 0.5rem;
     }
-    
+
     .nav-section {
         min-width: 400px;
     }

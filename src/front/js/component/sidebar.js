@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import ginSoonImg from "../../img/gstaichi_sm.gif";
+// import ginSoonImg from "../../img/gstaichi_sm.gif";
+import ginSoonImg from "../../img/GSL.png";
+
 import "../../styles/sidebar.css";
 
 
@@ -15,9 +17,7 @@ export const Sidebar = () => {
                 padding: "15px",
             }}
         >
-            <img src={ginSoonImg} alt="Gin Soon"
-                className="rounded"
-            />
+            <img src={ginSoonImg} alt="Gin Soon" className="sidebar-logo" />
             <nav className="nav flex-column">
                 <Link className="nav-link" to="/">
                     Home

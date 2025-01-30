@@ -1,5 +1,22 @@
+/* sidebar.css */
+.sidebar-logo {
+    width: 85px;
+    display: block;
+    margin: 0 auto 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sidebar-logo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
 .sidebar-div .nav-link {
     color: #2b2b2b;
+    text-align: center;
+    font-weight: 600 !important;
 }
 
 .sidebar-div .nav-link:hover {
