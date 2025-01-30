@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import ginSoonImg from "../../img/gstaichi_sm.gif";
 import "../../styles/sidebar.css";
+
 
 export const Sidebar = () => {
     return (
@@ -13,69 +15,45 @@ export const Sidebar = () => {
                 padding: "15px",
             }}
         >
-            <h3 className="text-center py-3">Sidebar</h3>
+            <img src={ginSoonImg} alt="Gin Soon"
+                className="rounded"
+            />
             <nav className="nav flex-column">
-                {/* Home */}
                 <Link className="nav-link" to="/">
                     Home
                 </Link>
 
-                {/* About Us */}
-                {/* <Link className="nav-link mt-2" to="/about-us">
-                    About Us
-                </Link> */}
-
-                {/* Classes */}
-                {/* <Link className="nav-link mt-2" to="/classes">
-                    Classes
-                </Link> */}
-
-                {/* Curriculum */}
-                {/* <Link className="nav-link mt-2" to="/curriculum">
-                    Curriculum
-                </Link> */}
-
-                {/* Events */}
-                {/* <Link className="nav-link mt-2" to="/events">
-                    Events
-                </Link> */}
-
-                {/* History */}
                 <Link className="nav-link mt-2" to="/history">
                     History
                 </Link>
 
-                {/* Lineage */}
                 <Link className="nav-link mt-2" to="/lineage">
                     Lineage
                 </Link>
 
-                {/* Instructors */}
                 <Link className="nav-link mt-2" to="/instructors">
                     Instructors
                 </Link>
 
-                {/* Federal Members */}
                 <Link className="nav-link mt-2" to="/federal-members">
                     Federal Members
                 </Link>
 
-                {/* Articles */}
                 <Link className="nav-link mt-2" to="/articles-list">
                     Articles
                 </Link>
+                <Link className="nav-link mt-2" to="/gallery">
+                    Gallery
+                </Link>
 
-                {/* Video Management */}
                 <Link className="nav-link mt-2" to="/videos">
                     Video Management
                 </Link>
 
-                {/* Video Streaming */}
                 <Link className="nav-link mt-2" to="/video-streaming/1/123">
                     Video Streaming (Example)
                 </Link>
 
-                {/* Books */}
                 <Link className="nav-link mt-2" to="/books">
                     Books
                 </Link>

@@ -1,4 +1,6 @@
 import React from "react";
+import vincentImage from "../../img/VincentHoldBall.jpg";
+import ginSoonImage from "../../img/GinSoon2.jpg";
 
 export const Instructors = () => {
     const instructors = [
@@ -11,8 +13,8 @@ export const Instructors = () => {
                 as a disciple and was made responsible for propagating the Yang family tradition throughout North America. 
                 Master Chu personally supervises his classes with the assistance of senior students.
             `,
-            image: "https://via.placeholder.com/300x200?text=Master+Gin+Soon+Chu",
-            link: "/interviews/gin-soon-chu", // Placeholder for a future link to his interview.
+            image: ginSoonImage,
+            link: "/interviews/gin-soon-chu",
         },
         {
             name: "Vincent Chu, M.Ed.",
@@ -22,8 +24,8 @@ export const Instructors = () => {
                 Adult and Community Education Program since 1984. Vincent Chu has conducted many workshops and seminars in Canada and Europe 
                 and is a frequent contributor to martial arts publications.
             `,
-            image: "https://via.placeholder.com/300x200?text=Vincent+Chu",
-            link: "/interviews/vincent-chu", // Placeholder for a future link to his interview.
+            image: vincentImage,
+            link: "/interviews/vincent-chu",
         },
         {
             name: "Master Gordon Chu",
@@ -32,7 +34,7 @@ export const Instructors = () => {
                 and his teachings will be added soon.
             `,
             image: "https://via.placeholder.com/300x200?text=Master+Gordon+Chu",
-            link: "#", // Placeholder link, to be updated later.
+            link: "#",
         },
     ];
 
@@ -66,3 +68,5 @@ export const Instructors = () => {
         </div>
     );
 };
+
+export default Instructors;

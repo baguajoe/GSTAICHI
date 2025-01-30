@@ -20,11 +20,13 @@ import { ArticlesList } from "./pages/ArticlesList";
 import VideoManagementPage from "./pages/VideoManagementPage";
 import Video from "./pages/Video";
 import VideoStreaming from "./pages/VideoStreaming";
+import { Books } from "./pages/Books";
 import { Single } from "./pages/single";
 import { Sidebar } from "./component/sidebar";
 import { Navbar } from "./component/navbar";
 // import { Footer } from "./component/footer";
 import injectContext from "./store/appContext";
+import { Gallery } from "./pages/Gallery";
 
 // Create your Layout component
 const Layout = () => {
@@ -58,9 +60,12 @@ const Layout = () => {
                                 <Route element={<Articles />} path="/articles" />
                                 <Route element={<Articles />} path="/articles/:id" />
                                 <Route element={<ArticlesList />} path="/articles-list" />
+                                <Route element={<Gallery />} path="/gallery" />
                                 <Route element={<VideoManagementPage />} path="/videos" />
                                 <Route element={<Video />} path="/video" />
                                 <Route element={<VideoStreaming />} path="/video-streaming/:videoId/:userId" />
+                                <Route element={<Books />} path="/books" />
+
                                 <Route element={<Single />} path="/single/:theid" />
                                 <Route element={<h1>Not found!</h1>} path="*" />
                             </Routes>

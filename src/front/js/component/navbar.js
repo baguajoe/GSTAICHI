@@ -19,7 +19,9 @@ export const Navbar = () => {
 
                     {/* Center Banner */}
                     <div className="banner-container">
-                        <img src={banner} alt="Gin Soon Tai Chi Chuan Federation Banner" className="banner-image" />
+                        <Link to="/">
+                            <img src={banner} alt="Gin Soon Tai Chi Chuan Federation Banner" className="banner-image" />
+                        </Link>
                     </div>
 
                     {/* Navigation Section */}
