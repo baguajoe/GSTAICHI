@@ -46,7 +46,7 @@ export const History = () => {
 							alt={section.title}
 							style={{ maxHeight: "600px", objectFit: "cover" }}
 						/>
-						<Carousel.Caption className="bg-light bg-opacity-75 p-4 rounded">
+						<Carousel.Caption className="bg-transparent bg-opacity-75 p-4 rounded">
 							<h2 className="mb-3">{section.title}</h2>
 							<p className="text-start">{section.content}</p>
 						</Carousel.Caption>
