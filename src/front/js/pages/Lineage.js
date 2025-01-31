@@ -92,11 +92,13 @@ export const Lineage = () => {
             <h1 className="text-center mb-4">Yang Style Tai Chi Lineage</h1>
             <div className="row">
                 {lineage.map((person, index) => (
-                    <div key={index} className="col-md-6 mb-4">
+                    // <div key={index} className="col-md-6 mb-4">
+                    <div key={index} className="col-lg-4 mb-4 col-md-6">
                         <div className="card shadow-sm h-100">
                             <img
                                 src={person.image}
                                 className="card-img-top"
+                                // style={{ maxWidth: "200px" }}
                                 alt={person.name}
                             />
                             <div className="card-body">
@@ -110,7 +112,7 @@ export const Lineage = () => {
                     </div>
                 ))}
             </div>
-        </div>
+        </div >
     );
 };
 

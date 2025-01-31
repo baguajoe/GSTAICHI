@@ -43,11 +43,12 @@ export const Instructors = () => {
             <h1 className="text-center mb-4">Instructors</h1>
             <div className="row">
                 {instructors.map((instructor, index) => (
-                    <div key={index} className="col-md-6 mb-4">
+                    <div key={index} className="col-md-4 mb-4">
                         <div className="card shadow-sm h-100">
                             <img
                                 src={instructor.image}
                                 className="card-img-top"
+                                style={{ maxHeight: "525px" }}
                                 alt={`Image of ${instructor.name}`}
                             />
                             <div className="card-body">
@@ -55,11 +56,7 @@ export const Instructors = () => {
                                 <p className="card-text" style={{ textAlign: "justify" }}>
                                     {instructor.description}
                                 </p>
-                                {instructor.link && (
-                                    <a href={instructor.link} className="btn btn-primary">
-                                        Read More
-                                    </a>
-                                )}
+
                             </div>
                         </div>
                     </div>
