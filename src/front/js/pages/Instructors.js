@@ -17,7 +17,7 @@ export const Instructors = () => {
             link: "/interviews/gin-soon-chu",
         },
         {
-            name: "Vincent Chu, M.Ed.",
+            name: "Master Vincent Chu, M.Ed.",
             description: `
                 Vincent Chu, the second son of Gin Soon Chu, is a sixth-generation lineage practitioner of the Yang Style Tai Chi Chuan. 
                 He began assisting his father at the Gin Soon Tai Chi Chuan Club in Boston at age 16. He has been teaching at the Brookline 
@@ -26,24 +26,15 @@ export const Instructors = () => {
             `,
             image: vincentImage,
             link: "/interviews/vincent-chu",
-        },
-        {
-            name: "Master Gordon Chu",
-            description: `
-                Placeholder text for Master Gordon Chu. Details about his contributions to the Yang Style Tai Chi Chuan 
-                and his teachings will be added soon.
-            `,
-            image: "https://via.placeholder.com/300x200?text=Master+Gordon+Chu",
-            link: "#",
-        },
+        }
     ];
 
     return (
         <div className="container my-5">
             <h1 className="text-center mb-4">Instructors</h1>
-            <div className="row">
+            <div className="row justify-content-center">
                 {instructors.map((instructor, index) => (
-                    <div key={index} className="col-md-4 mb-4">
+                    <div key={index} className="col-md-6 mb-4" style={{ maxWidth: "400px" }}>
                         <div className="card shadow-sm h-100">
                             <img
                                 src={instructor.image}

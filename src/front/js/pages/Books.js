@@ -38,9 +38,9 @@ export const Books = () => {
     return (
         <div className="container my-5">
             <h1 className="text-center mb-4">Books</h1>
-            <div className="row">
+            <div className="row justify-content-center">
                 {books.map((book, index) => (
-                    <div key={index} className="col-md-6 mb-4">
+                    <div key={index} className="col-md-6 mb-4" style={{ maxWidth: "425px" }}>
                         <div className="card shadow-sm h-100">
                             <img src={book.image} className="card-img-top" alt={book.title} />
                             <div className="card-body">

@@ -31,6 +31,14 @@ export const Curriculum = () => {
 	return (
 		<div className="container my-4">
 			<h1 className="text-center mb-4">Curriculum</h1>
+			<p>
+				The Gin Soon Tai Chi Chuan Federation's headquarters offers some of
+				these forms and is among the few schools in the country teaching
+				authentic Yang-style Tai Chi Chuan forms. The training is extensive
+				and intensive, taught by knowledgeable instructors. Many observers
+				have noted the completeness of the curriculum and the depth of
+				instructions.
+			</p>
 
 			{/* Curriculum Sections */}
 			<div className="row">
@@ -46,18 +54,6 @@ export const Curriculum = () => {
 				))}
 			</div>
 
-			{/* Additional Notes */}
-			<div className="mt-4">
-				<h2>Notes on Curriculum</h2>
-				<p>
-					The Gin Soon Tai Chi Chuan Federation's headquarters offers some of
-					these forms and is among the few schools in the country teaching
-					authentic Yang-style Tai Chi Chuan forms. The training is extensive
-					and intensive, taught by knowledgeable instructors. Many observers
-					have noted the completeness of the curriculum and the depth of
-					instructions.
-				</p>
-			</div>
 		</div>
 	);
 };
