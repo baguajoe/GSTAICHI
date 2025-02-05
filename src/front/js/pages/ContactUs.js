@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
 
+
 export const ContactUs = () => {
 	const { store, actions } = useContext(Context);
 
@@ -19,15 +20,18 @@ export const ContactUs = () => {
 	};
 
 	// Handle form submission
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		// Simulate form submission (Replace with an actual API call)
-		console.log("Form submitted:", formData);
-		setSubmitted(true);
+		const result = await actions.submitContactForm(formData);
 
-		// Reset form
-		setFormData({ name: "", email: "", message: "" });
+		if (result.success) {
+			setSubmitted(true);
+			setFormData({ name: "", email: "", message: "" });
+		} else {
+			// Handle error - you might want to add error state to display this
+			alert("Failed to send message: " + result.message);
+		}
 	};
 
 	return (

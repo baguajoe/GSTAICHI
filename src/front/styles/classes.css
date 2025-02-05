@@ -1,0 +1,86 @@
+/* Screen-only styles */
+.print-button {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    padding: 8px 20px;
+    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.print-button:hover {
+    background-color: #0b5ed7;
+}
+
+.print-button i {
+    margin-right: 5px;
+}
+
+/* Hide print-only elements on screen */
+.print-only-contact {
+    display: none;
+}
+
+/* Print styles */
+@media print {
+
+    /* Hide screen-only elements */
+    .screen-only,
+    .navbar,
+    .sidebar-div {
+        display: none !important;
+    }
+
+    /* Show print-only elements */
+    .print-only-contact {
+        display: block !important;
+        margin-top: 2rem;
+        text-align: center;
+        padding: 20px 0;
+    }
+
+    /* Table styles for print */
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+
+    .table th,
+    .table td {
+        border: 1px solid #dee2e6;
+        padding: 12px;
+        text-align: left;
+    }
+
+    .table thead th {
+        background-color: #f8f9fa !important;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(0, 0, 0, .05) !important;
+    }
+
+    /* Container adjustments for print */
+    .main-content {
+        padding: 20px;
+        width: 100%;
+    }
+
+    /* Force background printing */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Remove default print margins */
+    @page {
+        margin: 0.5cm;
+    }
+}

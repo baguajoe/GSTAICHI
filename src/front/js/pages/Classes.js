@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 import { Context } from "../store/appContext";
+import "../../styles/classes.css"
 
 export const Classes = () => {
 	const { store, actions } = useContext(Context);
 
-	// Class schedule data
 	const schedule = [
 		{
 			day: "Monday",
@@ -38,27 +38,50 @@ export const Classes = () => {
 		},
 	];
 
+	const handlePrint = () => {
+		window.print();
+	}
+
 	return (
-		<div className="container">
-			<h1 className="text-center my-4">Class Schedule</h1>
-			<table className="table table-striped table-bordered">
-				<thead className="thead-dark">
-					<tr>
-						<th>Day</th>
-						<th>Day Classes</th>
-						<th>Evening Classes</th>
-					</tr>
-				</thead>
-				<tbody>
-					{schedule.map((entry, index) => (
-						<tr key={index}>
-							<td>{entry.day}</td>
-							<td>{entry.dayClasses}</td>
-							<td>{entry.eveningClasses}</td>
+		<div className="container main-content">
+			{/* Print button - screen only */}
+			<div className="screen-only">
+				<div className="text-end mb-3">
+					<button onClick={handlePrint} className="print-button">
+						<i className="fas fa-print"></i> Print Schedule
+					</button>
+				</div>
+			</div>
+
+			{/* Content visible in both screen and print */}
+			<div className="schedule-content">
+				<h1 className="text-center my-4">Class Schedule</h1>
+				<table className="table table-striped table-bordered">
+					<thead className="thead-dark">
+						<tr>
+							<th>Day</th>
+							<th>Day Classes</th>
+							<th>Evening Classes</th>
 						</tr>
-					))}
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						{schedule.map((entry, index) => (
+							<tr key={index}>
+								<td>{entry.day}</td>
+								<td>{entry.dayClasses}</td>
+								<td>{entry.eveningClasses}</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+
+				{/* Contact info - only shows in print */}
+				<div className="print-only-contact">
+					<p>	Gin Soon Tai Chi Chuan Federation<br />
+						33 Harrison Avenue, 5th floor, Boston, MA 02111<br />
+						Contact Vincent Chu at (617) 542-4442</p>
+				</div>
+			</div>
 		</div>
 	);
 };

@@ -1,10 +1,12 @@
 from flask import Blueprint, request, jsonify, abort
 from api.models import db, User, Classes, Book, Video, Article
+from api.send_email import send_email
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 # from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
+import os
 
 api = Blueprint('api', __name__)
 CORS(api)
@@ -112,8 +114,30 @@ def delete_article(id):
     db.session.commit()
     return jsonify({'message': 'Article deleted successfully'})
 
+@api.route("/contact", methods=['POST'])
+def submit_contact():
+    data= request.get_json()
+    name=data.get("name")
+    email=data.get("email")
+    message=data.get("message")
 
+    if not all([name, email,  message]):
+        return jsonify({"error":  "all fields are required"}),  400
+    
+    try:
+        email_body = f"New contact form submission:\n\nName: {name}\nEmail: {email}\n\nMessage:\n{message}"
 
+        send_email(
+            recipient=os.getenv("GMAIL"),
+            subject="New Contact Form Submission",
+            body=email_body
+        )
+
+        return jsonify ({"message": "Contact form submitted successfully"}), 200
+    
+    except Exception as e:
+        return jsonify({"error":  str(e)}),  500
+    
 
 # #@api.route('/video', methods=['POST'])
 # def create_video():
@@ -282,3 +306,4 @@ def delete_article(id):
 
 #     # Proceed with video upload logic
 #     ...
+
