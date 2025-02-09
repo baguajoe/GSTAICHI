@@ -47,11 +47,7 @@ export const Sidebar = () => {
                 </Link>
 
                 <Link className="nav-link mt-2" to="/videos">
-                    Video Management
-                </Link>
-
-                <Link className="nav-link mt-2" to="/video-streaming/1/123">
-                    Video Streaming (Example)
+                    Video 
                 </Link>
 
                 <Link className="nav-link mt-2" to="/books">

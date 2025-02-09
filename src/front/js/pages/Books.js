@@ -2,7 +2,6 @@ import React from "react";
 import comparativeStudyImage from "../../img/comparativeStudy.png";
 import TaiChiChuanCirclesImage from "../../img/TaiChiChuanCircles.jpg";
 
-
 export const Books = () => {
     const books = [
         {
@@ -58,6 +57,20 @@ export const Books = () => {
                         </div>
                     </div>
                 ))}
+            </div>
+
+            {/* Embedded iFrame */}
+            <div className="row mt-5">
+                <h2 className="text-center">Related Resources</h2>
+                <iframe
+                    title="External Embed"
+                    src="https://api.lulu.com/auth/realms/glasstree/protocol/openid-connect/login-status-iframe.html"
+                    width="100%"
+                    height="600px"
+                    style={{ border: "none", display: "block", margin: "20px auto" }}
+                >
+                    Your browser does not support iFrames.
+                </iframe>
             </div>
         </div>
     );

@@ -24,6 +24,7 @@ import img11 from "../../img/11.jpg";
 import img12 from "../../img/12.jpg";
 import { Carousel } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "../../styles/gallery.css"
 
 const images = [
     { src: ginSoonChuck, alt: "Gin Soon, Chuck Norris" },
@@ -54,22 +55,41 @@ const images = [
 export const Gallery = () => {
     return (
         <div className="container py-5">
-            <h1 className="text-center mb-4">Gallery</h1>
-            <Carousel>
-                {images.map((image, index) => (
-                    <Carousel.Item key={index}>
-                        <img
-                            className="d-block w-100"
-                            src={image.src}
-                            alt={image.alt}
-                            style={{ maxHeight: "600px", objectFit: "cover" }}
-                        />
-                        <Carousel.Caption>
-                            <h5>{image.alt}</h5>
-                        </Carousel.Caption>
-                    </Carousel.Item>
-                ))}
-            </Carousel>
+            <h1 className="text-center display-4 mb-4">Gallery</h1>
+
+            <div className="carousel-container" style={{ backgroundColor: '#f8f9fa' }}>
+                <Carousel>
+                    {images.map((image, index) => (
+                        <Carousel.Item key={index}>
+                            <div
+                                style={{
+                                    height: '70vh',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    backgroundColor: '#e9ecef'
+                                }}
+                            >
+                                <img
+                                    src={image.src}
+                                    alt={image.alt}
+                                    style={{
+                                        height: 'auto',
+                                        width: 'auto',
+                                        minHeight: '100%',
+                                        maxHeight: '100%',
+                                        maxWidth: '100%',
+                                        objectFit: 'contain'
+                                    }}
+                                />
+                            </div>
+                            <Carousel.Caption className="bg-dark bg-opacity-50 rounded p-2">
+                                <h5 className="mb-0">{image.alt}</h5>
+                            </Carousel.Caption>
+                        </Carousel.Item>
+                    ))}
+                </Carousel>
+            </div>
         </div>
     );
 };

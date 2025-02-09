@@ -17,9 +17,7 @@ import { Instructors } from "./pages/Instructors";
 import { Articles } from "./pages/Articles";
 import { Lineage } from "./pages/Lineage";
 import { ArticlesList } from "./pages/ArticlesList";
-import VideoManagementPage from "./pages/VideoManagementPage";
 import Video from "./pages/Video";
-import VideoStreaming from "./pages/VideoStreaming";
 import { Books } from "./pages/Books";
 import { Single } from "./pages/single";
 import { Sidebar } from "./component/sidebar";
@@ -62,9 +60,7 @@ const Layout = () => {
                                 <Route element={<Articles />} path="/articles/:id" />
                                 <Route element={<ArticlesList />} path="/articles-list" />
                                 <Route element={<Gallery />} path="/gallery" />
-                                <Route element={<VideoManagementPage />} path="/videos" />
-                                <Route element={<Video />} path="/video" />
-                                <Route element={<VideoStreaming />} path="/video-streaming/:videoId/:userId" />
+                                <Route element={<Video />} path="/videos" />
                                 <Route element={<Books />} path="/books" />
 
                                 <Route element={<Single />} path="/single/:theid" />
