@@ -20,5 +20,10 @@
 }
 
 .sidebar-div .nav-link:hover {
-    color: #d1b48e;
+   
+    color: #8b1818;
+}
+
+.sidebar-div .nav-link.active{
+ color: #d1b48e;
 }

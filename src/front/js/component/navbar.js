@@ -1,6 +1,6 @@
 // navbar.js
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation} from "react-router-dom";
 // import logo from "../../img/GinSoonLogo.png";
 import logo from "../../img/gstaichi_sm.gif";
 
@@ -9,6 +9,8 @@ import "../../styles/navbar.css";
 
 
 export const Navbar = () => {
+    const location = useLocation();
+
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-white">
             <div className="container-fluid">
@@ -46,27 +48,46 @@ export const Navbar = () => {
                         <div className="collapse navbar-collapse" id="navbarNav">
                             <ul className="navbar-nav">
                                 <li className="nav-item">
-                                    <Link className="nav-link active" to="/about-us">
+                                    <Link 
+                                        className={`nav-link ${location.pathname === "/about-us" ? "active" : ""}`} 
+                                        to="/about-us"
+                                    >
                                         About Us
                                     </Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/classes">
+                        
+                                    <Link 
+                                        className={`nav-link ${location.pathname === "/classes" ? "active" : ""}`} 
+                                        to="/classes"
+                                    >
                                         Classes
                                     </Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/curriculum">
+                                   
+                                    <Link 
+                                        className={`nav-link ${location.pathname === "/curriculum" ? "active" : ""}`} 
+                                        to="/curriculum"
+                                    >
                                         Curriculum
                                     </Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/events">
+                                 
+                                    <Link 
+                                        className={`nav-link ${location.pathname === "/events" ? "active" : ""}`} 
+                                        to="/events"
+                                    >
                                         Events
                                     </Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/contact-us">
+                              
+                                    <Link 
+                                        className={`nav-link ${location.pathname === "/contact-us" ? "active" : ""}`} 
+                                        to="/contact-us"
+                                    >
                                         Contact Us
                                     </Link>
                                 </li>

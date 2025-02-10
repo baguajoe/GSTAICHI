@@ -18,7 +18,7 @@ import { Articles } from "./pages/Articles";
 import { Lineage } from "./pages/Lineage";
 import { ArticlesList } from "./pages/ArticlesList";
 import Video from "./pages/Video";
-import { Books } from "./pages/Books";
+import Books  from "./pages/Books";
 import { Single } from "./pages/single";
 import { Sidebar } from "./component/sidebar";
 import { Navbar } from "./component/navbar";

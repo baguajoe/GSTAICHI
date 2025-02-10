@@ -7,11 +7,11 @@ export const Books = () => {
         {
             title: "Tai Chi Chuan: A Comparative Study",
             description: `
-                In Tai Chi Chuan: A Comparative Study, author and renowned practitioner Vincent Chu lays out in clear language and detailed photographs 
-                the theory and practice of Tai Chi Chuan. Chu's introduction and teaching clarify important concepts and points of emphasis that have 
-                until now remained elusive in the available literature on the subject. From basic demonstrations of proper posture to an eye-opening 
-                discussion of 'intent', this book offers something for practitioners of all levels. Chu presents three complete short forms for those 
-                interested in learning a Tai Chi Chuan routine suitable to their health and objectives. To facilitate the learning process, video of 
+                In Tai Chi Chuan: A Comparative Study, author and renowned practitioner Vincent Chu lays out in clear language and detailed photographs
+                the theory and practice of Tai Chi Chuan. Chu's introduction and teaching clarify important concepts and points of emphasis that have
+                until now remained elusive in the available literature on the subject. From basic demonstrations of proper posture to an eye-opening
+                discussion of 'intent', this book offers something for practitioners of all levels. Chu presents three complete short forms for those
+                interested in learning a Tai Chi Chuan routine suitable to their health and objectives. To facilitate the learning process, video of
                 all three forms can be viewed free online at the Gin Soon Tai Chi Chuan Federation's website (http://www.gstaichi.org).
             `,
             cost: "$27.95",
@@ -19,18 +19,18 @@ export const Books = () => {
             link: "https://www.gstaichi.org"
         },
         {
-            title: "TaiChiChuanCircles",
+            title: "Tai Chi Chuan Circle",
             description: `
-                The Circle is a simple symbol. It is a product of ancient Chinese knowledge and a symbol of ancient Chinese traditional culture. 
-                The circle represents the universe and everything that manifests within it. All natural phenomena and humanity's development 
-                operate in an infinite process or circle. Therefore, circles represent an idea, an operation, beauty, and protection. 
-                
-                Physical activity such as Tai Chi Chuan is composed of health, martial arts, and performing arts values. It is done in balanced, 
-                steady circular motion and involves the entire body. Whether it is the principle, practice, or confrontational engagement, 
+                The Circle is a simple symbol. It is a product of ancient Chinese knowledge and a symbol of ancient Chinese traditional culture.
+                The circle represents the universe and everything that manifests within it. All natural phenomena and humanity's development
+                operate in an infinite process or circle. Therefore, circles represent an idea, an operation, beauty, and protection.
+                Physical activity such as Tai Chi Chuan is composed of health, martial arts, and performing arts values. It is done in balanced,
+                steady circular motion and involves the entire body. Whether it is the principle, practice, or confrontational engagement,
                 Tai Chi Chuan adheres to the circle principle.
             `,
             image: TaiChiChuanCirclesImage,
-            link: "https://www.gstaichi.org"
+            cost: "$41.01",
+            link: "https://www.lulu.com/shop/vincent-chu/tai-chi-chuan-circle/paperback/product-kv88y9r.html?q=vincent+chu&page=1&pageSize=4"
         }
     ];
 
@@ -47,30 +47,16 @@ export const Books = () => {
                                 <p className="card-text" style={{ textAlign: "justify" }}>
                                     {book.description}
                                 </p>
-                                <p className="card-text font-weight-bold">Cost: {book.cost || "Contact for Pricing"}</p>
+                                <p className="card-text font-weight-bold">Cost: {book.cost}</p>
                                 {book.link && (
                                     <a href={book.link} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
-                                        More Information
+                                        Buy Now
                                     </a>
                                 )}
                             </div>
                         </div>
                     </div>
                 ))}
-            </div>
-
-            {/* Embedded iFrame */}
-            <div className="row mt-5">
-                <h2 className="text-center">Related Resources</h2>
-                <iframe
-                    title="External Embed"
-                    src="https://api.lulu.com/auth/realms/glasstree/protocol/openid-connect/login-status-iframe.html"
-                    width="100%"
-                    height="600px"
-                    style={{ border: "none", display: "block", margin: "20px auto" }}
-                >
-                    Your browser does not support iFrames.
-                </iframe>
             </div>
         </div>
     );

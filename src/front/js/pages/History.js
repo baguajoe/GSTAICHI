@@ -1,9 +1,9 @@
 import React from "react";
 import { Carousel } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import img1 from "../../img/1.jpg"
-import img2 from "../../img/2.jpg"
-import img3 from "../../img/3.jpg"
+import img1 from "../../img/wudang1.jpg"
+import img2 from "../../img/wudang2.jpg"
+import img3 from "../../img/wudang3.jpg"
 
 
 export const History = () => {
@@ -46,9 +46,9 @@ export const History = () => {
 							alt={section.title}
 							style={{ maxHeight: "600px", objectFit: "cover" }}
 						/>
-						<Carousel.Caption className="bg-transparent bg-opacity-75 p-4 rounded">
+						<Carousel.Caption className="bg-transparent p-4">
 							<h2 className="mb-3">{section.title}</h2>
-							<p className="text-start">{section.content}</p>
+							<p className="text-start bg-dark bg-opacity-50 p-3 rounded">{section.content}</p>
 						</Carousel.Caption>
 					</Carousel.Item>
 				))}

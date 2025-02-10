@@ -26,10 +26,21 @@
 .navbar-logo {
     margin-left: 20px;
     height: 85px;
-    border: 2.5px solid #70604c;
+    /* border: 2.5px solid #70604c; */
+    /* border: 2.5px solid #8b1818; */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 5px;
+    /* transition: transform 0.2s ease, box-shadow 0.2s ease; */
+    box-shadow: 0 0 0 2.5px rgba(139, 24, 24, 0.6), /* Softer border using box-shadow */
+                0 4px 10px rgba(0, 0, 0, 0.1); /* Elevation shadow */
+
+}
+
+.navbar-logo:hover {
+    transform: translateY(-2px);
+    /* box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); */
+    box-shadow: 0 0 0 2.5px rgba(139, 24, 24, 0.8), /* Slightly more visible on hover */
+                0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 .banner-container {
@@ -38,11 +49,19 @@
     justify-content: center;
     flex: 1.8;
     padding: 0 20px;
+    
+}
+
+.banner-image:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 .banner-image {
     max-width: 500px;
     height: auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .nav-section {
@@ -72,7 +91,12 @@
 }
 
 .navbar-nav .nav-link:hover {
-    color: #d1b48e !important;
+   
+    color: #8b1818 !important;
+}
+
+.navbar-nav .nav-link.active{
+ color: #d1b48e !important;
 }
 
 .navbar-toggler {
