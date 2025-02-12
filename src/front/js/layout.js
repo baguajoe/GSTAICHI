@@ -22,7 +22,7 @@ import Books  from "./pages/Books";
 import { Single } from "./pages/single";
 import { Sidebar } from "./component/sidebar";
 import { Navbar } from "./component/navbar";
-// import { Footer } from "./component/footer";
+import  Footer from "./component/footer";
 import injectContext from "./store/appContext";
 import { Gallery } from "./pages/Gallery";
 
@@ -69,7 +69,7 @@ const Layout = () => {
                         </div>
                     </div>
                     {/* Footer */}
-                    {/* <Footer /> */}
+                    <Footer />
                 </ScrollToTop>
             </BrowserRouter>
         </div>

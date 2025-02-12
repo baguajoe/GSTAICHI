@@ -1,6 +1,6 @@
 // navbar.js
 import React from "react";
-import { Link, useLocation} from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 // import logo from "../../img/GinSoonLogo.png";
 import logo from "../../img/gstaichi_sm.gif";
 
@@ -16,11 +16,11 @@ export const Navbar = () => {
             <div className="container-fluid">
                 <div className="navbar-content">
                     {/* Left Logo */}
-                    <div className="logo-container">
+                    {/* <div className="logo-container">
                         <a className="navbar-brand" href="/">
                             <img src={logo} alt="Gin Soon Tai Chi Chuan Federation Logo" className="navbar-logo" />
                         </a>
-                    </div>
+                    </div> */}
 
                     {/* Center Banner */}
                     <div className="banner-container">
@@ -48,44 +48,44 @@ export const Navbar = () => {
                         <div className="collapse navbar-collapse" id="navbarNav">
                             <ul className="navbar-nav">
                                 <li className="nav-item">
-                                    <Link 
-                                        className={`nav-link ${location.pathname === "/about-us" ? "active" : ""}`} 
+                                    <Link
+                                        className={`nav-link ${location.pathname === "/about-us" ? "active" : ""}`}
                                         to="/about-us"
                                     >
                                         About Us
                                     </Link>
                                 </li>
                                 <li className="nav-item">
-                        
-                                    <Link 
-                                        className={`nav-link ${location.pathname === "/classes" ? "active" : ""}`} 
+
+                                    <Link
+                                        className={`nav-link ${location.pathname === "/classes" ? "active" : ""}`}
                                         to="/classes"
                                     >
                                         Classes
                                     </Link>
                                 </li>
                                 <li className="nav-item">
-                                   
-                                    <Link 
-                                        className={`nav-link ${location.pathname === "/curriculum" ? "active" : ""}`} 
+
+                                    <Link
+                                        className={`nav-link ${location.pathname === "/curriculum" ? "active" : ""}`}
                                         to="/curriculum"
                                     >
                                         Curriculum
                                     </Link>
                                 </li>
                                 <li className="nav-item">
-                                 
-                                    <Link 
-                                        className={`nav-link ${location.pathname === "/events" ? "active" : ""}`} 
+
+                                    <Link
+                                        className={`nav-link ${location.pathname === "/events" ? "active" : ""}`}
                                         to="/events"
                                     >
                                         Events
                                     </Link>
                                 </li>
                                 <li className="nav-item">
-                              
-                                    <Link 
-                                        className={`nav-link ${location.pathname === "/contact-us" ? "active" : ""}`} 
+
+                                    <Link
+                                        className={`nav-link ${location.pathname === "/contact-us" ? "active" : ""}`}
                                         to="/contact-us"
                                     >
                                         Contact Us
