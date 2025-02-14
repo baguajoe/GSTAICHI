@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Context } from "../store/appContext";
 
-export const Events = () => {
+export const Workshops = () => {
 	const { store, actions } = useContext(Context);
 
 	// Workshop data
@@ -43,7 +43,7 @@ export const Events = () => {
 
 	return (
 		<div className="container my-4">
-			<h1 className="text-center mb-4">Upcoming Events</h1>
+			<h1 className="text-center mb-4">Upcoming Workshops</h1>
 
 			{/* General Information */}
 			<div className="mb-4">
@@ -54,8 +54,8 @@ export const Events = () => {
 					workshops, contact us.
 				</p>
 				<p>
-					<strong>Czech Republic:</strong> Workshop from November 24 to December
-					4, 2024. For more information, contact Karel Nuhlicek at{" "}
+					<strong>Czech Republic:</strong> These workshops are run in Czech Republic from approximately November 24th to December
+					4th each year. However, the exact dates may differ per year. For more information, contact Karel Nuhlicek at{" "}
 					<a href="mailto:karel.nuhlicek@impromat.cz">
 						karel.nuhlicek@impromat.cz
 					</a>.

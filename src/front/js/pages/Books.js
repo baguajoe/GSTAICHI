@@ -49,7 +49,7 @@ export const Books = () => {
                                 </p>
                                 <p className="card-text font-weight-bold">Cost: {book.cost}</p>
                                 {book.link && (
-                                    <a href={book.link} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+                                    <a href={book.link} target="_blank" rel="noopener noreferrer" className="custom-btn1" style={{ textDecoration: 'none' }}>
                                         Buy Now
                                     </a>
                                 )}

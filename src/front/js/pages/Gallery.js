@@ -27,7 +27,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../../styles/gallery.css"
 
 const images = [
-    { src: ginSoonChuck, alt: "Gin Soon, Chuck Norris" },
+    { src: ginSoonChuck, alt: "" },
     { src: prague, alt: "Workshop In Prague" },
     { src: prague2, alt: "Workshop In Prague" },
     { src: riverBoat, alt: "August Moon Festival" },
@@ -52,13 +52,47 @@ const images = [
     { src: img12, alt: "New Years Celebration 2009" }
 ];
 
+
+
 export const Gallery = () => {
+    const arrowStyle = {
+        position: "absolute",
+        top: "calc(50% + 70px)", // Offset to account for header and nav
+        transform: "translateY(-50%)",
+        fontSize: "2rem",
+        color: "#590d0d",
+        cursor: "pointer",
+        zIndex: 1000,
+        transition: "color 0.3s ease",
+        // backgroundColor: "rgba(255, 255, 255, 0.8)",
+        borderRadius: "50%",
+        padding: "10px",
+    };
+
     return (
         <div className="container py-5">
             <h1 className="text-center display-4 mb-4">Gallery</h1>
 
             <div className="carousel-container" style={{ backgroundColor: '#f8f9fa' }}>
-                <Carousel>
+            <Carousel 
+                    // ref={carouselRef}
+                    prevIcon={
+                        <i
+                            className="fa-solid fa-circle-chevron-left"
+                            style={{ ...arrowStyle, left: "0px" }}
+                            onMouseOver={(e) => e.target.style.color = "#400909"}
+                            onMouseOut={(e) => e.target.style.color = "#590d0d"}
+                        />
+                    }
+                    nextIcon={
+                        <i
+                            className="fa-solid fa-circle-chevron-right"
+                            style={{ ...arrowStyle, right: "0px" }}
+                            onMouseOver={(e) => e.target.style.color = "#400909"}
+                            onMouseOut={(e) => e.target.style.color = "#590d0d"}
+                        />
+                    }
+                >
                     {images.map((image, index) => (
                         <Carousel.Item key={index}>
                             <div

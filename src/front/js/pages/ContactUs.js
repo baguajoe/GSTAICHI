@@ -105,7 +105,7 @@ export const ContactUs = () => {
 								required
 							></textarea>
 						</div>
-						<button type="submit" className="btn btn-primary">
+						<button type="submit" className="custom-btn1">
 							Send Message
 						</button>
 					</form>

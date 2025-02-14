@@ -47,7 +47,7 @@ export const Classes = () => {
 			{/* Print button - screen only */}
 			<div className="screen-only">
 				<div className="text-end mb-3">
-					<button onClick={handlePrint} className="print-button">
+					<button onClick={handlePrint} className="custom-btn1">
 						<i className="fas fa-print"></i> Print Schedule
 					</button>
 				</div>

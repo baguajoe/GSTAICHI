@@ -1,5 +1,5 @@
 /* Screen-only styles */
-.print-button {
+/* .print-button {
     background-color: #0d6efd;
     border-color: #0d6efd;
     padding: 8px 20px;
@@ -19,7 +19,7 @@
 
 .print-button i {
     margin-right: 5px;
-}
+} */
 
 /* Hide print-only elements on screen */
 .print-only-contact {

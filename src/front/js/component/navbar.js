@@ -76,10 +76,10 @@ export const Navbar = () => {
                                 <li className="nav-item">
 
                                     <Link
-                                        className={`nav-link ${location.pathname === "/events" ? "active" : ""}`}
-                                        to="/events"
+                                        className={`nav-link ${location.pathname === "/workshops" ? "active" : ""}`}
+                                        to="/workshops"
                                     >
-                                        Events
+                                        Workshops
                                     </Link>
                                 </li>
                                 <li className="nav-item">

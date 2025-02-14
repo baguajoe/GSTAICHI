@@ -3,7 +3,7 @@ import GSCYSC from "../../img/GSCYSC.jpg";
 import GinSoonBall from "../../img/GinSoonBall.jpg";
 import GinSoonSnakeCreep from "../../img/GinSoonSnakeCreep.jpg";
 import GinSoonPerryPunch from "../../img/GinSoonPerryPunch.jpg";
-
+import "../../styles/aboutUs.css";
 
 export const AboutUs = () => {
     const [activeSection, setActiveSection] = useState("introduction");
@@ -60,7 +60,7 @@ export const AboutUs = () => {
         top: "calc(50% + 70px)", // Offset to account for header and nav
         transform: "translateY(-50%)",
         fontSize: "2rem",
-        color: "#0d6efd",
+        color: "#590d0d",
         cursor: "pointer",
         zIndex: 1000,
         transition: "color 0.3s ease",
@@ -70,7 +70,7 @@ export const AboutUs = () => {
     };
 
     return (
-        <div className="container mt-4">
+        <div className="about-us-div container mt-4">
             <div className="row justify-content-center">
                 <div className="col-12 col-lg-10 position-relative">
                     <h1 className="text-center mb-4">About Us</h1>
@@ -104,21 +104,23 @@ export const AboutUs = () => {
                     </nav>
 
                     {/* Left Arrow */}
-                    <i 
-                        className="fa-solid fa-circle-chevron-left"
+                    <i
+                        className="fa-solid fa-circle-chevron-left arrow-style"
                         style={{ ...arrowStyle, left: "0px" }}
                         onClick={() => navigateSection('prev')}
-                        onMouseOver={(e) => e.target.style.color = "#0b5ed7"}
-                        onMouseOut={(e) => e.target.style.color = "#0d6efd"}
+                        // onMouseOver={(e) => e.target.style.color = "#0b5ed7"}
+                        // onMouseOut={(e) => e.target.style.color = "#0d6efd"}
+                        onMouseOver={(e) => e.target.style.color = "#400909"}
+                        onMouseOut={(e) => e.target.style.color = "#590d0d"}
                     ></i>
 
                     {/* Right Arrow */}
-                    <i 
+                    <i
                         className="fa-solid fa-circle-chevron-right"
                         style={{ ...arrowStyle, right: "0px" }}
                         onClick={() => navigateSection('next')}
-                        onMouseOver={(e) => e.target.style.color = "#0b5ed7"}
-                        onMouseOut={(e) => e.target.style.color = "#0d6efd"}
+                        onMouseOver={(e) => e.target.style.color = "#400909"}
+                        onMouseOut={(e) => e.target.style.color = "#590d0d"}
                     ></i>
 
                     {/* Content Sections */}
@@ -161,9 +163,9 @@ export const AboutUs = () => {
                                     <div className="col-md-8">
                                         <div className="card-body d-flex align-items-center h-100">
                                             <p className="card-text text-center px-4 mb-0">
-                                                Although there are many schools of Tai Chi Chuan available in the United States, 
-                                                the Gin Soon Tai Chi Club is different from others because its founder Master Gin Soon Chu, 
-                                                is a disciple who studied with and was authorized to teach by Grandmaster Yang Sau-Chung, 
+                                                Although there are many schools of Tai Chi Chuan available in the United States,
+                                                the Gin Soon Tai Chi Club is different from others because its founder Master Gin Soon Chu,
+                                                is a disciple who studied with and was authorized to teach by Grandmaster Yang Sau-Chung,
                                                 firstborn and heir of the legendary Yang Cheng-Fu.
                                             </p>
                                         </div>
@@ -186,8 +188,8 @@ export const AboutUs = () => {
                                     <div className="col-md-8">
                                         <div className="card-body d-flex align-items-center h-100">
                                             <p className="card-text text-center px-4 mb-0">
-                                                Over the years, many students have graduated from the school and became instructors themselves. 
-                                                In 1995, the Gin Soon Tai Chi Chuan Federation was established to better serve our members who 
+                                                Over the years, many students have graduated from the school and became instructors themselves.
+                                                In 1995, the Gin Soon Tai Chi Chuan Federation was established to better serve our members who
                                                 come from different countries.
                                             </p>
                                         </div>
@@ -210,7 +212,7 @@ export const AboutUs = () => {
                                     <div className="col-md-8">
                                         <div className="card-body d-flex align-items-center h-100">
                                             <p className="card-text text-center px-4 mb-0">
-                                                The headquarters are located at 33 Harrison Avenue, 5th floor, Boston, MA 02111. 
+                                                The headquarters are located at 33 Harrison Avenue, 5th floor, Boston, MA 02111.
                                                 Contact Vincent Chu at (617) 542-4442 or via email at chu.v@usa.com.
                                             </p>
                                         </div>

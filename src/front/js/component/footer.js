@@ -9,7 +9,7 @@ const Footer = () => {
 	};
 
 	return (
-		<footer style={footerStyle} className="py-5">
+		<footer style={footerStyle} className="py-4">
 			<div className="container">
 				<div className="row">
 					{/* Contact Information */}

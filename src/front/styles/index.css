@@ -1,3 +1,59 @@
 /* 
     General Styles used on every website (Don't Repeat Yourself)
 */
+
+:root {
+    --primary-color: #590d0d;
+    --primary-dark: #400909;
+    --primary-light: #711111;
+    --text-light: #ffffff;
+    --text-dark: #333333;
+    --background-light: #f5f5f5;
+}
+
+.custom-btn1 {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    border: 1px solid var(--primary-color);
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    transition: all 0.15s ease-in-out;
+}
+
+.custom-btn1:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    color: var(--text-light);
+}
+
+/* Active/Pressed state */
+.custom-btn:active {
+    background-color: var(--primary-light);
+    transform: translateY(1px);
+    /* Optional: slight push down effect */
+}
+
+/* Focus state (for accessibility) */
+.custom-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(89, 13, 13, 0.25);
+}
+
+/* Focus-visible (only shows outline when using keyboard) */
+/* .custom-btn:focus-visible {
+    outline: 2px solid var(--primary-light);
+    outline-offset: 2px;
+} */
+
+
+.nav-link.active {
+    background-color: var(--primary-color) !important;
+    color: var(--text-light) !important;
+    border-radius: 5px;
+}
+
+.nav-link {
+    color: var(--primary-color) !important;
+}

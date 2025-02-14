@@ -9,7 +9,7 @@ import { Demo } from "./pages/demo";
 import { AboutUs } from "./pages/AboutUs";
 import { Classes } from "./pages/Classes";
 import { ContactUs } from "./pages/ContactUs";
-import { Events } from "./pages/Events";
+import { Workshops } from "./pages/Workshops";
 import { Curriculum } from "./pages/Curriculum";
 import { History } from "./pages/History";
 import { FederalMembers } from "./pages/FederalMembers";
@@ -18,11 +18,11 @@ import { Articles } from "./pages/Articles";
 import { Lineage } from "./pages/Lineage";
 import { ArticlesList } from "./pages/ArticlesList";
 import Video from "./pages/Video";
-import Books  from "./pages/Books";
+import Books from "./pages/Books";
 import { Single } from "./pages/single";
 import { Sidebar } from "./component/sidebar";
 import { Navbar } from "./component/navbar";
-import  Footer from "./component/footer";
+import Footer from "./component/footer";
 import injectContext from "./store/appContext";
 import { Gallery } from "./pages/Gallery";
 
@@ -51,7 +51,7 @@ const Layout = () => {
                                 <Route element={<Classes />} path="/classes" />
                                 <Route element={<ContactUs />} path="/contact-us" />
                                 <Route element={<Curriculum />} path="/curriculum" />
-                                <Route element={<Events />} path="/events" />
+                                <Route element={<Workshops />} path="/workshops" />
                                 <Route element={<History />} path="/history" />
                                 <Route element={<Instructors />} path="/instructors" />
                                 <Route element={<FederalMembers />} path="/federal-members" />
