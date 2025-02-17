@@ -17,15 +17,17 @@ const Footer = () => {
 						<h3 className="h5 mb-4">Contact Us</h3>
 						<div className="mb-2">
 							<i className="fas fa-map-marker-alt me-2"></i>
-							<span>123 Martial Arts Way, Suite 100</span>
+							<span>33 Harrison Avenue
+								5th Floor
+								Boston, MA 02111</span>
 						</div>
 						<div className="mb-2">
 							<i className="fas fa-phone me-2"></i>
-							<span>(555) 123-4567</span>
+							<span>(617) 542-4442</span>
 						</div>
 						<div className="mb-2">
 							<i className="fas fa-envelope me-2"></i>
-							<span>info@ginsoon.org</span>
+							<span>chu.v@usa.com</span>
 						</div>
 					</div>
 

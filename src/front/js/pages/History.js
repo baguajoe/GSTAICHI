@@ -34,10 +34,45 @@ export const History = () => {
 			image: img3
 		}
 	];
+
+	const arrowStyle = {
+		position: "absolute",
+		top: "calc(50%)", // Offset to account for header and nav
+		transform: "translateY(-50%)",
+		fontSize: "2rem",
+		color: "#590d0d",
+		cursor: "pointer",
+		zIndex: 100,
+		transition: "color 0.3s ease",
+		// backgroundColor: "rgba(255, 255, 255, 0.8)",
+		borderRadius: "50%",
+		padding: "10px",
+		// boxShadow: "0 0 0 0.2rem rgba(89, 13, 13, 0.25)",
+		textShadow: "0 0 8px rgba(255, 255, 255, 0.8), 0 0 15px rgba(255, 255, 255, 0.5)",
+		filter: "drop-shadow(0 0 2px rgba(255, 255, 255, 0.8))"
+	};
+
 	return (
 		<div className="container py-5">
 			<h1 className="text-center mb-4">History of Yang Style Tai Chi</h1>
-			<Carousel>
+			<Carousel
+				prevIcon={
+					<i
+						className="fa-solid fa-circle-chevron-left"
+						style={{ ...arrowStyle, left: "0px" }}
+						onMouseOver={(e) => e.target.style.color = "#400909"}
+						onMouseOut={(e) => e.target.style.color = "#590d0d"}
+					/>
+				}
+				nextIcon={
+					<i
+						className="fa-solid fa-circle-chevron-right"
+						style={{ ...arrowStyle, right: "0px" }}
+						onMouseOver={(e) => e.target.style.color = "#400909"}
+						onMouseOut={(e) => e.target.style.color = "#590d0d"}
+					/>
+				}
+			>
 				{sections.map((section, index) => (
 					<Carousel.Item key={index}>
 						<img

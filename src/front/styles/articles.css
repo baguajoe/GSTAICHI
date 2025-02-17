@@ -3,32 +3,43 @@
         transform: translateY(-2px);
         box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
         transition: all 0.3s ease;
-      }
-      
-      .content-wrapper {
+    }
+
+    .content-wrapper {
         white-space: pre-line;
-      }
-      
-      .list-group-item:hover {
+    }
+
+    .list-group-item.active {
+        background-color: var(--primary-color) !important;
+        color: var(--text-light) !important;
+        border-radius: 5px;
+    }
+
+    .list-group-item {
+        color: var(--primary-color) !important;
+        border: none;
+    }
+
+    .list-group-item:hover {
         background-color: #f8f9fa;
-      }
-      
-      .card {
+    }
+
+    .card {
         border-radius: 0.5rem;
-      }
+    }
 }
 
 .articles-list {
     .hover-effect {
         transition: all 0.3s ease;
     }
-    
+
     .hover-effect:hover {
         transform: translateY(-5px);
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
     }
-    
-    .nav-pills .nav-link {
+
+    /* .nav-pills .nav-link {
         color: #333;
         border-radius: 6px;
     }
@@ -40,12 +51,12 @@
     
     .nav-pills .nav-link:hover:not(.active) {
         background-color: #f8f9fa;
-    }
-    
+    } */
+
     .card {
         border-radius: 8px;
     }
-    
+
     .badge {
         font-weight: 500;
         padding: 0.5em 1em;

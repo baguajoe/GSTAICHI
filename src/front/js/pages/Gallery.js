@@ -24,7 +24,7 @@ import img11 from "../../img/11.jpg";
 import img12 from "../../img/12.jpg";
 import { Carousel } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../../styles/gallery.css"
+
 
 const images = [
     { src: ginSoonChuck, alt: "" },
@@ -62,7 +62,7 @@ export const Gallery = () => {
         fontSize: "2rem",
         color: "#590d0d",
         cursor: "pointer",
-        zIndex: 1000,
+        zIndex: 100,
         transition: "color 0.3s ease",
         // backgroundColor: "rgba(255, 255, 255, 0.8)",
         borderRadius: "50%",
@@ -74,7 +74,7 @@ export const Gallery = () => {
             <h1 className="text-center display-4 mb-4">Gallery</h1>
 
             <div className="carousel-container" style={{ backgroundColor: '#f8f9fa' }}>
-            <Carousel 
+                <Carousel
                     // ref={carouselRef}
                     prevIcon={
                         <i

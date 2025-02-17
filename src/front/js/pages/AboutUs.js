@@ -62,7 +62,7 @@ export const AboutUs = () => {
         fontSize: "2rem",
         color: "#590d0d",
         cursor: "pointer",
-        zIndex: 1000,
+        zIndex: 100,
         transition: "color 0.3s ease",
         backgroundColor: "rgba(255, 255, 255, 0.8)",
         borderRadius: "50%",
