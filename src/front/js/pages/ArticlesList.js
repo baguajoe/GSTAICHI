@@ -108,7 +108,7 @@ export const ArticlesList = () => {
                                         >
                                             <div className="card h-100 hover-effect border-0 shadow-sm">
                                                 <div className="card-body">
-                                                    <h5 className="card-title text-primary mb-2">
+                                                    <h5 className="card-title mb-2">
                                                         {article.title}
                                                     </h5>
                                                     <p className="card-text text-muted mb-2">

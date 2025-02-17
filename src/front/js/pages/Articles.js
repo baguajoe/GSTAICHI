@@ -81,6 +81,11 @@ export const Articles = () => {
     );
   }
 
+  const handleSectionClick = (section) => {
+    setActiveSection(section);
+    setActiveArticle(null); // Reset active article when changing sections
+  };
+
   return (
     <div className="container-fluid mt-4 articles-div">
       <div className="row">
@@ -92,7 +97,8 @@ export const Articles = () => {
               <div className="list-group">
                 <button
                   className={`list-group-item list-group-item-action ${!activeSection ? 'active' : ''}`}
-                  onClick={() => setActiveSection(null)}
+                  // onClick={() => setActiveSection(null)}
+                  onClick={() => handleSectionClick(null)}
                 >
                   All Articles
                 </button>
@@ -100,7 +106,8 @@ export const Articles = () => {
                   <button
                     key={section}
                     className={`list-group-item list-group-item-action ${activeSection === section ? 'active' : ''}`}
-                    onClick={() => setActiveSection(section)}
+                    // onClick={() => setActiveSection(section)}
+                    onClick={() => handleSectionClick(section)}
                   >
                     {section}
                   </button>

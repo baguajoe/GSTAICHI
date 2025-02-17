@@ -29,6 +29,10 @@
     }
 }
 
+
+/* .articles-list for 'ArticlesList.js' */
+/* .articles-list for 'ArticlesList.js' */
+/* .articles-list for 'ArticlesList.js' */
 .articles-list {
     .hover-effect {
         transition: all 0.3s ease;
@@ -55,6 +59,10 @@
 
     .card {
         border-radius: 8px;
+    }
+
+    .card-title {
+        color: var(--primary-dark);
     }
 
     .badge {
