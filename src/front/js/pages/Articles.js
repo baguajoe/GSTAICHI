@@ -125,7 +125,7 @@ export const Articles = () => {
                 // Single Article View
                 <div>
                   <button
-                    className="btn btn-outline-secondary mb-3"
+                    className="custom-btn-charcoal mb-3"
                     onClick={() => setActiveArticle(null)}
                   >
                     ← Back to Articles
@@ -162,7 +162,7 @@ export const Articles = () => {
                               By {article.author} | {article.publication_date}
                             </p>
                             <button
-                              className="btn btn-primary"
+                              className="custom-btn-bronze"
                               onClick={() => setActiveArticle(article)}
                             >
                               Read Article
