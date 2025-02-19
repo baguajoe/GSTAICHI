@@ -108,7 +108,7 @@ class Article(db.Model):
     content_part1 = db.Column(db.Text(collation='utf8mb4_unicode_ci'), nullable=False)
     content_part2 = db.Column(db.Text(collation='utf8mb4_unicode_ci'))
     author = db.Column(db.String(100), nullable=False)
-    publication_date = db.Column(db.Date, nullable=False)
+    publication_date = db.Column(db.Date, nullable=True)
     download_url = db.Column(db.String(2083), nullable=True)
     is_downloadable = db.Column(db.Boolean, default=True)
 
@@ -127,3 +127,31 @@ class Article(db.Model):
             "download_url": self.download_url,
             "is_downloadable": self.is_downloadable,
         }
+
+
+# class Article(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     title = db.Column(db.String(200), nullable=False)
+#     section = db.Column(db.Text, nullable=True, default="Other")
+#     content = db.Column(db.Text(collation='utf8mb4_unicode_ci'), nullable=False)
+#     author = db.Column(db.String(100), nullable=False)
+#     publication_date = db.Column(db.Date, nullable=True)
+#     note = db.Column(db.Text(collation='utf8mb4_unicode_ci'), nullable=True)
+#     copyright_info = db.Column(db.String(500))
+#     images = db.Column(db.JSON)  # Store image URLs and captions
+
+#     def __repr__(self):
+#         return f"<Article {self.title}>"
+
+#     def serialize(self):
+#         return {
+#             "id": self.id,
+#             "title": self.title,
+#             "section": self.section,
+#             "content": self.content,,
+#             "author": self.author,
+#             "publication_date": self.publication_date.strftime("%Y-%m-%d") if self.publication_date else None,
+#             "note": self.note if self.note else None,
+#             "copyright_info": self.copyright_info,
+#             "images": self.images
+#         }
