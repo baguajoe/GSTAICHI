@@ -21,67 +21,69 @@ export const Sidebar = () => {
         >
             <img src={ginSoonImg} alt="Gin Soon" className="sidebar-logo" />
             <nav className="nav flex-column">
-                <Link 
-                    className= {`nav-link ${location.pathname === "/" ? "active" : ""}`} 
+                <Link
+                    className={`nav-link ${location.pathname === "/" ? "active" : ""}`}
                     to="/"
                 >
                     Home
                 </Link>
 
-                <Link 
-                    className= {`nav-link mt-2 ${location.pathname === "/history" ? "active" : ""}`} 
+                <Link
+                    className={`nav-link mt-2 ${location.pathname === "/history" ? "active" : ""}`}
                     to="/history"
                 >
                     History
                 </Link>
 
-                <Link 
-                    className= {`nav-link mt-2 ${location.pathname === "/lineage" ? "active" : ""}`} 
+                <Link
+                    className={`nav-link mt-2 ${location.pathname === "/lineage" ? "active" : ""}`}
                     to="/lineage"
                 >
                     Lineage
                 </Link>
 
-                <Link 
-                    className= {`nav-link mt-2 ${location.pathname === "/instructors" ? "active" : ""}`} 
+                <Link
+                    className={`nav-link mt-2 ${location.pathname === "/instructors" ? "active" : ""}`}
                     to="/instructors"
                 >
                     Instructors
                 </Link>
 
-                <Link 
-                    className= {`nav-link mt-2 ${location.pathname === "/federal-members" ? "active" : ""}`} 
+                <Link
+                    className={`nav-link mt-2 ${location.pathname === "/federal-members" ? "active" : ""}`}
                     to="/federal-members"
                 >
                     Federal Members
                 </Link>
 
-              
-                <Link 
-                    className= {`nav-link mt-2 ${location.pathname === "/articles-list" ? "active" : ""}`} 
+
+                <Link
+                    className={`nav-link mt-2 ${(location.pathname === "/articles-list" ||
+                        location.pathname === "/articles" ||
+                        /^\/articles\/\d+$/.test(location.pathname)) ? "active" : ""}`}
                     to="/articles-list"
-                >  
+                >
                     Articles
                 </Link>
-                
-                <Link 
-                    className= {`nav-link mt-2 ${location.pathname === "/gallery" ? "active" : ""}`} 
+
+                <Link
+                    className={`nav-link mt-2 ${location.pathname === "/gallery" ? "active" : ""}`}
                     to="/gallery"
-                >  
+                >
                     Gallery
                 </Link>
 
-                <Link 
-                    className= {`nav-link mt-2 ${location.pathname === "/videos" ? "active" : ""}`} 
+                <Link
+                    className={`nav-link mt-2 ${location.pathname === "/videos" ? "active" : ""}`}
                     to="/videos"
-                >  
-                    Video 
+                >
+                    Video
                 </Link>
 
-                <Link 
-                    className= {`nav-link mt-2 ${location.pathname === "/books" ? "active" : ""}`} 
+                <Link
+                    className={`nav-link mt-2 ${location.pathname === "/books" ? "active" : ""}`}
                     to="/books"
-                >  
+                >
                     Books
                 </Link>
             </nav>

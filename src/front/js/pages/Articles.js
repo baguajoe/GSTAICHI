@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import FormattedContent from '../component/FormattedContent';
 import "../../styles/articles.css"
 
 const SECTIONS = [
@@ -15,19 +16,6 @@ const SECTIONS = [
   'Weapons',
   'Other'
 ];
-
-const FormattedContent = ({ content }) => {
-  if (!content) return null;
-  return (
-    <div className="content-wrapper">
-      {content.split('\n').map((paragraph, index) => (
-        paragraph.trim() && (
-          <p key={index} className="mb-3">{paragraph}</p>
-        )
-      ))}
-    </div>
-  );
-};
 
 export const Articles = () => {
   const { id } = useParams();
@@ -90,7 +78,7 @@ export const Articles = () => {
     <div className="container-fluid mt-4 articles-div">
       <div className="row">
         {/* Sections Sidebar */}
-        <div className="col-md-3">
+        <div className="col-md-3 section-sidebar">
           <div className="card shadow-sm">
             <div className="card-body">
               <h5 className="card-title mb-3">Categories</h5>
@@ -124,27 +112,56 @@ export const Articles = () => {
               {activeArticle ? (
                 // Single Article View
                 <div>
+                <div className='d-flex justify-content-between align-items-center mb-3'>
                   <button
                     className="custom-btn-charcoal mb-3"
                     onClick={() => setActiveArticle(null)}
                   >
                     ← Back to Articles
                   </button>
+                  <button
+                    className="custom-btn-bronze"
+                    onClick={() => window.print()}
+                  >
+                    🖨️ Print Article
+                  </button>
+                  </div>
                   <h2 className="mb-3">{activeArticle.title}</h2>
                   <p className="text-muted">
                     By {activeArticle.author} | Published on {activeArticle.publication_date}
                     {activeArticle.section && ` | Category: ${activeArticle.section}`}
                   </p>
+
+                  {/* Add translator's note if it exists */}
+                  {activeArticle.translator_note && (
+                    <div className="translator-note">
+                      <strong>Translator's Note:</strong> {activeArticle.translator_note}
+                    </div>
+                  )}
+
                   <div className="mb-4">
                     <h4 className="mb-3">Part 1</h4>
-                    <FormattedContent content={activeArticle.content_part1} />
+                    <FormattedContent
+                      content={activeArticle.content_part1}
+                      images={activeArticle.images}
+                    />
                   </div>
+
                   {activeArticle.content_part2 && (
                     <div>
                       <h4 className="mb-3">Part 2</h4>
-                      <FormattedContent content={activeArticle.content_part2} />
+                      <FormattedContent
+                        content={activeArticle.content_part2}
+                        images={activeArticle.images}
+                      />
                     </div>
                   )}
+
+                  {/* Add copyright notice */}
+                  <div className="copyright-notice">
+                    {activeArticle.copyright_info ||
+                      "Copyright © 1969-2025 V. Chu. All rights reserved."}
+                  </div>
                 </div>
               ) : (
                 // Articles List View
@@ -171,6 +188,9 @@ export const Articles = () => {
                         </div>
                       </div>
                     ))}
+                  </div>
+                  <div className="copyright-notice">
+                    All articles presented on this website are provided for informational purposes. Use of any articles or images without express written consent of the Gin Soon Tai Chi Chuan Federation is prohibited.
                   </div>
                 </div>
               )}

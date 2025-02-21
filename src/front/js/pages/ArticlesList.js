@@ -2,17 +2,17 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const SECTIONS = [
-  'Application',
-  'Forms',
-  'Health',
-  'Masters',
-  'Philosophy',
-  'Power',
-  'Push Hands',
-  'Qigong',
-  'Technique',
-  'Weapons',
-  'Other'
+    'Application',
+    'Forms',
+    'Health',
+    'Masters',
+    'Philosophy',
+    'Power',
+    'Push Hands',
+    'Qigong',
+    'Technique',
+    'Weapons',
+    'Other'
 ];
 
 export const ArticlesList = () => {
@@ -102,8 +102,8 @@ export const ArticlesList = () => {
                             <div className="row row-cols-1 row-cols-md-2 g-4">
                                 {filteredArticles.map((article) => (
                                     <div key={article.id} className="col">
-                                        <Link 
-                                            to={`/articles/${article.id}`} 
+                                        <Link
+                                            to={`/articles/${article.id}`}
                                             className="text-decoration-none"
                                         >
                                             <div className="card h-100 hover-effect border-0 shadow-sm">
@@ -128,6 +128,9 @@ export const ArticlesList = () => {
                                     </div>
                                 ))}
                             </div>
+                        </div>
+                        <div className="copyright-notice">
+                            All articles presented on this website are provided for informational purposes. Use of any articles or images without express written consent of the Gin Soon Tai Chi Chuan Federation is prohibited.
                         </div>
                     </div>
                 </div>
