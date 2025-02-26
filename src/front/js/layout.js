@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
+import { PayPal } from "./component/Paypal";
 
 // Import your pages and components
 import { Home } from "./pages/home";
@@ -62,6 +63,7 @@ const Layout = () => {
                                 <Route element={<Gallery />} path="/gallery" />
                                 <Route element={<Video />} path="/videos" />
                                 <Route element={<Books />} path="/books" />
+                                <Route element={<PayPal />} path="/paypal" />
 
                                 <Route element={<Single />} path="/single/:theid" />
                                 <Route element={<h1>Not found!</h1>} path="*" />
