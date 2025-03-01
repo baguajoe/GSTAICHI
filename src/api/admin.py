@@ -1,8 +1,18 @@
   
 import os
-from flask_admin import Admin
+from flask import request, jsonify, url_for, redirect, Response
+from flask_admin import Admin, AdminIndexView, expose
 from .models import db, User, Classes, Book, Video, Article
 from flask_admin.contrib.sqla import ModelView
+
+# class AuthenticatedBaseView:
+#     def is_accessible(self):
+#         auth=request.authorization
+#         if not auth:
+#             return False
+#         return auth.username == os.environ.get("ADMIN_USER", "admin") and \
+#                auth.password == os.environ.get("ADMIN_PASS", "your-secure-password") 
+        
 
 def setup_admin(app):
     app.secret_key = os.environ.get('FLASK_APP_KEY', 'sample key')

@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
-from flask import Flask, request, jsonify, url_for, send_from_directory
+from flask import Flask, request, jsonify, url_for, send_from_directory, Response
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
@@ -13,7 +13,13 @@ from api.commands import setup_commands
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import JWTManager
 
+from functools import wraps
+from flask_httpauth import HTTPBasicAuth
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
+
+auth=HTTPBasicAuth()
 
 # from models import Person
 
@@ -22,6 +28,49 @@ static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../public/')
 app = Flask(__name__)
 app.url_map.strict_slashes = False
+
+limiter=Limiter(
+    app=app,
+    key_func=get_remote_address,
+    default_limits=["500 per day", "25 per minute"]
+)
+
+
+ADMIN_USER = os.environ.get("ADMIN_USER", "admin" )
+ADMIN_PASS = os.environ.get("ADMIN_PASS", "your-secured-password")
+
+@auth.verify_password
+def verify_password(username, password):
+    return username ==ADMIN_USER and password == ADMIN_PASS
+
+def require_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if request.endpoint == "sitemap":
+            return f(*args, **kwargs)
+        
+        auth=request.authorization
+        if not auth:
+            return Response(
+                "could not verify your access level for url.\n"
+                "you have to login with proper credentials", 401,
+                {"WWW-Authenticate": "Basic realm='Login Required'"}
+            )
+        if auth.username == ADMIN_USER and auth.password == ADMIN_PASS:
+            return f(*args, **kwargs)
+        
+        return Response(
+            "could not verify your access level for url.\n"
+            "you have to login with proper credentials", 401,
+            {"WWW-Authenticate": "Basic realm='Login Required'"}
+        )
+    return decorated
+
+@app.before_request
+@require_auth
+def before_request():
+    pass
+        
 
 app.config["JWT_SECRET_KEY"] = os.environ.get('JWT_SECRET')  # Change this!
 jwt = JWTManager(app)
