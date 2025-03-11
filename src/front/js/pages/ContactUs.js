@@ -41,8 +41,9 @@ export const ContactUs = () => {
 			{/* Contact Details */}
 			<div className="mb-4">
 				<p>
-					<strong>Address:</strong> 33 Harrison Avenue, 5th Floor, Boston, MA
-					02111
+					<strong>Address: </strong>
+					<a href="https://maps.app.goo.gl/6pPk1gWcCjz9qbcE7" target="_blank">33 Harrison Avenue, 5th Floor, Boston, MA
+						02111</a>
 				</p>
 				<p>
 					<strong>Tel:</strong> <a href="tel:+16175424442">(617) 542-4442</a>

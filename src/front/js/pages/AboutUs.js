@@ -210,10 +210,12 @@ export const AboutUs = () => {
                                         />
                                     </div>
                                     <div className="col-md-8">
-                                        <div className="card-body d-flex align-items-center h-100">
+                                        <div className="card-body d-flex align-items-center justify-content-center h-100">
                                             <p className="card-text text-center px-4 mb-0">
-                                                The headquarters are located at 33 Harrison Avenue, 5th floor, Boston, MA 02111.
-                                                Contact Vincent Chu at (617) 542-4442 or via email at chu.v@usa.com.
+                                                The headquarters are located at<br />
+                                                33 Harrison Avenue, 5th floor, Boston, MA 02111.<br />
+                                                Contact Vincent Chu at (617) 542-4442<br />
+                                                or via email at chu.v@usa.com.
                                             </p>
                                         </div>
                                     </div>
@@ -223,6 +225,6 @@ export const AboutUs = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };

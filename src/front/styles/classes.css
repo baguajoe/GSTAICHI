@@ -32,7 +32,8 @@
     /* Hide screen-only elements */
     .screen-only,
     .navbar,
-    .sidebar-div {
+    #sidebar-div,
+    #footer {
         display: none !important;
     }
 
@@ -79,8 +80,4 @@
         print-color-adjust: exact !important;
     }
 
-    /* Remove default print margins */
-    @page {
-        margin: 0.5cm;
-    }
 }

@@ -9,7 +9,7 @@ const Footer = () => {
 	};
 
 	return (
-		<footer style={footerStyle} className="py-4">
+		<footer style={footerStyle} className="py-4" id="footer">
 			<div className="container">
 				<div className="row">
 					{/* Contact Information */}
@@ -17,17 +17,21 @@ const Footer = () => {
 						<h3 className="h5 mb-4">Contact Us</h3>
 						<div className="mb-2">
 							<i className="fas fa-map-marker-alt me-2"></i>
-							<span>33 Harrison Avenue
-								5th Floor
-								Boston, MA 02111</span>
+							<span>
+								<a href="https://maps.app.goo.gl/6pPk1gWcCjz9qbcE7" target="_blank">
+									33 Harrison Avenue
+									5th Floor
+									Boston, MA 02111
+								</a>
+							</span>
 						</div>
 						<div className="mb-2">
 							<i className="fas fa-phone me-2"></i>
-							<span>(617) 542-4442</span>
+							<span><a href="tel:+16175424442">(617) 542-4442</a></span>
 						</div>
 						<div className="mb-2">
 							<i className="fas fa-envelope me-2"></i>
-							<span>chu.v@usa.com</span>
+							<span><a href="mailto:chu.v@usa.com">chu.v@usa.com</a></span>
 						</div>
 					</div>
 
