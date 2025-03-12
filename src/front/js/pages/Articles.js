@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import "../../styles/articles.css"
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import "../../styles/articles.css";
+import { articlesData } from '../utils/articlesData.js'; // Import the articles data
 
 const SECTIONS = [
   'Application',
@@ -31,55 +32,23 @@ const FormattedContent = ({ content }) => {
 
 export const Articles = () => {
   const { id } = useParams();
-  const [articles, setArticles] = useState([]);
+  const [articles] = useState(articlesData); // Use the imported data directly
   const [activeArticle, setActiveArticle] = useState(null);
   const [activeSection, setActiveSection] = useState(null);
-  const [error, setError] = useState(null);
 
-  // Fetch all articles
-  useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const response = await fetch(`${process.env.BACKEND_URL}/api/articles`);
-        if (!response.ok) throw new Error('Error fetching articles');
-        const data = await response.json();
-        setArticles(data);
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-    fetchArticles();
-  }, []);
-
-  // Fetch single article when ID changes
+  // Set active article when ID changes
   useEffect(() => {
     if (id) {
-      const fetchArticle = async () => {
-        try {
-          const response = await fetch(`${process.env.BACKEND_URL}/api/articles/${id}`);
-          if (!response.ok) throw new Error('Error fetching article');
-          const data = await response.json();
-          setActiveArticle(data);
-        } catch (err) {
-          setError(err.message);
-        }
-      };
-      fetchArticle();
+      const foundArticle = articles.find(article => article.id === parseInt(id));
+      if (foundArticle) {
+        setActiveArticle(foundArticle);
+      }
     }
-  }, [id]);
+  }, [id, articles]);
 
   const filteredArticles = activeSection
     ? articles.filter(article => article.section === activeSection)
     : articles;
-
-  if (error) {
-    return (
-      <div className="container">
-        <h1>Error</h1>
-        <p>{error}</p>
-      </div>
-    );
-  }
 
   const handleSectionClick = (section) => {
     setActiveSection(section);
@@ -97,7 +66,6 @@ export const Articles = () => {
               <div className="list-group">
                 <button
                   className={`list-group-item list-group-item-action ${!activeSection ? 'active' : ''}`}
-                  // onClick={() => setActiveSection(null)}
                   onClick={() => handleSectionClick(null)}
                 >
                   All Articles
@@ -106,7 +74,6 @@ export const Articles = () => {
                   <button
                     key={section}
                     className={`list-group-item list-group-item-action ${activeSection === section ? 'active' : ''}`}
-                    // onClick={() => setActiveSection(section)}
                     onClick={() => handleSectionClick(section)}
                   >
                     {section}

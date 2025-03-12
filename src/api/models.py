@@ -127,3 +127,10 @@ class Article(db.Model):
             "download_url": self.download_url,
             "is_downloadable": self.is_downloadable,
         }
+
+
+# notes for new article set-up
+# * Change name section => categories
+# * No part 1 and part 2
+# * Styling the articles
+# * Copyright 
