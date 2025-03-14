@@ -195,13 +195,13 @@
 }
 
 
-/* Special styling for the intent-characteristics section */
-.intent-characteristics {
+/* Special styling for the alphabet-list section */
+.alphabet-list {
     /* margin: .5em 0 1em 1em; */
     margin: 0 0 1em 0;
 }
 
-.intent-characteristics p {
+.alphabet-list p {
     position: relative;
     margin-bottom: 0.15em !important;
     /* Force smaller margins between items */
@@ -210,7 +210,7 @@
 }
 
 /* Letter styling to match the screenshot */
-.intent-characteristics p::before {
+.alphabet-list p::before {
     display: inline-block;
     position: absolute;
     left: 0;
@@ -219,7 +219,7 @@
 }
 
 /* Remove margin from the last item */
-.intent-characteristics p:last-child {
+.alphabet-list p:last-child {
     margin-bottom: 0;
 }
 
@@ -229,6 +229,119 @@
 }
 
 /* Ensure the white-space property doesn't cause issues with our list */
-.content-wrapper .intent-characteristics {
+.content-wrapper .alphabet-list {
     white-space: normal;
+}
+
+
+
+/* number-list styling */
+/* number-list styling */
+
+/* Special styling for the alphabet-list section */
+.numberic-list {
+    /* margin: .5em 0 1em 1em; */
+    margin: 0 0 1em 0;
+}
+
+.numberic-list p {
+    position: relative;
+    margin-bottom: 0.15em !important;
+    /* Force smaller margins between items */
+    padding-left: 1.5em;
+    line-height: 1.5;
+}
+
+/* Letter styling to match the screenshot */
+.numberic-list p::before {
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    font-weight: normal;
+    color: inherit;
+}
+
+/* Remove margin from the last item */
+.numberic-list p:last-child {
+    margin-bottom: 0;
+}
+
+/* Ensure the white-space property doesn't cause issues with our list */
+.content-wrapper .numberic-list {
+    white-space: normal;
+}
+
+
+/* Roman-numeral list styling */
+/* Roman-numeral list styling */
+/* Special styling for the alphabet-list section */
+.roman-numeral-list {
+    /* margin: .5em 0 1em 1em; */
+    /* margin: 0 0 1em 0; */
+    margin: 0;
+}
+
+.roman-numeral-list p {
+    position: relative;
+    margin-bottom: 0.15em !important;
+    /* padding-left: 1.5em; */
+    padding-left: 3.5em;
+    line-height: 1.5;
+}
+
+/* Letter styling to match the screenshot */
+.roman-numeral-list p::before {
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    font-weight: normal;
+    color: inherit;
+}
+
+/* Remove margin from the last item */
+.roman-numeral-list p:last-child {
+    margin-bottom: 0;
+}
+
+/* Ensure the white-space property doesn't cause issues with our list */
+.content-wrapper .roman-numeral-list {
+    white-space: normal;
+}
+
+
+/* custom styling for 42 big circle form */
+/* custom styling for 42 big circle form */
+
+.forty-two-big-circle-form {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin: 1.5rem 0;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: normal !important;
+}
+
+/* Make columns use flexbox for better control */
+.forty-two-big-circle-form .col-md-6 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+    /* Small gap between items */
+}
+
+/* Ensure paragraphs display properly with no overlap */
+.forty-two-big-circle-form .col-md-6 p {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: normal !important;
+    /* Browser default, typically 1.2 */
+    height: auto !important;
+    min-height: 0 !important;
+    white-space: normal !important;
+    overflow: visible !important;
 }

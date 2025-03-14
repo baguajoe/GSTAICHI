@@ -111,6 +111,13 @@ export const Articles = () => {
                     <FormattedContent content={activeArticle.content} />
                   </div>
 
+                  <div className="copyright-notice">
+                    <p>
+                      Article By Vincent Chu<br></br>
+                      <b>Copyright © 1969-2025 V. Chu. All rights reserved.</b>
+                    </p>
+                  </div>
+
                 </div>
               ) : (
                 // Articles List View
@@ -151,7 +158,7 @@ export const Articles = () => {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

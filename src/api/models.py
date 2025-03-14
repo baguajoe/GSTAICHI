@@ -165,9 +165,3 @@ class ArticlePhotos(db.Model):
             "image_url": self.image_url
         }
 
-
-# notes for new article set-up
-# * STYLING should we have the content as String (exportable component? styling issues)
-
-# * Add articles with correct categories/section
-# * ADD Copyright 
