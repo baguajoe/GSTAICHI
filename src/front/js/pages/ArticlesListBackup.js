@@ -1,40 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { articlesData } from "../utils/articlesData.js"; // Import the articles data
 
 const SECTIONS = [
-  'Application',
-  'Forms',
-  'Health',
-  'Masters',
-  'Philosophy',
-  'Power',
-  'Push Hands',
-  'Qigong',
-  'Technique',
-  'Weapons',
-  'Other'
+    'Application',
+    'Forms',
+    'Health',
+    'Masters',
+    'Philosophy',
+    'Power',
+    'Push Hands',
+    'Qigong',
+    'Technique',
+    'Weapons',
+    'Other'
 ];
 
 export const ArticlesList = () => {
-    const [articles, setArticles] = useState([]);
-    const [error, setError] = useState(null);
+    const [articles] = useState(articlesData); // Use the imported data directly
     const [activeSection, setActiveSection] = useState(null);
-
-    useEffect(() => {
-        const fetchArticles = async () => {
-            try {
-                const response = await fetch(`${process.env.BACKEND_URL}/api/articles`);
-                if (!response.ok) {
-                    throw new Error("Failed to fetch articles");
-                }
-                const data = await response.json();
-                setArticles(data);
-            } catch (err) {
-                setError(err.message);
-            }
-        };
-        fetchArticles();
-    }, []);
 
     const filteredArticles = activeSection
         ? articles.filter(article => {
@@ -46,15 +30,7 @@ export const ArticlesList = () => {
         })
         : articles;
 
-    if (error) {
-        return (
-            <div className="container">
-                <h1>Error</h1>
-                <p>{error}</p>
-            </div>
-        );
-    }
-
+    // Handle loading state for initial render animation if desired
     if (articles.length === 0) {
         return (
             <div className="container">
@@ -102,8 +78,8 @@ export const ArticlesList = () => {
                             <div className="row row-cols-1 row-cols-md-2 g-4">
                                 {filteredArticles.map((article) => (
                                     <div key={article.id} className="col">
-                                        <Link 
-                                            to={`/articles/${article.id}`} 
+                                        <Link
+                                            to={`/articles/${article.id}`}
                                             className="text-decoration-none"
                                         >
                                             <div className="card h-100 hover-effect border-0 shadow-sm">

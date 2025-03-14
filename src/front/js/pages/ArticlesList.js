@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { articlesData } from "../utils/articlesData.js"; // Import the articles data
+import { articlesData } from "../utils/articlesData.js";
 
 const SECTIONS = [
     'Application',
@@ -17,7 +17,7 @@ const SECTIONS = [
 ];
 
 export const ArticlesList = () => {
-    const [articles] = useState(articlesData); // Use the imported data directly
+    const [articles] = useState(articlesData);
     const [activeSection, setActiveSection] = useState(null);
 
     const filteredArticles = activeSection
@@ -90,9 +90,6 @@ export const ArticlesList = () => {
                                                     <p className="card-text text-muted mb-2">
                                                         By {article.author}
                                                     </p>
-                                                    <p className="card-text text-muted small">
-                                                        Published on {article.publication_date}
-                                                    </p>
                                                     {article.section && (
                                                         <span className="badge bg-light text-dark">
                                                             {article.section}
@@ -103,6 +100,13 @@ export const ArticlesList = () => {
                                         </Link>
                                     </div>
                                 ))}
+                            </div>
+                            <div className="copyright-notice">
+                                <hr className="copyright-divider" />
+                                <p>
+                                    All the articles presented in this web site are provided for informational purposes.
+                                    Use of any of the articles or images without express written consent of the Gin Soon Tai Chi Chuan Federation is prohibited.
+                                </p>
                             </div>
                         </div>
                     </div>

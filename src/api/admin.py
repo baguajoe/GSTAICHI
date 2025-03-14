@@ -1,7 +1,7 @@
 import os
 from flask import request, jsonify, url_for, redirect, Response
 from flask_admin import Admin, AdminIndexView, expose, BaseView
-from .models import db, User, Classes, Book, Video, Article
+from .models import db, User, Class, Book, Video, Article
 from flask_admin.contrib.sqla import ModelView
 
 # No need for authentication class since auth is handled at the app level
@@ -29,7 +29,7 @@ def setup_admin(app):
     
     # Add your models to the admin interface
     admin.add_view(ModelView(User, db.session))
-    admin.add_view(ModelView(Classes, db.session))
+    admin.add_view(ModelView(Class, db.session))
     admin.add_view(ModelView(Book, db.session))
     # admin.add_view(ModelView(Video, db.session))
     admin.add_view(ModelView(Article, db.session))

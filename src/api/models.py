@@ -3,6 +3,7 @@ from datetime import datetime
 
 db = SQLAlchemy()
 
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -18,7 +19,7 @@ class User(db.Model):
             "email": self.email,
         }
 
-class Classes(db.Model):
+class Class(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
@@ -26,7 +27,7 @@ class Classes(db.Model):
     location = db.Column(db.String(300), nullable=False)
 
     def __repr__(self):
-        return f"<Classes {self.name}>"
+        return f"<Class {self.name}>"
 
     def serialize(self):
         return {
@@ -99,18 +100,19 @@ class Video(db.Model):
             "purchases": self.purchases,
         }
 
+
 class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
-    section=db.Column(db.Text, nullable=True, default="Other")
-    # content_part1 = db.Column(db.Text, nullable=False)
-    # content_part2 = db.Column(db.Text, nullable=False)
-    content_part1 = db.Column(db.Text(collation='utf8mb4_unicode_ci'), nullable=False)
-    content_part2 = db.Column(db.Text(collation='utf8mb4_unicode_ci'))
+    section=db.Column(db.String(100), nullable=True, default="Other")
+    # content = db.Column(db.Text(collation='utf8mb4_unicode_ci'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    # Example for PostgreSQL-compatible unicode collation
+    # content = db.Column(db.Text().with_variant(db.Text("C.UTF-8"), 'postgresql'), nullable=False)
     author = db.Column(db.String(100), nullable=False)
-    publication_date = db.Column(db.Date, nullable=False)
-    download_url = db.Column(db.String(2083), nullable=True)
-    is_downloadable = db.Column(db.Boolean, default=True)
+
+    article_photo = db.relationship("ArticlePhoto", back_populates="article", uselist=False)
+    article_photos = db.relationship("ArticlePhotos", back_populates="article")
 
     def __repr__(self):
         return f"<Article {self.title}>"
@@ -120,17 +122,52 @@ class Article(db.Model):
             "id": self.id,
             "title": self.title,
             "section": self.section,
-            "content_part1": self.content_part1,
-            "content_part2": self.content_part2,
+            "content": self.content,
             "author": self.author,
-            "publication_date": self.publication_date.strftime("%Y-%m-%d"),
-            "download_url": self.download_url,
-            "is_downloadable": self.is_downloadable,
+            "article_photo": self.article_photo.serialize() if self.article_photo else None,
+            "article_photos": [photo.serialize() for photo in self.article_photos],
+        }
+
+class ArticlePhoto(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    public_id = db.Column(db.String(500), nullable=False)
+    image_url = db.Column(db.String(500), nullable=False)
+    article_id = db.Column(db.Integer, db.ForeignKey("article.id"), nullable=False)
+    article = db.relationship("Article", back_populates="article_photo", uselist=False)
+
+    def __init__(self, public_id, image_url, article_id):
+        self.public_id = public_id
+        self.image_url = image_url.strip()
+        self.article_id = article_id
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "image_url": self.image_url
+        }
+    
+
+class ArticlePhotos(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    public_id = db.Column(db.String(500), nullable=False)
+    image_url = db.Column(db.String(500), nullable=False)
+    article_id = db.Column(db.Integer, db.ForeignKey("article.id"), nullable=False)
+    article = db.relationship("Article", back_populates="article_photos")
+
+    def __init__(self, public_id, image_url, article_id):
+        self.public_id = public_id
+        self.image_url = image_url.strip()
+        self.article_id = article_id
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "image_url": self.image_url
         }
 
 
 # notes for new article set-up
-# * Change name section => categories
-# * No part 1 and part 2
-# * Styling the articles
-# * Copyright 
+# * STYLING should we have the content as String (exportable component? styling issues)
+
+# * Add articles with correct categories/section
+# * ADD Copyright 

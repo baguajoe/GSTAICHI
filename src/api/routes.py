@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, abort
-from api.models import db, User, Classes, Book, Video, Article
+from api.models import db, User, Class, Book, Video, Article
 from api.send_email import send_email
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required

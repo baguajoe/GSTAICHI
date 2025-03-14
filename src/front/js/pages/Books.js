@@ -41,7 +41,7 @@ export const Books = () => {
                 {books.map((book, index) => (
                     <div key={index} className="col-md-6 mb-4" style={{ maxWidth: "425px" }}>
                         <div className="card shadow-sm h-100">
-                            <img src={book.image} className="card-img-top" alt={book.title} />
+                            <img src={book.image} className="card-img-top p-2" alt={book.title} style={{ borderRadius: '.85rem' }} />
                             <div className="card-body">
                                 <h4 className="card-title">{book.title}</h4>
                                 <p className="card-text" style={{ textAlign: "justify" }}>

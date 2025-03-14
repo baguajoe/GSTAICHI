@@ -29,6 +29,53 @@
     }
 }
 
+/* Copyright notice styling */
+.copyright-notice {
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+}
+
+.copyright-divider {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(128, 0, 0, 0), rgba(128, 0, 0, 0.5), rgba(128, 0, 0, 0));
+    margin-bottom: 1rem;
+}
+
+.copyright-notice p {
+    font-size: 0.9rem;
+    color: #666;
+    text-align: center;
+    font-style: italic;
+    line-height: 1.5;
+    max-width: 85%;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* For dark mode support (if needed) */
+@media (prefers-color-scheme: dark) {
+    .copyright-notice p {
+        color: #aaa;
+    }
+
+    .copyright-divider {
+        background-image: linear-gradient(to right, rgba(200, 0, 0, 0), rgba(200, 0, 0, 0.5), rgba(200, 0, 0, 0));
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .copyright-notice p {
+        font-size: 0.8rem;
+        max-width: 95%;
+    }
+
+    .copyright-notice {
+        margin-top: 2rem;
+    }
+}
+
 
 /* .articles-list for 'ArticlesList.js' */
 /* .articles-list for 'ArticlesList.js' */
@@ -70,4 +117,118 @@
         padding: 0.5em 1em;
         border-radius: 4px;
     }
+}
+
+/* Add these styles to your existing articles.css file */
+
+.article-content {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Styling for the formatted article content */
+.article-content .content-wrapper {
+    max-width: 100%;
+    overflow-wrap: break-word;
+}
+
+/* Style headings */
+.article-content h1,
+.article-content h2,
+.article-content h3,
+.article-content h4,
+.article-content h5,
+.article-content h6 {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+/* Style paragraphs */
+.article-content p {
+    margin-bottom: 1.2rem;
+}
+
+/* Style lists */
+.article-content ul,
+.article-content ol {
+    /* margin-bottom: 1.2rem; */
+    padding-left: 2rem;
+}
+
+/* .article-content li {
+    margin-bottom: 0.5rem;
+} */
+
+/* Ensure bold and italic text display correctly */
+.article-content b,
+.article-content strong {
+    font-weight: 700;
+}
+
+.article-content i,
+.article-content em {
+    font-style: italic;
+}
+
+/* Add a nice border to blockquotes */
+.article-content blockquote {
+    border-left: 4px solid #ccc;
+    margin-left: 0;
+    padding-left: 16px;
+    font-style: italic;
+    color: #666;
+}
+
+/* Ensure proper spacing between sections */
+.article-content>div>*+* {
+    margin-top: 1rem;
+}
+
+/* Handle mobile responsiveness */
+@media (max-width: 768px) {
+    .article-content {
+        font-size: 1rem;
+    }
+}
+
+
+/* Special styling for the intent-characteristics section */
+.intent-characteristics {
+    /* margin: .5em 0 1em 1em; */
+    margin: 0 0 1em 0;
+}
+
+.intent-characteristics p {
+    position: relative;
+    margin-bottom: 0.15em !important;
+    /* Force smaller margins between items */
+    padding-left: 1.5em;
+    line-height: 1.5;
+}
+
+/* Letter styling to match the screenshot */
+.intent-characteristics p::before {
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    font-weight: normal;
+    color: inherit;
+}
+
+/* Remove margin from the last item */
+.intent-characteristics p:last-child {
+    margin-bottom: 0;
+}
+
+/* Limit line height to ensure proper spacing */
+.content-wrapper {
+    line-height: 1.6;
+}
+
+/* Ensure the white-space property doesn't cause issues with our list */
+.content-wrapper .intent-characteristics {
+    white-space: normal;
 }

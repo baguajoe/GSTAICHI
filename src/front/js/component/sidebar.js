@@ -14,14 +14,14 @@ export const Sidebar = () => {
             className="d-flex flex-column bg-light sidebar-div"
             id="sidebar-div"
             style={{
-                height: "100vh",
+                minHeight: "100%",
                 width: "250px",
                 borderRight: "1px solid #ddd",
                 padding: "15px",
             }}
         >
             <Link to="/">
-                <img src={ginSoonImg} alt="Gin Soon" className="sidebar-logo" />
+                <img src={ginSoonImg} alt="Gin Soon" className="sidebar-logo my-4" />
             </Link>
             <nav className="nav flex-column">
                 <Link
@@ -61,7 +61,7 @@ export const Sidebar = () => {
 
 
                 <Link
-                    className={`nav-link mt-2 ${location.pathname === "/articles-list" ? "active" : ""}`}
+                    className={`nav-link mt-2 ${location.pathname === "/articles-list" || location.pathname.startsWith("/articles") ? "active" : ""}`}
                     to="/articles-list"
                 >
                     Articles

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import "../../styles/articles.css";
-import { articlesData } from '../utils/articlesData.js'; // Import the articles data
+import { articlesData } from '../utils/articlesData.js';
 
 const SECTIONS = [
   'Application',
@@ -20,19 +20,23 @@ const SECTIONS = [
 const FormattedContent = ({ content }) => {
   if (!content) return null;
   return (
-    <div className="content-wrapper">
-      {content.split('\n').map((paragraph, index) => (
-        paragraph.trim() && (
-          <p key={index} className="mb-3">{paragraph}</p>
-        )
-      ))}
-    </div>
+    // <div className="content-wrapper">
+    //   {content.split('\n').map((paragraph, index) => (
+    //     paragraph.trim() && (
+    //       <p key={index} className="mb-3">{paragraph}</p>
+    //     )
+    //   ))}
+    // </div>
+    <div
+      className="content-wrapper"
+      dangerouslySetInnerHTML={{ __html: content }}
+    />
   );
 };
 
 export const Articles = () => {
   const { id } = useParams();
-  const [articles] = useState(articlesData); // Use the imported data directly
+  const [articles] = useState(articlesData);
   const [activeArticle, setActiveArticle] = useState(null);
   const [activeSection, setActiveSection] = useState(null);
 
@@ -97,21 +101,16 @@ export const Articles = () => {
                   >
                     ← Back to Articles
                   </button>
-                  <h2 className="mb-3">{activeArticle.title}</h2>
-                  <p className="text-muted">
-                    By {activeArticle.author} | Published on {activeArticle.publication_date}
+                  <h2 className="mt-3 mb-2" style={{ fontWeight: '600' }}>{activeArticle.title}</h2>
+                  <p className="text-muted mb-4">
+                    By {activeArticle.author}
                     {activeArticle.section && ` | Category: ${activeArticle.section}`}
                   </p>
-                  <div className="mb-4">
-                    <h4 className="mb-3">Part 1</h4>
-                    <FormattedContent content={activeArticle.content_part1} />
+
+                  <div className="mb-4 article-content">
+                    <FormattedContent content={activeArticle.content} />
                   </div>
-                  {activeArticle.content_part2 && (
-                    <div>
-                      <h4 className="mb-3">Part 2</h4>
-                      <FormattedContent content={activeArticle.content_part2} />
-                    </div>
-                  )}
+
                 </div>
               ) : (
                 // Articles List View
@@ -126,7 +125,7 @@ export const Articles = () => {
                           <div className="card-body">
                             <h5 className="card-title">{article.title}</h5>
                             <p className="card-text text-muted">
-                              By {article.author} | {article.publication_date}
+                              By {article.author}
                             </p>
                             <button
                               className="custom-btn-bronze"
@@ -138,6 +137,13 @@ export const Articles = () => {
                         </div>
                       </div>
                     ))}
+                  </div>
+                  <div className="copyright-notice">
+                    <hr className="copyright-divider" />
+                    <p>
+                      All the articles presented in this web site are provided for informational purposes.
+                      Use of any of the articles or images without express written consent of the Gin Soon Tai Chi Chuan Federation is prohibited.
+                    </p>
                   </div>
                 </div>
               )}
