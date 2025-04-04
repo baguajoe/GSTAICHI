@@ -440,16 +440,200 @@ The solo form has a direct connection to the defensive and offensive martial tac
     },
     {
         id: 12,
-        title: "",
+        title: "TEST ARTICLE!!!",
         section: "Forms",
-        content: ``,
+        content: `
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tai Chi Chuan and Qigong</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      white-space: normal;
+    }
+    body {
+      margin: 0;
+      padding: 20px;
+      background-color: #f8f8f8;
+      color: #333;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .title {
+      font-size: 28px;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+    .content {
+      font-size: 16px;
+    }
+    ol {
+      padding-left: 20px;
+    }
+    ol ol {
+      padding-left: 25px;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .author {
+      text-align: center;
+      margin-top: 20px;
+      font-style: italic;
+    }
+      
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">Tai Chi Chuan and Qigong</h1>
+    
+    <div class="content">
+      <p>
+        Tai Chi Chuan and Qigong are mind and body exercises that emphasize the function and application of chi. They utilize chi to improve the practitioner's physical strength and moral character, purify the mind and temper, cure disease and achieve longevity and physical health by clearing the meridians and channels and improving the physiological functions of the organs as well as the nervous and circulatory systems. Because these two disciplines share many common benefits, people especially beginners assume that they are the same. But there are also people who think that the two are not related. The different opinions have created a controversy among practitioners of all levels. To clear the confusion, I would like to outline the relationship between Tai Chi Chuan and Qigong.
+      </p>
+
+      <ol type="1">
+        <li>
+          <b>Similarity</b>
+          <ol type="a">
+            <li>
+              <b><i>Benefits</i></b><br />
+              The theory behind the meridians and channels in Tai Chi Chuan, Qigong, Traditional Chinese Medicine and Acupuncture came from the classic book of "The Yellow Emperor's Classic of Internal Medicine." It is said in the classic that Meridians or Channels (hereafter used interchangeably) are the vessels for transportation of blood and chi to four limbs, muscles, ligaments, tendons, the surface of the skins, and internal organs. The meridians are generally composed of two kinds-- those channels inside the body are called "King" and those on the surface called "Look".
+              <p>
+                The reason that Qigong and Tai Chi Chuan can improve the practitioner's health is that they clear and enhance the channels' function to better and efficiently transport the chi. Today, there are thousands of qigong techniques and five major family styles of Tai Chi Chuan, all created based on the theories and philosophies described in "The Yellow Emperor's Classic of Internal Medicine". The objectives for many practitioners are to clear the meridians to balance the body's chi and blood and Yin and Yang, relax the internal organs and lubricate the ligaments, tendons and joints to achieve maximum health and develop extraordinary or inborn ability. From this, we can see that Qigong and Tai Chi Chuan play a very important role in life.
+              </p>
+            </li>
+
+            <li>
+              <b><i>Balance</i></b><br />
+              Although there are thousands of Qigong techniques and methods in many levels, the goals and objectives are the same-- to clear the channels to balance the body's Yin and Yang. In Tai Chi Chuan Chuan, balancing the body's Yin and Yang is achieved by utilizing the Solo Form's movements. In the Solo Form, Yin and Yang is expressed in open and close, clockwise and counter clockwise, hard and soft, slow and fast movements, bending and straightening the body, inhaling and exhaling, etc. In Qigong, there are three methods to balance the body's Yin and Yang. In the Static (non-moving) Method, the chi clears the specific channels by the intent. In the Dynamite (moving) Method, the chi clears the channels by the physical movement. In the third method, the chi clears the channels by apply extra chi from outside the body. In Tai Chi Chuan and Qigong training, the exercises aim to integrate the three factors: Physical Body, Intent and Spirit (here capitalized because they carry different connotations in Chinese culture). In Qigong training, many exercises were created to train the Physical Body to incorporate the other two components. We can see that we live our life with this integration daily. The Physical Body is the basic unit of all life. Intent and Spirit are within the same body; they cannot leave the Physical Body and live independently by themselves. When the Physical Body is positioned correctly, the chi will circulate smoothly. When the chi circulates better, the Body is in a better condition physically as well as spiritually.
+              <p>
+                Therefore, when people practice the method of "nurture the chi" as a Qigong exercise, it is applying the Intent to improve the Physical Body. When the Physical Body is in harmony with the Intent, the circulation of chi will be smooth, proper and many amazing tasks can be executed. Intent refers to the conscious spirit. It controls all the body's voluntary functions. Spirit refers to the original spirit; it controls all the body's involuntary functions. Therefore, when the three components combine, one will lives longer with a meaningful life.
+              </p>
+              <p>
+                Chi and Physical Body are inseparable. Chi has a very close connection to the Original Source that mobilizes the internal organs' activities and functions. This is why people say that when the chi is blocked, one will get sick and when the chi has left the body, one will die. When we say that a physical body has life, it is based on the work of the Original Spirit's function. The Original Spirit is the control center of the Physical Body just like the management within an organization. Therefore, the integration of the three factors is necessary.
+              </p>
+              <p>
+                In Tai Chi Chuan, the integration of the three factors is very important. The Tai Chi Chuan Classics emphasize that the practitioners "apply the intent to direct the chi, let the chi circulate the body. When the mind moves, the intent moves. When the intent moves, the chi follows. When the mind is there, the chi is there." The objective of the Tai Chi Chuan Classics is to promote unification of the three factors. This is so because chi came from the result of Physical Body's movement and the movement is based on the intent which control by the mind. As described above, Chi and Physical Body are inseparable because Chi is hosted by the Physical Body or act as Chi's carrier. This is why it is difficult to distinguished the two as a two separated identity. If the Physical Body is not correct, the chi is not circulate smoothly. If the chi is circulate smoothly, the Intent is not tranquil. If the Intent is not tranquil, the Original Spirit does not appear. When this happens, all activity is controlled only by the Conscious Spirit. In Tai Chi Chuan training, correct and natural physical movement and smooth circulation of chi are emphasized from the beginning of the training. The various concepts exist in practice to guide the practitioner to execute the Six Harmony Theory correctly and integrate the three factors together to balance the body's Yin and Yang. Traditional Chinese Medicine defines the body's Yang Component as the organs' activities and functions. The organs and body's fluids are the Yin Component. Therefore, balancing the body's Yin and Yang is the same as balancing the body's organs and their functions.
+              </p>
+            </li>
+
+            <li>
+              <b><i>Relaxation and Tranquility</i></b><br />
+              Practicing Tai Chi Chuan and Qigong requires the same kind of relaxation and tranquility. Relaxation means relaxing the physical body. When the body is relaxed, the chi circulate smoothly. When the whole body, including ligaments, tendons, muscles, joints, and internal organs, are relaxed, the chi will circulated smoothly throughout the body. Tai Chi Chuan and Qigong have the same kind of relaxation. Relax all the parts and joints in the body physically and the nervous system internally. If the nervous system is not relaxed, the physical body cannot be relaxed. It is only when the physical body and the nervous system are relaxed that the blood and chi will circulate smoothly thus benefiting the body. In Tai Chi Chuan training, there is a progressive degree of relaxation-- a beginner starts relaxing by loosening the joints, muscles groups, ligaments and tendons physically and then hardening these components and repeating the same procedure again many times until all the components are truly soft. In Qigong training, the degree of relaxation remains the same throughout the training. It starts from the top of the head to the bottom of the feet.
+              <p>
+                Tranquility is defined as internal relaxation. When the Intent is tranquil, the nervous system is relaxed and the chi circulates smoothly then the Spirit is comfortable and the Original Spirit appears and functions to restore and improve the internal organs' functions and one will recharge and live longer. Concepts such as relaxation, tranquility, naturalness, concentration and application of the Intent to direct all physical movements, etc in Tai Chi Chuan and Qigong training demonstrate that this is the only way to get benefits from the Original Spirit.
+              </p>
+            </li>
+
+            <li>
+              <b><i>Achieve Health</i></b><br />
+              Tai Chi Chuan and Qigong share similar techniques to achieve health. The health benefits in Tai Chi Chuan have been proven by many practitioners over the years. Tai Chi Chuan is especially beneficial in chronic illness and fatigue. It has been adapted by millions practitioners as a preventive medicine method. Qigong has also been accepted by millions in the past decade as a method to cure diseases and maintain health. The popularity of these two methods practiced by millions daily to improve physical health and to heal diseases by improving and correcting the nervous system, circulatory system, respiratory system, digestive system, endocrine system, muscular skeleton system and the immune system.
+            </li>
+          </ol>
+        </li>
+
+        <li>
+          <b>The Differences</b><br />
+          Although Tai Chi Chuan and Qigong share many things in common, they have certain differences that separated them as two disciplines.
+          
+          <ol type="A">
+            <li>
+              <b>They are different in culture</b><br />
+              The objective of Qigong training is to improve health, prevent disease, cure disease, promote longevity and, recently, develop extraordinary or inborn ability. Tai Chi Chuan training on the other hand is primarily a longevity exercise by the Taoists, and contains martial functions. Recently, people began to practice Tai Chi Chuan for its value as a health maintenance exercise. Therefore, Qigong has its culture in Traditional Chinese Medicine and Tai Chi Chuan has its culture in traditional Chinese philosophy and martial art. Here are some of the differences based on their cultures.
+              
+              <ol type="a">
+                <li>
+                  <b><i>Differences in physical movements</i></b> 
+                  In order to be more effective in achieving the objectives, Qigong has simple techniques but many levels of exercises to achieve the objectives. Although there are thousands of techniques, generally, Qigong is divided into Dynamite (moving) Method for the physical body and Static (non-moving) Method for the Intent and Spirit in many levels. The Dynamite Method's movements do not have complex physical movement like the Tai Chi Chuan's Solo Form but they require many levels of practice to achieve the objectives. Generally, Qigong's Dynamite Method's movements arise from circulation of chi while the Tai Chi Chuan's Solo Form's movements aim to circulate the chi. Therefore, in Tai Chi Chuan training, the chi circulation dictated by the movements. In Qigong training, the movements are dictated by the chi circulation.
+                </li>
+                
+                <li>
+                  <b><i>Differences in classification</i></b> 
+                  Tai Chi Chuan evolved into five major family styles based on the practitioners' experiences. Qigong is divided into five major schools based on their objectives. Medical Qigong School is for strengthening one's health, treating and preventing disease. Confucian Qigong School is for one's self-cultivation and temperament. Taoist Qigong School is for one's cultivation of moral character and longevity. Buddhist Qigong School aims to train and purify one's mind. Martial Art Qigong School is training for one's physical strength and improving health.
+                </li>
+                
+                <li>
+                  <b><i>Differences in training objective</i></b> 
+                  In Qigong training, for each exercise and movement, the concentration is on regulating the body, the breathing and the spirit to improve health, cure disease and achieve extraordinary or inborn ability. In Tai Chi Chuan training, for each movement, the concentration is on the movement's physical correctness to integrate the other three components: Physical Body, Chi, Intent and Spirit, and the effectiveness as a martial strike.
+                </li>
+              
+                <li>
+                  <b><i>Differences in training</i></b> 
+                  In Tai Chi Chuan training, the exercises involve Wu Chi Standing, Solo Form, Push Hand, Weapons and Sparring with a partner. In Qigong training, the exercises involves many levels of Dynamite and Static Methods.
+                </li>
+
+                <li>
+                  <b><i>Differences in outcome</i></b> 
+                  Practicing Qigong can bring out the extraordinary or inborn ability and the sensation of chi quicker than the practice of Tai Chi Chuan. This is so because Qigong exercises are created to achieve a specific objectives, e.g. cure disease. There are some advance Qigong techniques that work directly with the Original Spirit by supplying or channeling elements from outside the body. This is why these advance techniques have superiority over Tai Chi Chuan in improving one's health and bringing extraordinary or inborn ability. Tai Chi Chuan's movements were created to achieve chi circulation and as a combat martial art strike.
+                </li>
+            
+                <li>
+                  <b><i>Differences in chi's application</i></b> 
+                  There are some advance Qigong techniques that can clear the meridians more quickly than Tai Chi Chuan as described above. Generally, Qigong clears the meridians in three methods. In the Static Method, the Chi is mobilized by the Intent to circulate. In the Dynamite Method, the Chi is mobilized by specific physical movement. In the third method, the Chi is mobilized by the external Chi. Tai Chi Chuan clears the meridians primarily by applying physical movement to mobilize the Chi to circulate. Therefore, Qigong is superior, it is able to clear the meridians and develop Chi sensation quicker than Tai Chi Chuan.
+                </li>
+
+                <li>
+                  <b><i>Differences in benefits</i></b> 
+                  Practicing Tai Chi Chuan benefits internally as a health maintenance exercise and externally as a martial art. Practicing Qigong benefits only as a health maintenance exercise.
+                </li>
+              </ol>
+            </li>
+
+            <li>
+              <b>Difference in practice</b> 
+              <ol type="a">
+                <li>
+                  <b>Harmony with the environment</b> 
+                  Tai Chi Chuan came from the Taoist teachings. The Tai Chi Chuan's Solo Form reflects the Taoist philosophy of harmonizing with the universe or environment. Today, people recognize this as a very important factor in life. For the more advanced our society is in science and technology, the more polluted is our environment and more sick people get, and new diseases occur. The ancient Chinese already recognized this issue and recommended that people should live in harmony with the environment. This is why they proposed the philosophy of Harmony among heaven, earth and people. This issue had been researched extensively among Taoists who came up with Tai Chi Chuan as the solution. They introduced the art of Tai Chi Chuan, first, to define what is the universe, its individual components and characteristic, and second, to demonstrate the importance and benefits to integrate these components together. The Solo Form considered the universe as an infinite space by its continuous circular movements and the same movement for the beginning and ending to form a complete circle. When Yin and Yang exist in every movement, this implies that one of the characteristics of the universe is the existence of two components, the Yin Component and Yang Component. We often hear instructors say that practice should be done in three levels: Physical, Intent and Chi. The Physical is solid and visible. This is the same characteristic as earth-- it has to be solid so that it can support life. Intent is infinite and invisible. This is the same characteristic as heaven or space-- it is wide open so that anything and everything can happen and exist inside. Chi refers to energy and power; correctly utilizing it can yield many functions. This is the same characteristic as people who posses the creative ability to produce many things. Therefore, practicing Tai Chi Chuan in these three levels lets the practitioner understand in detail the significance and relationships of each component's role as part of the whole environment and the magnificence of Wu Chi Stage or the harmony of three components: Heaven, Earth and People. This is why people comment that Tai Chi Chuan is easy to learn but difficult to master.
+                  <p>
+                    Qigong harmony with the environment is mainly to achieve specific objectives such as extraordinary or inborn ability by absorbing energy from the environment, curing disease, strengthening the physical health and purifying the mind and temperament. Therefore, Qigong's Dynamic and Static methods have many levels of exercises, each of which is easy to practice and each is focused on the relationship of the three components such as Heaven vs Earth, Heaven vs People, Earth vs People, People vs People to achieve quicker result. In Tai Chi Chuan training, the emphasis is on the introduction and understanding of the philosophy of harmony among heaven, earth and people. In Qigong training, it is a step further; the emphasis is on the application and functions of this philosophy.
+                  </p>
+                </li>
+
+                <li>
+                  <b>Differences in relaxation and tranquility</b> 
+                  In Tai Chi Chuan training, relaxation and excitation involve the whole body such as joints, muscles, ligaments, tendons, skeleton and nervous system and these two interchange throughout the Solo Form to achieve the combination of relaxation and tranquility during all activities. In Qigong training, the relaxation emphasized in the Dynamite Method and the tranquility emphasized in the Static Method are treated as two separated identities.
+                </li>
+              </ol>
+            </li>
+          </ol>
+        </li>
+      </ol>
+
+      <p>
+        Tai Chi Chuan is a health maintenance exercise to improve health, achieve longevity and designed as a tool to understand the physical and spiritual realities that are outgrowth from the Taoist Qigong School. Therefore, it has all the characteristics and benefits as a Qigong exercise and more. It is one of the highest form of Qigong exercise because its objective is for people to harmonize with the universe and at the same time, it is a form of excellent martial art system.
+      </p>
+
+    </div>
+    
+  </div>
+</body>
+</html>
+        `,
         author: "Vincent Chu"
     },
     {
         id: 13,
-        title: "",
+        title: "TEST ARTICLE 2!!!",
         section: "Forms",
-        content: ``,
+        content: `t5`,
         author: "Vincent Chu"
     },
     {
