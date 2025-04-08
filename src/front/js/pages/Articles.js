@@ -107,7 +107,7 @@ export const Articles = () => {
                     {activeArticle.section && ` | Category: ${activeArticle.section}`}
                   </p>
 
-                  <div className="mb-4 article-content">
+                  <div className="mb-4 mx-2 article-content">
                     <FormattedContent content={activeArticle.content} />
                   </div>
 

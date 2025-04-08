@@ -2,211 +2,778 @@
 
 import { updatedFortyTwoFormArticle } from "./forty_two_big_circle_form";
 export const articlesData = [
-    {
-        id: 1,
-        title: "About Intent",
-        section: "Application",
-        content: `One day, a new student asked me; "Why is Tai Chi Chuan called an internal art? Is it because the movements are execute slowly so one calls it internal? Yet, there are many solo forms that one can execute the movements in different speed. How do you differentiate Tai Chi Chuan from other Chinese martial art?" My reply to the questions was simply that Tai Chi Chuan's movements are control by the Intent, an internal component that is not visible and it is the key to Tai Chi Chuan's success.
+  {
+    id: 1,
+    title: "About Intent",
+    section: "Application",
+    content: `
+    <Fragment>
+      <p>
+        One day, a new student asked me; "Why is Tai Chi Chuan called an internal art? Is it because the movements 
+        are execute slowly so one calls it internal? Yet, there are many solo forms 
+        that one can execute the movements in different speed. How do you differentiate 
+        Tai Chi Chuan from other Chinese martial art?" My reply to the questions was simply 
+        that Tai Chi Chuan's movements are control by the Intent, an internal component 
+        that is not visible and it is the key to Tai Chi Chuan's success.
+      </p>
+      
+      <p class="section-title">The role of Intent in Tai Chi Chuan</p>
+      <p>
+        Tai Chi Chuan practitioners often emphasize the importance of using the Intent in 
+        training. The Tai Chi Chuan Classics say" Every movement based on the intent.",
+        "When the intent and qi come, the bone and flesh are secondary.", "First on the 
+        mind, later, on the body.", "First, the intent moves, later, the power 
+        follows.", "All of them are based on the intent, it is not based on the external 
+        movement.", "When the qi is not there yet, the intent already there.", "When 
+        practice the solo form and push hand exercises, one should pay attention to the 
+        intent." The quotations clearly defined the priority and relationships among the 
+        Intent, Qi and Body. In every Tai Chi Chuan's Solo Form movement, it is initiated 
+        by the Intent, continue with the qi and end with the body movement. Does not 
+        matter it is the qi circulation or body movement, it directs by the Intent. In 
+        the Intent's creativity, qi circulation and body movement, they are the 
+        disciplines that Tai Chi Chuan incorporates the Intent to work on the three 
+        subject of Intent, Qi and Body. It bases on the ancient chinese philosophy which 
+        said that the body is the basic matter for life. Mind is the life's controller. 
+        Qi is the life's communicator. The objective of the qi's function is to have the 
+        body and mind joint together. A visible body is considering alive because of the 
+        mind. The Intent manages the body and base on the function of the qi. The three 
+        components joint together is the key in Tai Chi Chuan training.
+      </p>
+      
+      <p>
+        The emphasis on Intent by Tai Chi Chuan practitioners involves two areas. 
+        It is the initiator to activate the physiologic organ functions. Intent or 
+        Intent's power is a special kind of conscious behavior of the brain which carries 
+        a coded message to function inside the body as well as outside the body. In 
+        other words, Intent controls all physiologic functions.
+      </p>
+      
+      <p class="section-title">The nature of Intent</p>
+      <p>
+        If the Intent is so important in Tai Chi Chuan training, it is necessary for one to fully understand 
+        and define what is Intent. There are two approaches to understand it. The Intent 
+        guides the body movement and the Intent guides the qi circulation.
+      </p>
+                                  
+      <p><i><b>a. The Intent guides the body movement</b></i><br>
+        When the Intent moves, the body follows. In the situation when the Intent guides the body 
+        movement. This means all movements are controlled by the Intent. Intent's movement 
+        means creativity. The "body follows" means the body is moving according to the 
+        Intent's instruction. In Tai Chi Chuan training, it demands all movements are 
+        initiating from the Intent and then follow with the body movement. Therefore, 
+        the body movement is the expression of Intent's creativity outward. If one is 
+        able to follow this expectation throughout the Tai Chi Chuan training, one's 
+        skill will progress quickly.
+      </p>
+      
+      <p><i><b>b. The Intent guides the qi circulation</b></i><br>
+        When the Intent moves, the qi circulates. In the situation when the Intent guides the qi to 
+        circulate. This mean all qi circulations are following the Intent's instruction. 
+        Intent movement means Intent creativity. Qi circulation means the qi circulates 
+        inside the body follows the Intent's instruction. Intent creativity and qi 
+        circulation are internal. How can one interpret and understand? It is often 
+        said that to find out what is inside, one has to begin from outside. What is 
+        internal, will expressed outward. Although the Intent creativity and qi 
+        circulation are intangible, the posture and movement a practitioner demonstrates 
+        in Tai Chi Chuan, is an expression of Intent creativity and qi circulation 
+        outward. From observing the change in a movement, one can tell the Intent 
+        creativity and qi circulation condition. The highest form of Tai Chi Chuan 
+        training is to have the Intent creativity and qi circulation inside the body 
+        combined with physical movement outside the body. Therefore, if there is no 
+        movement inside the body, there should be no movement from outside the body. 
+        When there is movement, the components from outside and inside the body move 
+        together in unity.
+      </p>
 
-<b>The role of Intent in Tai Chi Chuan</b>
-Tai Chi Chuan practitioners often emphasize the importance of using the Intent in training. The Tai Chi Chuan Classics say "Every movement based on the intent.", "When the intent and qi come, the bone and flesh are secondary.", "First on the mind, later, on the body.", "First, the intent moves, later, the power follows.", "All of them are based on the intent, it is not based on the external movement.", "When the qi is not there yet, the intent already there.", "When practice the solo form and push hand exercises, one should pay attention to the intent." The quotations clearly defined the priority and relationships among the Intent, Qi and Body. In every Tai Chi Chuan's Solo Form movement, it is initiated by the Intent, continue with the qi and end with the body movement. Does not matter it is the qi circulation or body movement, it directs by the Intent. In the Intent's creativity, qi circulation and body movement, they are the disciplines that Tai Chi Chuan incorporates the Intent to work on the three subject of Intent, Qi and Body. It bases on the ancient chinese philosophy which said that the body is the basic matter for life. Mind is the life's controller. Qi is the life's communicator. The objective of the qi's function is to have the body and mind joint together. A visible body is considering alive because of the mind. The Intent manages the body and base on the function of the qi. The three components joint together is the key in Tai Chi Chuan training.
+      <p>
+        Although Intent is an important factor to determine the outcome of Tai Chi 
+        Chuan skill, it is abstract and difficult to understand. However, it has the 
+        following meanings and characteristics:
+      </p>
+      <ol type="a">
+        <li>It means attention.</li>
+        <li>It has a meaning similar to qi. It is a form of energy and power.</li>
+        <li>It is a form of thinking and imagination behavior.</li>
+        <li>It has many levels. A student emphasizes the intent differently according to his skill.</li>
+        <li>It is repeatable. At each time, the meaning and fulfillment are different.</li>
+        <li>It can be understood from observing physical movement, feeling and
+          sensation. A student may not understand at the beginning. After many practices, the understanding becomes better.</li>
+        <li>For it is a substance of abstract and intangible, it can be interpreted into many meanings according to one's experience. Therefore, it does not have any set priority and order.</li>
+        <li>It is a state of mental condition.</li>
+        <li>It is a mental activity and creativity.</li>
+        <li>It is an objective and goal.</li>
+        <li>Although it has many meanings, each meaning contribute to fulfill a complete whole. A unity.</li>
+      </ol>
 
-The emphasis on Intent by Tai Chi Chuan practitioners involves two areas. It is the initiator to activate the physiologic organ functions. Intent or Intent's power is a special kind of conscious behavior of the brain which carries a coded message to function inside the body as well as outside the body. In other words, Intent controls all physiologic functions.
+      <p class="section-title">Intent and creativity</p>
+      <p>
+        To increase the Intent creativity, one must cultivate it daily and incorporate it throughout the 
+        Tai Chi Chuan training. This is included from practical experiences as well as 
+        daily activity.
+      </p>
 
-<b>The nature of Intent</b>
-If the Intent is so important in Tai Chi Chuan training, it is necessary for one to fully understand and define what is Intent. There are two approaches to understand it. The Intent guides the body movement and the Intent guides the qi circulation.
+      <p>
+        From psychological experiment, we understand that Intent has a very close 
+        association with one's emotion and experience. Whenever we have good and 
+        positive experience, the emotion is positive and the Intent creativity 
+        unrestricted. Otherwise, the emotion is negative and the Intent creativity is limited. 
+        Therefore, it is necessary to have good experience and positive emotion which 
+        can be generated and supported from a tranquil environment. A tranquil serenity is 
+        a condition better for one to concentrate, focus and the creativity to flow and 
+        coherent. Therefore, it has a miraculous result.
+      </p>
 
-<b><i>a. The Intent guides the body movement</i></b>
-When the Intent moves, the body follows. In the situation when the Intent guides the body movement. This means all movements are controlled by the Intent. Intent's movement means creativity. The "body follows" means the body is moving according to the Intent's instruction. In Tai Chi Chuan training, it demands all movements are initiating from the Intent and then follow with the body movement. Therefore, the body movement is the expression of Intent's creativity outward. If one is able to follow this expectation throughout the Tai Chi Chuan training, one's skill will progress quickly.
+      <p class="section-title">Intent and Tai Chi Chuan</p>
+      <p>
+        From a martial art perspective, Intent is emphasizing on the technique, strategy and most 
+        importantly, on the opponent's weak area.
+      </p>
 
-<b><i>b. The Intent guides the qi circulation</i></b>
-When the Intent moves, the qi circulates. In the situation when the Intent guides the qi to circulate. This mean all qi circulations are following the Intent's instruction. Intent movement means Intent creativity. Qi circulation means the qi circulates inside the body follows the Intent's instruction. Intent creativity and qi circulation are internal. How can one interpret and understand? It is often said that to find out what is inside, one has to begin from outside. What is internal, will expressed outward. Although the Intent creativity and qi circulation are intangible, the posture and movement a practitioner demonstrates in Tai Chi Chuan, is an expression of Intent creativity and qi circulation outward. From observing the change in a movement, one can tell the Intent creativity and qi circulation condition. The highest form of Tai Chi Chuan training is to have the Intent creativity and qi circulation inside the body combined with physical movement outside the body. Therefore, if there is no movement inside the body, there should be no movement from outside the body. When there is movement, the components from outside and inside the body move together in unity.
+      <p>
+        Tai Chi Chuan is a relaxed, soft, internal and external activity. The movement 
+        is stable, circular, continue and the body should be upright. Based on these 
+        principles, Tai Chi Chuan movement is confining to a set of rules. When one is 
+        engaging in Tai Chi Chuan training, one is consciously controlling the body to 
+        function under these rules. How does one incorporate the Intent into Tai Chi 
+        Chuan training? The following are some of the common practice in Tai Chi Chuan:
+      </p>
+                        
+      <p>
+        When one is practicing the Tai Chi Chuan's solo form, one should assume 
+        involving with an opponent in an offensive and defensive movement. It is only 
+        when the Intent is true so the power is truly will get to the target and the 
+        movement is effective. One develops confidence in each movement by understanding 
+        the application and variations. Believe in oneself during confrontation so 
+        technique can by apply freely without any hesitation and restriction. This is 
+        what the Tai Chi Chuan Classic said "When the qi is not there, the intent is 
+        already there." When people said "confidence is half of success". It already 
+        included the power of Intent.
+      </p>
+                          
+      <p>
+        One should understand each movement's mechanics and application. Understanding 
+        the power and variation involved in each technique. Where and when to deliver the 
+        power. This is what the Tai Chi Chuan Classic referring to "One should pay 
+        attention to each movement." One should pay closer attention to each movement so 
+        the power gets to the target. One should clearly understand the power in each 
+        movement. Understanding the fist, palm or fingers strike in a movement? How to 
+        move the fingers to correctly apply the seize technique to easily control the 
+        opponent?
+      </p>
 
-Although Intent is an important factor to determine the outcome of Tai Chi Chuan skill, it is abstract and difficult to understand. However, it has the following meanings and characteristics:
-<div class="alphabet-list">
-  <p>a. It means attention.</p>
-  <p>b. It has a meaning similar to qi. It is a form of energy and power.</p>
-  <p>c. It is a form of thinking and imagination behavior.</p>
-  <p>d. It has many levels. A student emphasizes the intent differently according to his skill.</p>
-  <p>e. It is repeatable. At each time, the meaning and fulfillment are different.</p>
-  <p>f. It can be understood from observing physical movement, feeling and sensation. A student may not understand at the beginning. After many practices, the understanding becomes better.</p>
-  <p>g. For it is a substance of abstract and intangible, it can be interpreted into many meanings according to one's experience. Therefore, it does not have any set priority and order.</p>
-  <p>h. It is a state of mental condition.</p>
-  <p>i. It is a mental activity and creativity.</p>
-  <p>j. It is an objective and goal.</p>
-  <p>k. Although it has many meanings, each meaning contribute to fulfill a complete whole. A unity.</p>
-</div>
-0<b>Intent and creativity</b>
-To increase the Intent creativity, one must cultivate it daily and incorporate it throughout the Tai Chi Chuan training. This is included from practical experiences as well as daily activity.
-From psychological experiment, we understand that Intent has a very close association with one's emotion and experience. Whenever we have good and positive experience, the emotion is positive and the Intent creativity unrestricted. Otherwise, the emotion is negative and the Intent creativity is limited. Therefore, it is necessary to have good experience and positive emotion which can be generated and supported from a tranquil environment. A tranquil serenity is a condition better for one to concentrate, focus and the creativity to flow and coherent. Therefore, it has a miraculous result.
+      <p>
+        In any particular posture, the head should have the Intent of supporting an 
+        object upward. The body has sinking. The hands have pushing forward power. The 
+        arms move to the sides. The toes are pointing forward. The knees bent like a 
+        nutcracker. Buttock tuck in. The hip has roundness like a "U" shape.
+      </p>
+                      
+      <p>
+        The Tai Chi Chuan Classic said that one should walk like a cat. In practice, 
+        one can imagine the stepping in advance or retreat, and empty or full, should be 
+        very quiet, spontaneous and light. It is stable and continues like a running 
+        water.
+      </p>
+      
+      <p>
+        The Tai Chi Chuan Classic said that mobilizing the jing is like pulling silk 
+        from a cocoon. In practice, one can imagine the movement is gentle, circular, 
+        smooth, even and continue like pulling silk. Otherwise, the silk thread will 
+        break.
+      </p>
 
-<b>Intent and Tai Chi Chuan</b>
-From a martial art perspective, Intent is emphasizing on the technique, strategy and most importantly, on the opponent's weak area.
+      <p>
+        Intent is a very important step in Tai Chi Chuan training. If one can 
+        incorporate it in daily practice as described above, one will definitely 
+        develope the Tai Chi Chuan skill and power quickly. The body is nimble and 
+        every part of the body is a weapon. It is an expression of the Intent, Qi and 
+        Body united.
+      </p>
+    </Fragment>
+  `,
+    author: "Vincent Chu"
+  },
+  {
+    id: 2,
+    title: "Combat Tai Chi Chuan",
+    section: "Application",
+    content: `
+    <Fragment>
+      <p>
+        The martial art of Tai Chi Chuan follows Tai Chi philosophy. Everything that relates to Tai Chi Chuan has Yin and Yang 
+        components -- from the philosophy, the physical movement, the training to the 
+        functions of the art.
+      </p>
 
-Tai Chi Chuan is a relaxed, soft, internal and external activity. The movement is stable, circular, continue and the body should be upright. Based on these principles, Tai Chi Chuan movement is confining to a set of rules. When one is engaging in Tai Chi Chuan training, one is consciously controlling the body to function under these rules. How does one incorporate the Intent into Tai Chi Chuan training? The following are some of the common practice in Tai Chi Chuan:
+      <p>
+        Many people practice Tai Chi Chuan today as a health exercise but it is as 
+        well a very effective internal martial art. Tai Chi Chuan, with its soft and 
+        slow movements, may be difficult to accept as a fighting system for some people, 
+        but that's what it is, that's what it has been for many generations.
+      </p>
 
-When one is practicing the Tai Chi Chuan's solo form, one should assume involving with an opponent in an offensive and defensive movement. It is only when the Intent is true so the power is truly will get to the target and the movement is effective. One develops confidence in each movement by understanding the application and variations. Believe in oneself during confrontation so technique can by apply freely without any hesitation and restriction. This is what the Tai Chi Chuan Classic said "When the qi is not there, the intent is already there." When people said "confidence is half of success". It already included the power of Intent.
+      <p>
+        In traditional martial art training, the emphasis of Tai Chi Chuan is more on 
+        the preparation and development of internal power than the individual technique 
+        as in most external martial art styles. There is hardly training in specific 
+        applications. This is why it is difficult for a beginner to understand and see 
+        the technical skill in Tai Chi Chuan. Unless one is trained under a 
+        knowledgeable teacher, a practitioner can spend decade or more and still not be 
+        sure how to correctly apply each movement in fighting.
+      </p>
 
-One should understand each movement's mechanics and application. Understanding the power and variation involved in each technique. Where and when to deliver the power. This is what the Tai Chi Chuan Classic referring to "One should pay attention to each movement." One should pay closer attention to each movement so the power gets to the target. One should clearly understand the power in each movement. Understanding the fist, palm or fingers strike in a movement? How to move the fingers to correctly apply the seize technique to easily control the opponent?
+      <p>
+        A philosophy of Tai Chi Chuan combat is that if you say there is technique, 
+        there is none. If you say that there is not, the technique is everywhere. This 
+        is like the water supporting the boat: the boat is always on top of the water 
+        although the boat has done nothing. In martial art training, it is essential for 
+        the practitioner to prepare his or her physical condition for combat. In Tai Chi 
+        Chuan, the practitioner does not rehearse for the combat itself which is an 
+        unpredictable situation. The training is not focused on the application of each 
+        individual movement but on developing oneself totally so that the body becomes 
+        nimble and flexible, the feet mobile, the hands are fast, and there is correct 
+        timing in execution. These are the essential ingredients in combat.
+      </p>
 
-In any particular posture, the head should have the Intent of supporting an object upward. The body has sinking. The hands have pushing forward power. The arms move to the sides. The toes are pointing forward. The knees bent like a nutcracker. Buttock tuck in. The hip has roundness like a "U" shape.
+      <p>
+        With a unique training style, we practice Tai Chi Chuan's Solo Form with the 
+        following three principles in mind:
+      </p>
+      
+      <p class="section-title">1. Softness Controls Hardness</p>
+      <p>
+        The reason Tai Chi Chuan favors soft over hard is partly based 
+        on the principle of soft overcoming hard as described by Lao Tzu's "Tao Te 
+        Ching". The other reason is to prevent the practitioner from performing a 
+        head-on collision with the opponent.
+      </p>
 
-The Tai Chi Chuan Classic said that one should walk like a cat. In practice, one can imagine the stepping in advance or retreat, and empty or full, should be very quiet, spontaneous and light. It is stable and continues like a running water.
+      <p>
+        The belief that in combat hard and 
+        powerful are always victorious is a fallacy. It is common in confrontation that 
+        both parties apply and mobilize power to try to overcome each other: The winner 
+        is usually the stronger. In some cases, both protagonists lose when both have 
+        equal power and skill. Tai Chi Chuan's emphasis on the principle of soft 
+        overcoming hard tries to avoid this situation.
+      </p>
 
-The Tai Chi Chuan Classic said that mobilizing the jing is like pulling silk from a cocoon. In practice, one can imagine the movement is gentle, circular, smooth, even and continue like pulling silk. Otherwise, the silk thread will break.
+      <p>
+        There is a belief that the 
+        principle of softness overcoming hardness means avoidance. This is not true, 
+        because nobody who is on the defensive all the time comes out victorious. Tai 
+        Chi Chuan's emphasis on soft and hard interaction is based on soft as in 
+        yielding or deflection and hard as in attacking, and the two components always go 
+        together.
+      </p>
 
-Intent is a very important step in Tai Chi Chuan training. If one can incorporate it in daily practice as described above, one will definitely develope the Tai Chi Chuan skill and power quickly. The body is nimble and every part of the body is a weapon. It is an expression of the Intent, Qi and Body united.`,
-        author: "Vincent Chu"
-    },
-    {
-        id: 2,
-        title: "Combat Tai Chi Chuan",
-        section: "Application",
-        content: `The martial art of Tai Chi Chuan follows Tai Chi philosophy. Everything that relates to Tai Chi Chuan has Yin and Yang components -- from the philosophy, the physical movement, the training to the functions of the art.
+      <p class="section-title">a. Yielding and striking at the same time</p>
+      <p>
+        Tai Chi Chuan's 
+        emphasis on the technique of yielding and attacking at the same time means there 
+        should be defensive and offensive intention in each movement so that the 
+        counterstrike will be quicker and will seize the opponent's weak area before he 
+        can recover. This combination involves every part of the body; thus one must 
+        train the whole body to be sensitive, nimble and flexible. This is different 
+        from most martial arts styles where offensive and defensive techniques occur 
+        separately.
+      </p>
 
-Many people practice Tai Chi Chuan today as a health exercise but it is as well a very effective internal martial art. Tai Chi Chuan, with its soft and slow movements, may be difficult to accept as a fighting system for some people, but that's what it is, that's what it has been for many generations.
+      <p class="section-title">b. Combination strikes</p>
+      <p>
+        To be able to strike 
+        continuously is something all practitioners would like to do. This does not give 
+        the opponent a chance to rest and recover. In many styles of martial arts, 
+        combination strikes are generally pre-arranged exercises to improve one's 
+        physical endurance and confrontation experiences. In Tai Chi Chuan training, one 
+        sees this combination as one circle. Half the circle is for offense and half for 
+        defense. The Tai Chi Chuan Classics refer to this as "The retreating circle is 
+        easy but the advancing circle is difficult."
+      </p>
 
-In traditional martial art training, the emphasis of Tai Chi Chuan is more on the preparation and development of internal power than the individual technique as in most external martial art styles. There is hardly training in specific applications. This is why it is difficult for a beginner to understand and see the technical skill in Tai Chi Chuan. Unless one is trained under a knowledgeable teacher, a practitioner can spend decade or more and still not be sure how to correctly apply each movement in fighting.
+      <p>
+        How to execute the circle 
+        completely in a combat situation? It is believed that one should "give up 
+        oneself" - meaning a state of egolessness -- and follow the opponent. To be able 
+        to follow the opponent, one has to be able to stick to the opponent's movement. 
+        This means one is sticking to the opponent whenever there is a chance to be in 
+        contact with the opponent's body. Sticking to the opponent does not mean simply 
+        to stick to the opponent but to get a superior position as the result of this 
+        execution. What is the skill to get us to this superior position? How quickly do 
+        you respond? What is the correct amount of power? Which part of the body to 
+        stick? These are the experiences one will gain from practice.
+      </p>
 
-A philosophy of Tai Chi Chuan combat is that if you say there is technique, there is none. If you say that there is not, the technique is everywhere. This is like the water supporting the boat: the boat is always on top of the water although the boat has done nothing. In martial art training, it is essential for the practitioner to prepare his or her physical condition for combat. In Tai Chi Chuan, the practitioner does not rehearse for the combat itself which is an unpredictable situation. The training is not focused on the application of each individual movement but on developing oneself totally so that the body becomes nimble and flexible, the feet mobile, the hands are fast, and there is correct timing in execution. These are the essential ingredients in combat.
+      <p>
+        Following the opponent's technique involves the whole body. Its movements will result in 
+        the practitioner gaining a superior position based on the opponent's strike and 
+        combat situation. Generally, it requires the feet to move in coordination with 
+        the upper body. When one is able to do this, no matter what the situation, one 
+        is able to maintain balance and find the opportunity to be on the superior 
+        position to strike. The superior position is defined as one in an active role 
+        over the opponent's passive role. Inferior position is when one is in a passive 
+        role and the situation is controlled by the opponent. Based on the information 
+        obtained from applying the stick and follow techniques, one can mobilize the 
+        body to counter the opponent's strike. Therefore, this is one of the reasons why 
+        a Tai Chi Chuan practitioner is able to move so fast or has such a quick reflex. 
+        In Push Hand exercises, we train the skills of listening, forgetting oneself and 
+        following the opponent, etc. It is not a competition sport as promoted in 
+        today's tournament.
+      </p>
 
-With a unique training style, we practice Tai Chi Chuan's Solo Form with the following three principles in mind:
+      <p class="section-title">c. No empty strike</p>
+      <p>
+        With its emphasis on Yin 
+        and Yang balance, Tai Chi Chuan's movements are soft, relaxed and circular. This 
+        means that all movements have both the soft component power and the hard 
+        component power. The dynamics shift to either side based on the opponent's 
+        strike. When the opponent strikes, the soft component makes the opponent lose 
+        balance and the hard component strikes back. When the movement is circular, it 
+        does not overextend; thus, the body is balanced and is able to issue power to 
+        strike or to get a superior position. This is why in Solo Form practice, all the 
+        movements are circular. When one is balanced, one is able to move the feet to 
+        get a superior position and to avoid falling into an inferior 
+        position.
+      </p>
 
-<b>1. Softness Controls Hardness</b>
-The reason Tai Chi Chuan favors soft over hard is partly based on the principle of soft overcoming hard as described by Lao Tzu's "Tao Te Ching". The other reason is to prevent the practitioner from performing a head-on collision with the opponent.
-The belief that in combat hard and powerful are always victorious is a fallacy. It is common in confrontation that both parties apply and mobilize power to try to overcome each other: The winner is usually the stronger. In some cases, both protagonists lose when both have equal power and skill. Tai Chi Chuan's emphasis on the principle of soft overcoming hard tries to avoid this situation.
-There is a belief that the principle of softness overcoming hardness means avoidance. This is not true, because nobody who is on the defensive all the time comes out victorious. Tai Chi Chuan's emphasis on soft and hard interaction is based on soft as in yielding or deflection and hard as in attacking, and the two components always go together.
+      <p class="section-title">2. Tranquility Controls Action</p>
+      <p>
+        Although the principle 
+        of soft component for yielding and hard component for attacking is sound, it 
+        will only work when the practitioner has good timing and correct execution. This 
+        requires good skill, calmness, and a nimble body. If one is not calm, one is not 
+        able to let the opponent come in until the last minute. If the body is not 
+        nimble, one cannot react suddenly without hurting the body. If the skill is not 
+        good, one cannot control the opponent quickly. Tai Chi Chuan does not believe 
+        in taking the initiative but if the situation requires, one will make it 
+        happen.
+      </p>
 
-<b>a. Yielding and striking at the same time</b>
-Tai Chi Chuan's emphasis on the technique of yielding and attacking at the same time means there should be defensive and offensive intention in each movement so that the counterstrike will be quicker and will seize the opponent's weak area before he can recover. This combination involves every part of the body; thus one must train the whole body to be sensitive, nimble and flexible. This is different from most martial arts styles where offensive and defensive techniques occur separately.
+      <p>
+        The Tai Chi Chuan Classics say, "Retreating circle is easy to do, the 
+        advancing circle is difficult." Retreating circle refers to defensive movement 
+        and advancing circle refers to offensive movement. The two components always go 
+        together. Which one to use is determined by the opponent's strike. When the 
+        practitioner takes the inactive position, there are some advantages over the 
+        opponent:
+      </p>
+      
+      <ol type="a">
+        <li>The practitioner must have confidence and calm to anticipate the opponent's
+        strike. The practitioner has the psychological advantage.</li>
+        <li>The practitioner will understand the strike and power from the opponent's. 
+        It is an advantage to find the opponent's weak areas.</li>
+        <li>The practitioner will save energy and not get tired easily. This is an 
+        advantage in physical endurance.</li>
+        <li>The opponent does not know what the practitioner will do. This has the 
+        advantage of confusing the opponent.</li>
+        <li>Invite the opponent to strike and react based on the strike. An advantage 
+        is to hide the weak area from the opponent.</li>
+        <li>When one is unselfish, this has the advantage in self-control and 
+        temperament. For one to be able to perform this principle correctly, a 
+        practitioner must be able to perform the following concepts:</li>
+      </ol>
 
-<b>b. Combination strikes</b>
-To be able to strike continuously is something all practitioners would like to do. This does not give the opponent a chance to rest and recover. In many styles of martial arts, combination strikes are generally pre-arranged exercises to improve one's physical endurance and confrontation experiences. In Tai Chi Chuan training, one sees this combination as one circle. Half the circle is for offense and half for defense. The Tai Chi Chuan Classics refer to this as "The retreating circle is easy but the advancing circle is difficult."
+      <p class="section-title">A. Give up oneself and follow the opponent</p>
+      <p>
+        It is common in the martial art community that a stronger person who can execute a technique quickly 
+        has better chance to win. When the opponent strikes, one should instinctively 
+        mobilize the power to confront and defend against the strike. This inborn 
+        reaction is possessed by everyone, but martial art practitioners often train 
+        their bodies so that the reaction or reflex will be accurate, powerful, speedy, 
+        and effective. Some practitioners even train their arms and body to develop a 
+        body armor to resist a powerful strike. Unfortunately, many practitioners 
+        physically suffer a great deal in training but the outcome is still determined 
+        by how powerful the strike and how fast one can apply the technique. This 
+        concept is centered on the practitioner himself.
+      </p>
 
-How to execute the circle completely in a combat situation? It is believed that one should "give up oneself" - meaning a state of egolessness -- and follow the opponent. To be able to follow the opponent, one has to be able to stick to the opponent's movement. This means one is sticking to the opponent whenever there is a chance to be in contact with the opponent's body. Sticking to the opponent does not mean simply to stick to the opponent but to get a superior position as the result of this execution. What is the skill to get us to this superior position? How quickly do you respond? What is the correct amount of power? Which part of the body to stick? These are the experiences one will gain from practice.
+      <p>
+        Tai Chi Chuan is an outgrowth of Taoist philosophy that says everything is based on nature. In order 
+        to be natural, the concentration must shift from oneself to the opponent. In 
+        order to be able to follow, the practitioner has to give up on initiation and 
+        concern for the outcome and forget himself so that all the strikes will be based on 
+        the opponent's movements. When one gives up on oneself, it means forgetting 
+        oneself and the ego and being unselfish. When one forgets oneself and is 
+        unselfish, the temperament improves and there is no pressure. When there is no 
+        pressure, the body is relax and natural. When the body is relaxed and natural, 
+        the body is nimble, mobile and flexible. These are some of the ingredients to a 
+        powerful strike.
+      </p>
+      
+      <p>
+        When one is unselfish, all the reactions will have the 
+        following five characteristics:
+      </p>
 
-Following the opponent's technique involves the whole body. Its movements will result in the practitioner gaining a superior position based on the opponent's strike and combat situation. Generally, it requires the feet to move in coordination with the upper body. When one is able to do this, no matter what the situation, one is able to maintain balance and find the opportunity to be on the superior position to strike. The superior position is defined as one in an active role over the opponent's passive role. Inferior position is when one is in a passive role and the situation is controlled by the opponent. Based on the information obtained from applying the stick and follow techniques, one can mobilize the body to counter the opponent's strike. Therefore, this is one of the reasons why a Tai Chi Chuan practitioner is able to move so fast or has such a quick reflex. In Push Hand exercises, we train the skills of listening, forgetting oneself and following the opponent, etc. It is not a competition sport as promoted in today's tournament.
+      <ol type="a">
+        <li>One is able to follow the opponent's strike, left, right, up and down, 
+          without any break. Therefore, all reactions are very quick.</li>
+        <li>There will be no head-on collision. Apply soft component to listen, yield to
+          the opponent's strike, power and reaction. Apply hard component to strike.</li>
+        <li>One will let the opponent initiate the strike.</li>
+        <li>One will disguise the movement as weakness for the opponent to come in.</li>
+        <li>One will apply a technique only to control the opponent without injury or 
+        harm.</li>
+      </ol>
 
-<b>c. No empty strike</b>
-With its emphasis on Yin and Yang balance, Tai Chi Chuan's movements are soft, relaxed and circular. This means that all movements have both the soft component power and the hard component power. The dynamics shift to either side based on the opponent's strike. When the opponent strikes, the soft component makes the opponent lose balance and the hard component strikes back. When the movement is circular, it does not overextend; thus, the body is balanced and is able to issue power to strike or to get a superior position. This is why in Solo Form practice, all the movements are circular. When one is balanced, one is able to move the feet to get a superior position and to avoid falling into an inferior position.
+      <p class="section-title">B. Tai Chi Chuan is a short-range combat art</p>
+      <p>
+        When it strikes, there is often a combination of strikes that involves the whole body. 
+        Here are some of the common parts of the body to apply: head, shoulders, elbows, 
+        hands, wrist, hip, knee, foot, chest, back, buttocks. Therefore, the whole body 
+        must be trained so that it is flexible enough to mobilize any part of the body 
+        that is necessary to execute a powerful strike. The lower portion of the body 
+        must be trained to be mobile so that the feet will be able to step into a 
+        superior position to compensate for the strike.
+      </p>
 
+      <p class="section-title">3. Apply the insubstantial to overcome the substantial</p>
+      <p>
+        Tai Chi Chuan often applies a small amount of power to control the opponent. This is often 
+        referred to as four ounces overcome 1000 pound: Here are two of the common 
+        techniques that practitioners often use:
+      </p>
+      
+      <p class="section-title">A. Small amount to control the large amount</p>
+      <p>
+        This is the work of physical science. People, like 
+        everything else, are affected by gravity. When the opponent's balance is 
+        unstable, the application of a small amount of power will cause him to fall. Tai 
+        Chi Chuan practitioners often apply this kind of technique to cause the opponent 
+        to get off-balanced. This happens by re-directing the opponent's power and 
+        counter striking in between the opponent's first and the second strike. This 
+        technique is commonly referred to as "four ounces overcome a thousand pound." 
+        This task is so easy that people considered it as an insubstantial action 
+        because the performer only applied a very small amount of power to make it 
+        happen.
+      </p>
 
-<b>2. Tranquility Controls Action</b>
-Although the principle of soft component for yielding and hard component for attacking is sound, it will only work when the practitioner has good timing and correct execution. This requires good skill, calmness, and a nimble body. If one is not calm, one is not able to let the opponent come in until the last minute. If the body is not nimble, one cannot react suddenly without hurting the body. If the skill is not good, one cannot control the opponent quickly. Tai Chi Chuan does not believe in taking the initiative but if the situation requires, one will make it happen.
-The Tai Chi Chuan Classics say, "Retreating circle is easy to do, the advancing circle is difficult." Retreating circle refers to defensive movement and advancing circle refers to offensive movement. The two components always go together. Which one to use is determined by the opponent's strike. When the practitioner takes the inactive position, there are some advantages over the opponent:
-<div class="alphabet-list">
-    <p>a. The practitioner must have confidence and calm to anticipate the opponent's strike. The practitioner has the psychological advantage.</b>
-    <p>b. The practitioner will understand the strike and power from the opponent's. It is an advantage to find the opponent's weak areas.</b>
-    <p>c. The practitioner will save energy and not get tired easily. This is an advantage in physical endurance.</b>
-    <p>d. The opponent does not know what the practitioner will do. This has the advantage of confusing the opponent.</b>
-    <p>e. Invite the opponent to strike and react based on the strike. An advantage is to hide the weak area from the opponent.</b>
-    <p>f. When one is unselfish, this has the advantage in self-control and temperament. For one to be able to perform this principle correctly, a practitioner must be able to perform the following concepts:</b>
-</div>
-<b>A. Give up oneself and follow the opponent</b>
-It is common in the martial art community that a stronger person who can execute a technique quickly has better chance to win. When the opponent strikes, one should instinctively mobilize the power to confront and defend against the strike. This inborn reaction is possessed by everyone, but martial art practitioners often train their bodies so that the reaction or reflex will be accurate, powerful, speedy, and effective. Some practitioners even train their arms and body to develop a body armor to resist a powerful strike. Unfortunately, many practitioners physically suffer a great deal in training but the outcome is still determined by how powerful the strike and how fast one can apply the technique. This concept is centered on the practitioner himself.
-Tai Chi Chuan is an outgrowth of Taoist philosophy that says everything is based on nature. In order to be natural, the concentration must shift from oneself to the opponent. In order to be able to follow, the practitioner has to give up on initiation and concern for the outcome and forget himself so that all the strikes will be based on the opponent's movements. When one gives up on oneself, it means forgetting oneself and the ego and being unselfish. When one forgets oneself and is unselfish, the temperament improves and there is no pressure. When there is no pressure, the body is relax and natural. When the body is relaxed and natural, the body is nimble, mobile and flexible. These are some of the ingredients to a powerful strike.
-When one is unselfish, all the reactions will have the following five characteristics:
-<div class="alphabet-list">
-    <p>a. One is able to follow the opponent's strike, left, right, up and down, without any break. Therefore, all reactions are very quick.</p>
-    <p>b. There will be no head-on collision. Apply soft component to listen, yield to the opponent's strike, power and reaction. Apply hard component to strike.</p>
-    <p>c. One will let the opponent initiate the strike.</p>
-    <p>d. One will disguise the movement as weakness for the opponent to come in.</p>
-    <p>e. One will apply a technique only to control the opponent without injury or harm.</p>
-</div>
-<b>B. Tai Chi Chuan is a short-range combat art</b>
-When it strikes, there is often a combination of strikes that involves the whole body. Here are some of the common parts of the body to apply: head, shoulders, elbows, hands, wrist, hip, knee, foot, chest, back, buttocks. Therefore, the whole body must be trained so that it is flexible enough to mobilize any part of the body that is necessary to execute a powerful strike. The lower portion of the body must be trained to be mobile so that the feet will be able to step into a superior position to compensate for the strike.
+      <p class="section-title">B. Leverage or borrowing</p>
+      <p>
+        This is a very common technique. 
+        Borrowing power generally comes from two sources: the opponent's strike and the 
+        ground. It has a powerful result because it is the combination of the opponent's 
+        power, the practitioner's and the power coming from the ground. One can see this 
+        as a small push by the experienced Tai Chi Chuan practitioner and the opponent 
+        bounces away as a result. A muscle contraction alone can not produce this kind 
+        of power. For this technique to work, one must practice body integration 
+        regularly in the solo Form so that the body can mobilize all the power outward 
+        in a flash.
+      </p>
 
-<b>3. Apply the insubstantial to overcome the substantial</b>
-Tai Chi Chuan often applies a small amount of power to control the opponent. This is often referred to as four ounces overcome 1000 pound: Here are two of the common techniques that practitioners often use:
+      <p>
+        Based on the principles and techniques described above, Tai Chi Chuan 
+        practitioners often apply the following techniques and the famous eight hand 
+        techniques as ward off, roll back, press, push, pull down, split, elbow and 
+        shoulder strikes in a combat situation.
+      </p>
+      
+      <ol type="a">
+        <li>Grappling. Grappling in Tai Chi Chuan is different from other styles. It is 
+          applied to control the opponent's power. However, this is not like joint
+          lock or disabling or injuring someone's ligament or tendons.</li>
+        <li>Pouncing. Applying the whole body forward to destroy the opponent's 
+          balance. When the opponent is off-balance, he will not be able to react. A 
+          powerful pouncing technique can cause the opponent to fall down and injuring
+          himself.</li>
+        <li>Wrestling. Apply the weight directly or in leverage onto the opponent to
+          cause imbalance and the opponent will fall down. This technique is also
+          known as a "take down."</li>
+        <li>Striking. Apply strong and powerful body part to hit the opponent's weak 
+          area.</li>
+        <li>Shocking. Apply power to cause the opponent to move the whole body
+          suddenly. It is so sudden that the opponent is not quick enough to react 
+          causing his own body to collapse, injuring himself internally. This is
+          similar to a speeding car suddenly stopping, causing the passenger internal
+          injury.</li>
+        <li>Emptying: It refers to the intentional disappearance of power. It is often 
+          applied by a skillful practitioner: When the opponent strikes, mobilize the 
+          power to confront the strike and remove the power suddenly. This will cause 
+          the opponent to be off balanced and fall forward.</li>
+        <li>Transparent. This refers to the opponent not being able to find the center 
+          of gravity. In other words, it does not matter how powerful the opponent's 
+          strike, when it comes close to the body, the power is not able to find the 
+          target. The result is that the body seems to be transparent.</li>
+      </ol>
 
-<b>A. Small amount to control the large amount</b>
-This is the work of physical science. People, like everything else, are affected by gravity. When the opponent's balance is unstable, the application of a small amount of power will cause him to fall. Tai Chi Chuan practitioners often apply this kind of technique to cause the opponent to get off-balanced. This happens by re-directing the opponent's power and counter striking in between the opponent's first and the second strike. This technique is commonly referred to as "four ounces overcome a thousand pound." This task is so easy that people considered it as an insubstantial action because the performer only applied a very small amount of power to make it happen.
+      <p>
+        In combat, Tai Chi Chuan is a very effective art. Generally, people see 
+        practitioners practice the Solo Form slowly and assume that this is how it works 
+        in combat situation. It is a fallacy. Slow practice serves two functions.
+      </p>
+      
+      <ol type="1">
+        <li>It fine tunes the body and especially the components that involve the body 
+        mechanics and motion so that when it moves, nothing will slow down the
+        motion.</li>
+        <li>It trains the practitioner's perception. Therefore, practicing the Solo 
+        Form and Push Hands exercises correctly will prepared the practitioner
+        better for combat physically as well as mentally.</li>
+      </ol>
 
-<b>B. Leverage or borrowing</b>
-This is a very common technique. Borrowing power generally comes from two sources: the opponent's strike and the ground. It has a powerful result because it is the combination of the opponent's power, the practitioner's and the power coming from the ground. One can see this as a small push by the experienced Tai Chi Chuan practitioner and the opponent bounces away as a result. A muscle contraction alone can not produce this kind of power. For this technique to work, one must practice body integration regularly in the solo Form so that the body can mobilize all the power outward in a flash.
+      <p>
+        In any internal art, the primary concentration is always on developing oneself and internal 
+        power. Developing martial technique is secondary. Therefore, after decades of 
+        developing oneself and internal power, a practitioner generally does not engage 
+        in any kind of confrontation unless it is absolutely necessary. When he does, a 
+        small movement from the dantien will result in a powerful strike. When Tai Chi 
+        Chuan practitioners in the past only controlled and push the opponent away so as 
+        not to cause any injury or fatality, it had a lot to do with their martial 
+        virtue.
+      </p>
+      
+      <p class="section-title">Kindness does not mean weakness.</p>
+    </Fragment>
+    `,
+    author: "Vincent Chu"
+  },
+  {
+    id: 3,
+    title: "The Strategy",
+    section: "Application",
+    content: `
+    <Fragment>
+      <p className="intro">
+        Although many people today practice Tai Chi Chuan as a health maintenance exercise, 
+        a large number of them do not realize that Tai Chi Chuan is a martial arts system as well. 
+        It employs a very sophisticated combat strategy. Here are a few of its main principles:
+      </p>
+      
+      <h3 class="section-title">1. Softness overcomes hardness</h3>
+      <p>
+        Tai Chi Chuan practitioners often hear or read about the concept of softness 
+        overcoming hardness in combat situations. This concept appears to be difficult to believe. 
+        We know that everything that exists in this world is based on survival of the fittest. 
+        The strong win over the weak. Then how can one be expected to win if one is always on the defense? 
+        The answer is obvious. In Taoist philosophy, all things evolve from Yin/Yang theory. 
+        The two are always in struggle to overtake each other. Therefore, the two components never 
+        remain the same. We can see this principle applied in war or other confrontation. Often, 
+        when two parties confront each other, it appears that the party being invaded is generally 
+        the weaker party. However, the invaded party often comes out victorious. 
+        There are usually three reasons for this outcome.
+      </p>
+      
+      <ol type="a">
+        <li>When the weaker party is being invaded, it can easily mobilize for more support.</li>
+        <li>When it comes to invasion, nobody likes the invader.</li>
+        <li>The invader has to come up with an excellent explanation in order to get any support and justify the invasion.</li>
+      </ol>
+      
+      <p>
+        The soft overcoming the hard and not striking first are concepts in Tai Chi which reflect 
+        its the influence of Taoist philosophy. Lao Tzu believed that the softest of all things is water. 
+        The hardest of all things is metal. However, given time, metal will slowly be rusted and weakened by water. 
+        The same is true of the hardness of rock and stone in the ocean which is slowly changed and shaped by seawater. 
+        The concept of not striking first also enables one to examine one's self, evaluate all weaknesses, 
+        and make corrections and improvements so that all mistakes will be corrected and skills refined. 
+        If the opponent is proud of his skill and does not make any corrections, the result is obvious. 
+        When one does not strike first, he is calm, careful and patient. This indicates one has self control, 
+        courage, confidence, and a clear and calm mind to observe the opponent's every action and look for a weak spot. 
+        Therefore, to not strike first is a winning strategy.
+      </p>
+      
+      <h3 class="section-title">2. Get there first</h3>
+      <p>
+        Although one should not strike first and it is recommended that one get to the target first. 
+        The Tai Chi Chuan Classics supports this by saying that "...if the opponent does not move, 
+        I do not move. If the opponent moves, I am already there." The concept of arriving first is an 
+        interesting strategy that is difficult to execute. When the opponent moves, one has a chance to 
+        observe the opponent's weakness and formulate a response. In addition, when the opponent initializes 
+        the strike, one is inactive. This inaction confuses the opponent and he does not know how to strike 
+        because no weakness can result from no action. Therefore, to strike second is actually to strike first. 
+        It is a good strategy to finish the confrontation quickly.
+      </p>
+      
+      <h3 class="section-title">3. Neutralization</h3>
+      <p>
+        Tai Chi Chuan also puts emphasis on neutralizing the opponent's strike, and not directly going 
+        against the opponent's strike. "Going against" refers to not to letting go in any confrontation, 
+        being overcome with power, or any double weighted situation in which direct confrontation happens 
+        and leaves both parties exhausted. Neutralization refers to avoiding any confrontation or conflict. 
+        It is recommended to look for alternatives and options to solve any confrontation or conflict. 
+        In any confrontation, when the opponent strikes, one applies circular motion to neutralize the strike, 
+        resulting in an advantageous position and the opportunity to follow with an action to finish the confrontation.
+      </p>
+    </Fragment>
+    `,
+    author: "Vincent Chu"
+  },
+  {
+    id: 4,
+    title: "The Unbreakable",
+    section: "Application",
+    content: `
+    <Fragment>
+      <p>
+        In fighting and confrontation, there are many 
+        techniques involved. Although there are many practitioners who spend their 
+        lifetimes improving their skills and techniques so they are fast, deadly and 
+        powerful, the outcome of any confrontation is essentially decided by two 
+        factors. Hardness and Speed.
+      </p>
 
-Based on the principles and techniques described above, Tai Chi Chuan practitioners often apply the following techniques and the famous eight hand techniques as ward off, roll back, press, push, pull down, split, elbow and shoulder strikes in a combat situation.
-<div class="alphabet-list">
-    <p>a. Grappling. Grappling in Tai Chi Chuan is different from other styles. It is applied to control the opponent's power. However, this is not like joint lock or disabling or injuring someone's ligament or tendons.</p>
-    <p>b. Pouncing. Applying the whole body forward to destroy the opponent's balance. When the opponent is off-balance, he will not be able to react. A powerful pouncing technique can cause the opponent to fall down and injuring himself.</p>
-    <p>c. Wrestling. Apply the weight directly or in leverage onto the opponent to cause imbalance and the opponent will fall down. This technique is also known as a "take down."</p>
-    <p>d. Striking. Apply strong and powerful body part to hit the opponent's weak area.</p>
-    <p>e. Shocking. Apply power to cause the opponent to move the whole body suddenly. It is so sudden that the opponent is not quick enough to react causing his own body to collapse, injuring himself internally. This is similar to a speeding car suddenly stopping, causing the passenger internal injury.</p>
-    <p>f. Emptying: It refers to the intentional disappearance of power. It is often applied by a skillful practitioner: When the opponent strikes, mobilize the power to confront the strike and remove the power suddenly. This will cause the opponent to be off balanced and fall forward.</p>
-    <p>g. Transparent. This refers to the opponent not being able to find the center of gravity. In other words, it does not matter how powerful the opponent's strike, when it comes close to the body, the power is not able to find the target. The result is that the body seems to be transparent.</p>
-</div>
-In combat, Tai Chi Chuan is a very effective art. Generally, people see practitioners practice the Solo Form slowly and assume that this is how it works in combat situation. It is a fallacy. Slow practice serves two functions.
-<div class="alphabet-list">
-    <p>1. It fine tunes the body and especially the components that involve the body mechanics and motion so that when it moves, nothing will slow down the motion.</p>
-    <p>2. It trains the practitioner's perception. Therefore, practicing the Solo Form and Push Hands exercises correctly will prepared the practitioner better for combat physically as well as mentally.</p>
-</div>
-In any internal art, the primary concentration is always on developing oneself and internal power. Developing martial technique is secondary. Therefore, after decades of developing oneself and internal power, a practitioner generally does not engage in any kind of confrontation unless it is absolutely necessary. When he does, a small movement from the dantien will result in a powerful strike. When Tai Chi Chuan practitioners in the past only controlled and push the opponent away so as not to cause any injury or fatality, it had a lot to do with their martial virtue.
-<b>Kindness does not mean weakness.</b>`,
-        author: "Vincent Chu"
-    },
-    {
-        id: 3,
-        title: "The Strategy",
-        section: "Application",
-        content: `Although many people today practice Tai Chi Chuan as a health maintenance exercise, a large number of them do not realize that Tai Chi Chuan is a martial arts system as well. It employs a very sophisticated combat strategy. Here are a few of its main principles:
+      <p class="section-title">1. Hardness</p>
+      <p>
+        Although there are many martial art practitioners who 
+        toughen their hands and feet in martial arts training, "hardness" not only 
+        refers to the hands and feet and their movements. Most importantly, it refers to 
+        invincible power. There are two types of power. Chinese martial art 
+        practitioners often prefer jing power over physical power or li power because li 
+        power involves muscle contraction and it is restricted by the shoulder and elbow 
+        joints. Therefore, li power is one dimensional and uncontrollable after 
+        launching a strike. Jing power on the other hand, comes from the integration of 
+        the whole body. Therefore, it is multi-dimensional and controllable after 
+        launching a strike. Although one of the characteristics of jing power is it can 
+        not last long, it is powerful because it involves the whole body when 
+        discharging power. Although one characteristic of li power is that it can last 
+        for a longer period, it is generated from localized muscle contraction, has no 
+        penetration capability, and cannot cause any serious damage when compared to 
+        jing power. Therefore, it is not preferred by Chinese martial arts 
+        practitioners.
+      </p>
 
-<b>1. Softness overcomes hardness</b>
-Tai Chi Chuan practitioners often hear or read about the concept of softness overcoming hardness in combat situations. This concept appears to be difficult to believe. We know that everything that exists in this world is based on survival of the fittest. The strong win over the weak. Then how can one be expected to win if one is always on the defense? The answer is obvious. In Taoist philosophy, all things evolve from Yin/Yang theory. The two are always in struggle to overtake each other. Therefore, the two components never remain the same. We can see this principle applied in war or other confrontation. Often, when two parties confront each other, it appears that the party being invaded is generally the weaker party. However, the invaded party often comes out victorious. There are usually three reasons for this outcome.
-<div class="alphabet-list">
-    <p>a. When the weaker party is being invaded, it can easily mobilize for more support.</p>
-    <p>b. When it comes to invasion, nobody likes the invader.</p>
-    <p>c. The invader has to come up with an excellent explanation in order to get any support and justify the invasion.</p>
-</div>
-The soft overcoming the hard and not striking first are concepts in Tai Chi which reflect its the influence of Taoist philosophy. Lao Tzu believed that the softest of all things is water. The hardest of all things is metal. However, given time, metal will slowly be rusted and weakened by water. The same is true of the hardness of rock and stone in the ocean which is slowly changed and shaped by seawater. The concept of not striking first also enables one to examine one's self, evaluate all weaknesses, and make corrections and improvements so that all mistakes will be corrected and skills refined. If the opponent is proud of his skill and does not make any corrections, the result is obvious. When one does not strike first, he is calm, careful and patient. This indicates one has self control, courage, confidence, and a clear and calm mind to observe the opponent's every action and look for a weak spot. Therefore, to not strike first is a winning strategy.
+      <p>
+        There are two kinds of jing power. Yin Jing Power is for defensive and 
+        yielding maneuvers. Yang Jing Power is for offensive and attacking maneuvers. 
+        Correctly applying jing power is a very difficult task for all practitioners. 
+        Therefore, Chinese martial arts practitioners go to great lengths to get this 
+        information. If one does not correctly apply jing power, it will do more harm 
+        than good. If one applies it too early, it will be taken advantage of by the 
+        opponent. If too late, one will miss the opportunity and target. Therefore, a 
+        good strategy to execute jing power is to be calm, patient, clear of mind, 
+        courageous and let the opponent strike first. One counters the strike based on 
+        the opponent's weakness plus the opponent's power. Therefore, the execution is 
+        powerful.
+      </p>
 
-<b>2. Get there first</b>
-Although one should not strike first and it is recommended that one get to the target first. The Tai Chi Chuan Classics supports this by saying that "...if the opponent does not move, I do not move. If the opponent moves, I am already there." The concept of arriving first is an interesting strategy that is difficult to execute. When the opponent moves, one has a chance to observe the opponent's weakness and formulate a response. In addition, when the opponent initializes the strike, one is inactive. This inaction confuses the opponent and he does not know how to strike because no weakness can result from no action. Therefore, to strike second is actually to strike first. It is a good strategy to finish the confrontation quickly.
+      <p class="section-title">2. Speed</p>
+      <p>
+        "Speed" not only refers to the quick strike. Rather, it 
+        refers to the body's position changing quickly. It is so quick that the opponent 
+        cannot follow or respond. In confrontations, one should always avoid the 
+        obvious. This means one has to keep changing the position to search for the 
+        opponent's weak spot by advancing and retreating quickly or turning and twisting 
+        the body. Many times we observe the winner of a confrontation wins by executing 
+        a quick change in the body's position to avoid the strike and uses this to his 
+        advantage to win. Winning is not solely based on advancing, and/or retreating 
+        quickly or having a quick strike. However, it is very important for a 
+        practitioner to strengthen the lower portion of the body so it is nimble and 
+        flexible so it can support the body's profound maneuvers.
+      </p>
 
-<b>3. Neutralization</b>
-Tai Chi Chuan also puts emphasis on neutralizing the opponent's strike, and not directly going against the opponent's strike. "Going against" refers to not to letting go in any confrontation, being overcome with power, or any double weighted situation in which direct confrontation happens and leaves both parties exhausted. Neutralization refers to avoiding any confrontation or conflict. It is recommended to look for alternatives and options to solve any confrontation or conflict. In any confrontation, when the opponent strikes, one applies circular motion to neutralize the strike, resulting in an advantageous position and the opportunity to follow with an action to finish the confrontation.`,
-        author: "Vincent Chu"
-    },
-    {
-        id: 4,
-        title: "The Unbreakable",
-        section: "Application",
-        content: `In fighting and confrontation, there are many techniques involved. Although there are many practitioners who spend their lifetimes improving their skills and techniques so they are fast, deadly and powerful, the outcome of any confrontation is essentially decided by two factors. Hardness and Speed.
+      <p>
+        Although mobility is essential in all confrontations, advancing or retreating 
+        steps are too obvious and dangerous. In advancing, if one advances one inch 
+        less, one will miss the target. In retreating, if one retreats a little extra, 
+        one will miss the target as well. Especially if one has to cover a long 
+        distance, this creates many opportunities for the opponent to strike. In 
+        addition, quick strikes may be successful only some of the time. When one 
+        strikes, one also exposes one's own weakness. This only can be recovered by 
+        quick response and this quickness requires a very flexible body. In 
+        confrontation, if there is no advance or retreat step, and both parties maintain 
+        the same distance, then all positions will be based on turning and twisting of 
+        the waist and body. When the distance is reduced, all the strikes have a better 
+        chance to hit the target.
+      </p>
 
-<b>1. Hardness</b>
-Although there are many martial art practitioners who toughen their hands and feet in martial arts training, "hardness" not only refers to the hands and feet and their movements. Most importantly, it refers to invincible power. There are two types of power. Chinese martial art practitioners often prefer jing power over physical power or li power because li power involves muscle contraction and it is restricted by the shoulder and elbow joints. Therefore, li power is one dimensional and uncontrollable after launching a strike. Jing power on the other hand, comes from the integration of the whole body. Therefore, it is multi-dimensional and controllable after launching a strike. Although one of the characteristics of jing power is it can not last long, it is powerful because it involves the whole body when discharging power. Although one characteristic of li power is that it can last for a longer period, it is generated from localized muscle contraction, has no penetration capability, and cannot cause any serious damage when compared to jing power. Therefore, it is not preferred by Chinese martial arts practitioners.
+      <p>
+        Although internal arts system practitioners emphasize personal development in 
+        their training, this appears to have nothing to do with martial art's vigorous 
+        physical activity, yet the training is inseparable from martial art. In 
+        spiritual practice, although there are many motionless exercises, the exercises 
+        work on purifying the practitioner's temperament, moral character and 
+        accumulation of power. These are all vital components if one wants to excel in 
+        martial arts. In physical practice, although the exercises are done slowly and 
+        in a relaxed manner, the exercises often work to fine tune the practitioner's 
+        body to improve all physiologic organic functions. For instance, it can 
+        establish better communication among internal organs, increase sensitivity in 
+        the nervous system and improve coordination among the body, hands and feet. 
+        These are the key components needed to excel in speed. This is similar to 
+        lubricating the body no injuries will occur when moving quickly or responding 
+        suddenly. Therefore, internal art practitioners actually work on some of the 
+        most important components in martial arts to better their skills. Here are some 
+        of the concepts internal art practitioners should focus on:
+      </p>
 
-There are two kinds of jing power. Yin Jing Power is for defensive and yielding maneuvers. Yang Jing Power is for offensive and attacking maneuvers. Correctly applying jing power is a very difficult task for all practitioners. Therefore, Chinese martial arts practitioners go to great lengths to get this information. If one does not correctly apply jing power, it will do more harm than good. If one applies it too early, it will be taken advantage of by the opponent. If too late, one will miss the opportunity and target. Therefore, a good strategy to execute jing power is to be calm, patient, clear of mind, courageous and let the opponent strike first. One counters the strike based on the opponent's weakness plus the opponent's power. Therefore, the execution is powerful.
+      <p class="section-title">a. Seriousness</p>
+      <p>
+        It means the mind is clear, focused and without 
+        extraneous thoughts. When the mind is clear, it is tranquil because there is no 
+        more space inside. Similarly, when one is engaging an opponent, one has to be 
+        calm and ready to neutralize the opponent's strike because this takes 
+        considerable clarity from the practitioner. Therefore, when the mind is clear 
+        and tranquil, the intent is pure and able to completely occupy the mind. The 
+        practitioner does not have time to be afraid of anything. Additionally, when one 
+        is peaceful, the qi circulates more smoothly and carries more nutrients 
+        throughout the body. Therefore, one will not easily tire.
+      </p>
 
-<b>2. Speed</b>
-"Speed" not only refers to the quick strike. Rather, it refers to the body's position changing quickly. It is so quick that the opponent cannot follow or respond. In confrontations, one should always avoid the obvious. This means one has to keep changing the position to search for the opponent's weak spot by advancing and retreating quickly or turning and twisting the body. Many times we observe the winner of a confrontation wins by executing a quick change in the body's position to avoid the strike and uses this to his advantage to win. Winning is not solely based on advancing, and/or retreating quickly or having a quick strike. However, it is very important for a practitioner to strengthen the lower portion of the body so it is nimble and flexible so it can support the body's profound maneuvers.
+      <p class="section-title">b. Complexity</p>
+      <p>
+        Literally, it means many. In martial arts this means 
+        there are many techniques or multiple strikes. A style must have a profound 
+        strategy, clear and distinguished training methods for the practitioner to be 
+        able to launch multiple strikes without any difficulty. In other words, the 
+        methods train the mind and body to act as a unit so the body is coordinated. 
+        When one part moves, all parts follow.
+      </p>
 
-Although mobility is essential in all confrontations, advancing or retreating steps are too obvious and dangerous. In advancing, if one advances one inch less, one will miss the target. In retreating, if one retreats a little extra, one will miss the target as well. Especially if one has to cover a long distance, this creates many opportunities for the opponent to strike. In addition, quick strikes may be successful only some of the time. When one strikes, one also exposes one's own weakness. This only can be recovered by quick response and this quickness requires a very flexible body. In confrontation, if there is no advance or retreat step, and both parties maintain the same distance, then all positions will be based on turning and twisting of the waist and body. When the distance is reduced, all the strikes have a better chance to hit the target.
+      <p class="section-title">c. Path</p>
+      <p>
+        It means the motion of movement. Although people say that 
+        the shortest distance between two points is a straight line, a powerful straight 
+        punch must involve the whole body. When one strikes, every part of the body is 
+        going in the same direction to support the strike. Because of the human anatomy 
+        and the structure of the joints, in practice, all motions must be circulate to 
+        properly exercise the joint. However, this contradicts the straight line 
+        concept. A profound training method is stretch all the components that support 
+        the joints so they will be lubricated and the mechanics behind the strike will 
+        be lubricated by executing a slow and relaxed movements. Therefore, a speedy 
+        strike in application will not injure the practitioner.
+      </p>
 
-Although internal arts system practitioners emphasize personal development in their training, this appears to have nothing to do with martial art's vigorous physical activity, yet the training is inseparable from martial art. In spiritual practice, although there are many motionless exercises, the exercises work on purifying the practitioner's temperament, moral character and accumulation of power. These are all vital components if one wants to excel in martial arts. In physical practice, although the exercises are done slowly and in a relaxed manner, the exercises often work to fine tune the practitioner's body to improve all physiologic organic functions. For instance, it can establish better communication among internal organs, increase sensitivity in the nervous system and improve coordination among the body, hands and feet. These are the key components needed to excel in speed. This is similar to lubricating the body no injuries will occur when moving quickly or responding suddenly. Therefore, internal art practitioners actually work on some of the most important components in martial arts to better their skills. Here are some of the concepts internal art practitioners should focus on:
+      <p class="section-title">d. Qi</p>
+      <p>
+        It means power. For the nature of power as an insubstantial, 
+        one should begin to train with static or small movements, also known as the soft 
+        component, to accumulate power. Later, after one has already accumulated and 
+        begun to discharge power, one should train with dynamic movements, also known as 
+        the hard component. However, one cannot focus on one component without the 
+        other. Accumulation and discharging go together. A skillful martial arts 
+        practitioner understands this relationship and knows that one must combine 
+        accumulation and discharging or soft and hard components together so the skill 
+        and power will become indestructible and not easily exhausted.
+      </p>
 
-<b>a. Seriousness</b>
-It means the mind is clear, focused and without extraneous thoughts. When the mind is clear, it is tranquil because there is no more space inside. Similarly, when one is engaging an opponent, one has to be calm and ready to neutralize the opponent's strike because this takes considerable clarity from the practitioner. Therefore, when the mind is clear and tranquil, the intent is pure and able to completely occupy the mind. The practitioner does not have time to be afraid of anything. Additionally, when one is peaceful, the qi circulates more smoothly and carries more nutrients throughout the body. Therefore, one will not easily tire.
+      <p class="section-title">e. Observation</p>
+      <p>
+        Literally, it means perception. When one correctly 
+        perceives what is ahead, the proposition and conclusion are correct and one has 
+        good timing in execution. When one is engaging with an enemy, correct 
+        observation provides a lot of information resulting in a powerful strike that is 
+        on target. The key in observation is what to look for. In martial arts, a 
+        skillful practitioner often executes a powerful strike even when a movement is 
+        simple because his basic skills of the hands and body are well coordinated.
+      </p>
 
-<b>b. Complexity</b>
-Literally, it means many. In martial arts this means there are many techniques or multiple strikes. A style must have a profound strategy, clear and distinguished training methods for the practitioner to be able to launch multiple strikes without any difficulty. In other words, the methods train the mind and body to act as a unit so the body is coordinated. When one part moves, all parts follow.
-
-<b>c. Path</b>
-It means the motion of movement. Although people say that the shortest distance between two points is a straight line, a powerful straight punch must involve the whole body. When one strikes, every part of the body is going in the same direction to support the strike. Because of the human anatomy and the structure of the joints, in practice, all motions must be circulate to properly exercise the joint. However, this contradicts the straight line concept. A profound training method is stretch all the components that support the joints so they will be lubricated and the mechanics behind the strike will be lubricated by executing a slow and relaxed movements. Therefore, a speedy strike in application will not injure the practitioner.
-
-<b>d. Qi</b>
-It means power. For the nature of power as an insubstantial, one should begin to train with static or small movements, also known as the soft component, to accumulate power. Later, after one has already accumulated and begun to discharge power, one should train with dynamic movements, also known as the hard component. However, one cannot focus on one component without the other. Accumulation and discharging go together. A skillful martial arts practitioner understands this relationship and knows that one must combine accumulation and discharging or soft and hard components together so the skill and power will become indestructible and not easily exhausted.
-
-<b>e. Observation</b>
-Literally, it means perception. When one correctly perceives what is ahead, the proposition and conclusion are correct and one has good timing in execution. When one is engaging with an enemy, correct observation provides a lot of information resulting in a powerful strike that is on target. The key in observation is what to look for. In martial arts, a skillful practitioner often executes a powerful strike even when a movement is simple because his basic skills of the hands and body are well coordinated.
-
-Although there are many misconceptions about internal arts regarding martial art's rigorous physical activity, internal art practitioners treasure and value their training of spiritual and physical practices. All skillful martial arts practitioners should make use of this information and incorporate the components of Hard and Fast as part of their daily maintenance exercises. Therefore, most Chinese martial art styles developed exercises based on these components for beginners to train their waist and body for flexibility and nimbleness.`,
-        author: "Vincent Chu"
-    },
-    {
-        id: 5,
-        title: "Creativity of the Solo Form",
-        section: "Forms",
-        content: `One complaint about the Solo Form is that it is too long and too difficult to remember, that it is not the right routine for today's busy and stressful society. And so, practitioners have come up with shorter and easier versions of the form. These new versions, while easier to learn and more accessible to the public, have lost many of the original meanings.
+      <p>
+        Although there are many misconceptions about internal arts regarding martial 
+        art's rigorous physical activity, internal art practitioners treasure and value 
+        their training of spiritual and physical practices. All skillful martial arts 
+        practitioners should make use of this information and incorporate the components 
+        of Hard and Fast as part of their daily maintenance exercises. Therefore, most 
+        Chinese martial art styles developed exercises based on these components for 
+        beginners to train their waist and body for flexibility and nimbleness.
+      </p>
+    </Fragment>
+    `,
+    author: "Vincent Chu"
+  },
+  {
+    id: 5,
+    title: "Creativity of the Solo Form",
+    section: "Forms",
+    content: `One complaint about the Solo Form is that it is too long and too difficult to remember, that it is not the right routine for today's busy and stressful society. And so, practitioners have come up with shorter and easier versions of the form. These new versions, while easier to learn and more accessible to the public, have lost many of the original meanings.
 
 The movements of the Solo Form created by Zheng San Feng is a combination of old and new, simple and complex, easy and difficult, movements. One can see this in a movement that involves stretching and relaxing, up and down, fast and slow, repetition and new, which follow the principle of Yin and Yang. However, movements do not just simply repeat themselves. The movements are repeated but there are many new and different movements in between so that they act as a service breaker and provide a sense of spiral repetition. This spiral imply of moving ahead. For example, take the movement of "Brush Knee and Twist Step." It appears first in the first section of the Solo Form. It is done five times: (1) After "White Crane Spreads its Wing; (2) after the first "Play the Lute", it is done three times; (3) after the second "Play the Lute," it is done one time. In the second section, "Brush Knee and Twisted Step" is done four more times: (1) after "Turn Around and Kick;" it is done two times; (2) after the two "White Crane Spreads its Wing," it is also done two times. From this sequence of repetitions, we see that the step of repetition reviewed the old movement of "Brush Knee and Twisted Step" as well as connected into other movements. This process of repetition and new movements following the same movement throughout the Solo Form alert practitioners that attention and concentration must be observed all the time.
 
@@ -221,26 +788,26 @@ The three sections composing the Solo Form are like a good novel. There is an in
 Tai Chi Chuan is the physical interpretation of the philosophy of Tai Chi. We see the composition and structure of Tai Chi Chuan's Solo Form aims to achieve the following objectives: 1. The Solo Form points out the philosophy of Tai Chi Chuan by demonstrating the movements according to the following: a. The beginning and ending movements are the same. The Solo Form is a complete circle. b. It is not always the same movement that follows a repetition and all the movements do not move in one direction. In one set, the movements go backward and forward three times. it provides a sense of spiral motion and moving ahead. c. All the wave motions described above symbolize continuity. d. There are repetitions and new, fast and slow, easy and difficult movements. This is the interpretation of Yin and Yang. 2. The Solo Form points out the essence of the art of Tai Chi Chuan by demonstrating the movements according to the following: a. Begin with the movement "Grasp the Bird's Tail" to highlight the importance of Ward off, Roll back, Press and Push. b. Repeat the important movements several times in one practice so that a practitioner will better understand and become familiar with these movements and comprehend their usages. c. All the movements following the repetitions are not the same so that a practitioner will pay close attention to practice. d. The routine is not done strictly in one direction that is common among External Styles, rather it goes back and forth three times. This provides a sense of "folding" for leverage and flexibility.
 
 Thus, we can see why it is so difficult to learn the Solo Form. It is designed to answer the question- What is it? How do we practice it? It exists for the practitioner to explore, to experience and to adapt. Throughout history, many practitioners have attempted to improve it but the essential framework has remained the same.`,
-        author: "Vincent Chu"
-    },
+    author: "Vincent Chu"
+  },
 
-    // TODO: This article 6 requires a carousel of photos
-    // {
-    //     id: 6,
-    //     title: "Fifteen Technique Form / Beginning Tai Chi Chuan",
-    //     section: "Forms",
-    //     content: "carousel of pictures",
-    //     author: "Vincent Chu"
-    // },
+  // TODO: This article 6 requires a carousel of photos
+  // {
+  //     id: 6,
+  //     title: "Fifteen Technique Form / Beginning Tai Chi Chuan",
+  //     section: "Forms",
+  //     content: "carousel of pictures",
+  //     author: "Vincent Chu"
+  // },
 
-    // article 7 : Forty Two Big Circle Form is in a separate file
-    updatedFortyTwoFormArticle,
+  // article 7 : Forty Two Big Circle Form is in a separate file
+  updatedFortyTwoFormArticle,
 
-    {
-        id: 8,
-        title: "How to Remember the Solo Form's Movements",
-        section: "Forms",
-        content: `With the popularity of Tai Chi Chuan, the quality of students is diverse and the comments and complains from students are increasing. It does not matter who the students are, the theme is the same; it is difficult to remember the Solo Form.
+  {
+    id: 8,
+    title: "How to Remember the Solo Form's Movements",
+    section: "Forms",
+    content: `With the popularity of Tai Chi Chuan, the quality of students is diverse and the comments and complains from students are increasing. It does not matter who the students are, the theme is the same; it is difficult to remember the Solo Form.
 
 After three decades of involvement in Tai Chi Chuan as a student as well as an instructor, I observed that successful students have their methods and techniques to remember the creative Solo Form. Here are some of them.
 
@@ -281,13 +848,13 @@ Tai Chi Chuan is one of the physical activities that involves two steps to remem
 When students help each other, they are able to remember the movements better. This method of group support provides a comfortable environment. Every student is at the same level so that they can share their experiences and understanding about each movement and help each other. In other words, they have the same level of communication.
 
 The traditional method of teaching Tai Chi Chuan was done on a one on one basis by the instructor. Time is not an issue so that a student can master one movement as a time so that the quality remained. However, this method of teaching is too slow for today's fast paced students. Although Tai Chi Chuan instructors had been compromised with this fast pace, high stress society with a shorter and simpler Solo Form, students still find it difficult to remember and execute the Solo Form correctly. If a student utilizes the ten methods described above in remembering the Solo Form, he should be successful.`,
-        author: "Vincent Chu"
-    },
-    {
-        id: 9,
-        title: "What is the Solo Drill?",
-        section: "Forms",
-        content: `The Solo Drill is a dynamic qigong exercise incorporating the concept of Fa Jing with the applications from the individual movements of Tai Chi Chuan's Solo Form's. It is an extension of Zhan Zhuang training. The objective is to discharge power accumulated from Zhan Zhuang training by executing physical movements. The relationship between Zhan Zhuang training and the Solo Drill training is that Zhan Zhuang training is a method of accumulating power so that all the physiological organs are strong and energetic, and Solo Drill training is the method used to discharge power through some of these physiological organs. Therefore, skillful practitioners often focus on the combination of internal and external training. If one emphasizes only Zhan Zhuang training, he or she will not be able to discharge power outside the body efficiently. On the other hand, if one emphasizes only the Solo Drill training, there will not be enough power to discharge. From my years of teaching, I have seen this happen to many people whom possess power but do not know what to do with it. Therefore, Zhan Zhuang training and Solo Drill training are important components of Tai Chi Chuan as a martial arts system. The power accumulated from Zhan Zhuang training and discharged in the Solo Drill training is the same as the process of moving from a physically static to a dynamic state, or in other words "from wu chi to tai chi". Therefore, this transition is very significant and also difficult for all practitioners to accomplish. It requires a very special kind of person. From my experience, those that are successful are people who have discipline, confidence, intelligence, patience and are consistent. In addition to accumulating power, Zhan Zhuang training also improves the practitioner's physical condition. However, this fact is often ignored by many practitioners until one is engaging in the physically demanding Solo Drill training. In Zhan Zhuang training, when one feels that the body is comfortable and energetic in a particular position after few minutes, this is a sign that one is ready to engage in Solo Drill training.
+    author: "Vincent Chu"
+  },
+  {
+    id: 9,
+    title: "What is the Solo Drill?",
+    section: "Forms",
+    content: `The Solo Drill is a dynamic qigong exercise incorporating the concept of Fa Jing with the applications from the individual movements of Tai Chi Chuan's Solo Form's. It is an extension of Zhan Zhuang training. The objective is to discharge power accumulated from Zhan Zhuang training by executing physical movements. The relationship between Zhan Zhuang training and the Solo Drill training is that Zhan Zhuang training is a method of accumulating power so that all the physiological organs are strong and energetic, and Solo Drill training is the method used to discharge power through some of these physiological organs. Therefore, skillful practitioners often focus on the combination of internal and external training. If one emphasizes only Zhan Zhuang training, he or she will not be able to discharge power outside the body efficiently. On the other hand, if one emphasizes only the Solo Drill training, there will not be enough power to discharge. From my years of teaching, I have seen this happen to many people whom possess power but do not know what to do with it. Therefore, Zhan Zhuang training and Solo Drill training are important components of Tai Chi Chuan as a martial arts system. The power accumulated from Zhan Zhuang training and discharged in the Solo Drill training is the same as the process of moving from a physically static to a dynamic state, or in other words "from wu chi to tai chi". Therefore, this transition is very significant and also difficult for all practitioners to accomplish. It requires a very special kind of person. From my experience, those that are successful are people who have discipline, confidence, intelligence, patience and are consistent. In addition to accumulating power, Zhan Zhuang training also improves the practitioner's physical condition. However, this fact is often ignored by many practitioners until one is engaging in the physically demanding Solo Drill training. In Zhan Zhuang training, when one feels that the body is comfortable and energetic in a particular position after few minutes, this is a sign that one is ready to engage in Solo Drill training.
 
 In Solo Drill training, one should follow the concepts of 'slow is better than fast', and 'fluid is better than hurried' to reduced the risk of physical injury. First, one works with large and slow movements. Later, one works with small movements with speed and power. When one follows these instructions, one will be able to understand all the powers changed inside the body and performed by the body accordingly.
 
@@ -296,13 +863,13 @@ The training in Solo Drill is similar to Zhan Zhuang in a few important ways. 1)
 In the beginning, practicing the Solo Drill's movements are but a series of simple exercises for the hands and feet. With experience, one will understand the power behind each exercise is not coming only from the hands and feet but from the whole body. This is what we call 'when the top portion moves, the lower portion follows. When the lower portion moves, the top portion leads.'
 
 When one is practicing the Solo Drill, one should pay closer attention to the mechanics of each movement. The intent and movement should be coordinated to result in a powerful strike. The movement should be natural, comfortable, and muscles, joints, and tendons should stay relaxed. Each movement's motion should be large at the beginning to fine tune all the different components, later, the same movement should have smaller motion so that it is fast and powerful. The slower the motion, the better the control, and focus. This is the reason why Yang Cheng Fu said that first one seeks large movement and later seeks smaller movement.`,
-        author: "Vincent Chu"
-    },
-    {
-        id: 10,
-        title: "Solo Drill and Martial Art",
-        section: "Forms",
-        content: `People often say "Being efficient in one technique is better than learning one thousand techniques." This points out the importance of mastering single techniques. This is usually done in Solo Drill training.
+    author: "Vincent Chu"
+  },
+  {
+    id: 10,
+    title: "Solo Drill and Martial Art",
+    section: "Forms",
+    content: `People often say "Being efficient in one technique is better than learning one thousand techniques." This points out the importance of mastering single techniques. This is usually done in Solo Drill training.
 
 "Solo Drill training" refers to the repeated practice of the same movement and its variations for its value as a martial application. One should practice each individual movement until one has fully mastered the technique's execution in applications and variations, power and timing. Although practicing the same thing repeatedly may be boring to some, it cannot be ignored by martial art practitioners. This training plays a very important role in determining one's skill.
 
@@ -311,13 +878,13 @@ There are many people who have invested decades of their time in martial arts tr
 Although forms or routines are the result of many people's experiences, their main function is to make it easier for practitioners to remember certain techniques, make the training interesting, and improve balance and coordination. At the same time, forms have many limitations and restrictions. There are many misleading movements in routines because of the form's requirements as a performance art and the need for continuity. Actually, some movements have no value in martial application. For example, a movement often appears only on one side, left without right, or front without rear, top without bottom. In addition, to keep routines smooth, natural and graceful in transitions, many impractical movements are added. Some movements put emphasis on the body's flexibility, coordination and nimbleness, or increase the difficulty of executing movements as the form progresses. This often makes all the martial art applications and techniques indistinguishable. Truthfully, to win in confrontation and overcome the opponent one simply needs speed and a powerful strike, nothing else.
 
 Some routines are very short, allowing a practitioner to practice the movements more often in a set amount of time. However, it is still better when one is able to practice each movement individually. When one practices the movements individually and separately, one understands each movement's martial usage and function better. Therefore, in order to fully understand the movement's martial application and its variations, one must practice each movement separately. The practice of these individual movements is called Solo Drill Training.`,
-        author: "Vincent Chu"
-    },
-    {
-        id: 11,
-        title: "Solo Form",
-        section: "Forms",
-        content: `Solo form is distinctive to Chinese martial art. Generally, a form can be done alone, with a partner or with one (or more) weapon on hands. Each movement is created and executed based on the martial art's offensive and defensive meanings.
+    author: "Vincent Chu"
+  },
+  {
+    id: 11,
+    title: "Solo Form",
+    section: "Forms",
+    content: `Solo form is distinctive to Chinese martial art. Generally, a form can be done alone, with a partner or with one (or more) weapon on hands. Each movement is created and executed based on the martial art's offensive and defensive meanings.
 
 The development of a solo form is the result of many generations of practical and training experiences. A good solo form has many effective martial art techniques, application and variations as well as tactics. Therefore, it is kept secret and not revealed to the public. There are some solo form emphasized on strong and powerful techniques, and there are others emphasized on soft and yielding techniques.
 
@@ -436,74 +1003,17 @@ Although one has learned, understands each movement, technique and posture from 
 <b>Variation</b>
 There are many styles divided the same solo form into many objectives of training. Each solo form training guides and fulfills a specific objective. Generally, a solo form has a large posture is called the Large Frame Form which is often demonstrate to the public. It has a performance art characteristic. The solo form has a medium posture is called the Medium Frame Form which is often use as a combat art. Each movement is executing properly as defensive and offensive martial maneuvers. A solo form with a small posture is called the Small Frame Form is often practiced as a qi circulation to improve health condition.
 The solo form has a direct connection to the defensive and offensive martial tactics. If a student is engaging in martial art training and following the described procedure, there is no problem to improve the skill and comprehension.`,
-        author: "Vincent Chu"
-    },
-    {
-        id: 12,
-        title: "TEST ARTICLE!!!",
-        section: "Forms",
-        content: `
-        <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tai Chi Chuan and Qigong</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      white-space: normal;
-    }
-    body {
-      margin: 0;
-      padding: 20px;
-      background-color: #f8f8f8;
-      color: #333;
-      line-height: 1.6;
-    }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background-color: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .title {
-      font-size: 28px;
-      text-align: center;
-      margin-bottom: 20px;
-      color: #2c3e50;
-    }
-    .content {
-      font-size: 16px;
-    }
-    ol {
-      padding-left: 20px;
-    }
-    ol ol {
-      padding-left: 25px;
-    }
-    .footer {
-      text-align: center;
-      margin-top: 30px;
-      font-size: 14px;
-      font-weight: bold;
-    }
-    .author {
-      text-align: center;
-      margin-top: 20px;
-      font-style: italic;
-    }
-      
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1 class="title">Tai Chi Chuan and Qigong</h1>
+    author: "Vincent Chu"
+  },
+  {
+    id: 12,
+    title: "TEST ARTICLE!!!",
+    section: "Forms",
+    content: `
+  <Frament>
+    <h1 class="title text-center">Tai Chi Chuan and Qigong</h1>
     
-    <div class="content">
+    <Fragment>
       <p>
         Tai Chi Chuan and Qigong are mind and body exercises that emphasize the function and application of chi. They utilize chi to improve the practitioner's physical strength and moral character, purify the mind and temper, cure disease and achieve longevity and physical health by clearing the meridians and channels and improving the physiological functions of the organs as well as the nervous and circulatory systems. Because these two disciplines share many common benefits, people especially beginners assume that they are the same. But there are also people who think that the two are not related. The different opinions have created a controversy among practitioners of all levels. To clear the confusion, I would like to outline the relationship between Tai Chi Chuan and Qigong.
       </p>
@@ -621,68 +1131,66 @@ The solo form has a direct connection to the defensive and offensive martial tac
         Tai Chi Chuan is a health maintenance exercise to improve health, achieve longevity and designed as a tool to understand the physical and spiritual realities that are outgrowth from the Taoist Qigong School. Therefore, it has all the characteristics and benefits as a Qigong exercise and more. It is one of the highest form of Qigong exercise because its objective is for people to harmonize with the universe and at the same time, it is a form of excellent martial art system.
       </p>
 
-    </div>
+    </Fragment>
     
-  </div>
-</body>
-</html>
+  </Fragment>
         `,
-        author: "Vincent Chu"
-    },
-    {
-        id: 13,
-        title: "TEST ARTICLE 2!!!",
-        section: "Forms",
-        content: `t5`,
-        author: "Vincent Chu"
-    },
-    {
-        id: 14,
-        title: "",
-        section: "Forms",
-        content: ``,
-        author: "Vincent Chu"
-    },
-    {
-        id: 15,
-        title: "",
-        section: "Forms",
-        content: ``,
-        author: "Vincent Chu"
-    },
-    {
-        id: 16,
-        title: "",
-        section: "Forms",
-        content: ``,
-        author: "Vincent Chu"
-    },
-    {
-        id: 17,
-        title: "",
-        section: "Forms",
-        content: ``,
-        author: "Vincent Chu"
-    },
-    {
-        id: 18,
-        title: "",
-        section: "Forms",
-        content: ``,
-        author: "Vincent Chu"
-    },
-    {
-        id: 19,
-        title: "",
-        section: "Forms",
-        content: ``,
-        author: "Vincent Chu"
-    },
-    {
-        id: 20,
-        title: "",
-        section: "Forms",
-        content: ``,
-        author: "Vincent Chu"
-    },
+    author: "Vincent Chu"
+  },
+  {
+    id: 13,
+    title: "TEST ARTICLE 2!!!",
+    section: "Forms",
+    content: `t5`,
+    author: "Vincent Chu"
+  },
+  {
+    id: 14,
+    title: "",
+    section: "Forms",
+    content: ``,
+    author: "Vincent Chu"
+  },
+  {
+    id: 15,
+    title: "",
+    section: "Forms",
+    content: ``,
+    author: "Vincent Chu"
+  },
+  {
+    id: 16,
+    title: "",
+    section: "Forms",
+    content: ``,
+    author: "Vincent Chu"
+  },
+  {
+    id: 17,
+    title: "",
+    section: "Forms",
+    content: ``,
+    author: "Vincent Chu"
+  },
+  {
+    id: 18,
+    title: "",
+    section: "Forms",
+    content: ``,
+    author: "Vincent Chu"
+  },
+  {
+    id: 19,
+    title: "",
+    section: "Forms",
+    content: ``,
+    author: "Vincent Chu"
+  },
+  {
+    id: 20,
+    title: "",
+    section: "Forms",
+    content: ``,
+    author: "Vincent Chu"
+  },
 ];
