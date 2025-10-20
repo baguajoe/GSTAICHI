@@ -1,6 +1,7 @@
 import React from "react";
 import vincentImage from "../../img/VincentHoldBall.jpg";
 import ginSoonImage from "../../img/GinSoon2.jpg";
+import tonyZhuImage from "../../img/IMG_0986.jpg"; // You'll need to add this image to your img folder
 
 export const Instructors = () => {
     const instructors = [
@@ -26,6 +27,18 @@ export const Instructors = () => {
             `,
             image: vincentImage,
             link: "/interviews/vincent-chu",
+        },
+        {
+            name: "Master Tony Zhu",
+            description: `
+                Tony Zhu is the sixth generation Yang Style Tai Chi Chuan lineage practitioner. He was introduced to the theory and practice 
+                of Yang Tai Chi Chuan in 1986 by his uncle, Grandmaster Gin Soon Chu. Ever since then, he has been an active Yang Style Tai Chi 
+                practitioner. Since 1996, Tony Zhu has been an assistant instructor at the headquarters of the Gin Soon Tai Chi Chuan Federation. 
+                In 2000, Tony Zhu travelled with Grandmaster Gin Soon Chu and his son to give seminars on Tai Chi Chuan in Europe. With more than 
+                30 years of diligent practice and learning under the supervision of Grandmaster Gin Soon Chu and his son, Vincent Chu, Tony Zhu 
+                has mastered the Yang style Tai Chi Chuan.
+            `,
+            image: tonyZhuImage,
         }
     ];
 
@@ -34,20 +47,19 @@ export const Instructors = () => {
             <h1 className="text-center mb-4">Instructors</h1>
             <div className="row justify-content-center">
                 {instructors.map((instructor, index) => (
-                    <div key={index} className="col-md-6 mb-4" style={{ maxWidth: "400px" }}>
+                    <div key={index} className="col-md-6 col-lg-4 mb-4">
                         <div className="card shadow-sm h-100">
                             <img
                                 src={instructor.image}
                                 className="card-img-top"
-                                style={{ maxHeight: "525px" }}
+                                style={{ height: "400px", objectFit: "contain", backgroundColor: "#f8f9fa" }}
                                 alt={`Image of ${instructor.name}`}
                             />
-                            <div className="card-body">
+                            <div className="card-body d-flex flex-column">
                                 <h4 className="card-title">{instructor.name}</h4>
-                                <p className="card-text" style={{ textAlign: "justify" }}>
+                                <p className="card-text" style={{ textAlign: "justify", flex: 1 }}>
                                     {instructor.description}
                                 </p>
-
                             </div>
                         </div>
                     </div>

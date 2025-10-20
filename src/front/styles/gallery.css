@@ -1,0 +1,165 @@
+/* gallery.css */
+
+.gallery-container {
+    padding: 2rem 1rem;
+}
+
+.gallery-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    margin-bottom: 2rem;
+}
+
+.carousel-wrapper {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-image-container {
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e9ecef;
+}
+
+.carousel-image {
+    height: auto;
+    width: auto;
+    min-height: 100%;
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    color: #590d0d;
+    cursor: pointer;
+    z-index: 100;
+    transition: color 0.3s ease;
+    border-radius: 50%;
+    padding: 10px;
+}
+
+.carousel-arrow-left {
+    left: 10px;
+}
+
+.carousel-arrow-right {
+    right: 10px;
+}
+
+.carousel-caption-custom {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    padding: 0.5rem;
+}
+
+.caption-text {
+    font-size: clamp(0.875rem, 2vw, 1.25rem);
+}
+
+/* Mobile phones (portrait) - 576px and below */
+@media only screen and (max-width: 576px) {
+    .gallery-container {
+        padding: 1rem 0.5rem;
+    }
+
+    .gallery-title {
+        font-size: 1.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .carousel-image-container {
+        height: 50vh; /* Shorter height on mobile */
+        min-height: 300px;
+    }
+
+    .carousel-arrow {
+        font-size: 1.5rem;
+        padding: 8px;
+    }
+
+    .carousel-arrow-left {
+        left: 5px;
+    }
+
+    .carousel-arrow-right {
+        right: 5px;
+    }
+
+    .carousel-caption-custom {
+        padding: 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    .caption-text {
+        font-size: 0.875rem;
+    }
+}
+
+/* Mobile phones (landscape) and small tablets - 577px to 768px */
+@media only screen and (min-width: 577px) and (max-width: 768px) {
+    .gallery-container {
+        padding: 1.5rem 1rem;
+    }
+
+    .gallery-title {
+        font-size: 2rem;
+    }
+
+    .carousel-image-container {
+        height: 60vh;
+    }
+
+    .carousel-arrow {
+        font-size: 1.75rem;
+    }
+
+    .carousel-arrow-left {
+        left: 8px;
+    }
+
+    .carousel-arrow-right {
+        right: 8px;
+    }
+
+    .caption-text {
+        font-size: 1rem;
+    }
+}
+
+/* Tablets - 769px to 992px */
+@media only screen and (min-width: 769px) and (max-width: 992px) {
+    .carousel-image-container {
+        height: 65vh;
+    }
+
+    .carousel-arrow {
+        font-size: 1.875rem;
+    }
+}
+
+/* Desktop - 993px and above */
+@media only screen and (min-width: 993px) {
+    .carousel-image-container {
+        height: 70vh;
+    }
+
+    .carousel-arrow {
+        font-size: 2rem;
+    }
+}
+
+/* Touch devices - larger touch targets */
+@media (hover: none) and (pointer: coarse) {
+    .carousel-arrow {
+        padding: 15px;
+        font-size: 2rem;
+    }
+}

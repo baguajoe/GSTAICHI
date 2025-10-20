@@ -53,10 +53,10 @@ export const Sidebar = () => {
                 </Link>
 
                 <Link
-                    className={`nav-link mt-2 ${location.pathname === "/federal-members" ? "active" : ""}`}
-                    to="/federal-members"
+                    className={`nav-link mt-2 ${location.pathname === "/federation-members" ? "active" : ""}`}
+                    to="/federation-members"
                 >
-                    Federal Members
+                    Federation Members
                 </Link>
 
 

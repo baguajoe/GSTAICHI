@@ -12,7 +12,7 @@ import { ContactUs } from "./pages/ContactUs";
 import { Workshops } from "./pages/Workshops";
 import { Curriculum } from "./pages/Curriculum";
 import { History } from "./pages/History";
-import { FederalMembers } from "./pages/FederalMembers";
+import { FederationMembers } from "./pages/FederationMembers";
 import { Instructors } from "./pages/Instructors";
 import { Articles } from "./pages/Articles";
 import { Lineage } from "./pages/Lineage";
@@ -54,7 +54,7 @@ const Layout = () => {
                                 <Route element={<Workshops />} path="/workshops" />
                                 <Route element={<History />} path="/history" />
                                 <Route element={<Instructors />} path="/instructors" />
-                                <Route element={<FederalMembers />} path="/federal-members" />
+                                <Route element={<FederationMembers />} path="/federation-members" />
                                 <Route element={<Lineage />} path="/lineage" />
                                 <Route element={<Articles />} path="/articles" />
                                 <Route element={<Articles />} path="/articles/:id" />

@@ -1,0 +1,304 @@
+/* history.css */
+
+.history-container {
+    padding: 2rem 1rem;
+}
+
+.history-title {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    margin-bottom: 2rem;
+    color: #2b2b2b;
+}
+
+.history-carousel-wrapper {
+    position: relative;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.history-image {
+    max-height: 600px;
+    object-fit: cover;
+}
+
+.history-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    color: #590d0d;
+    cursor: pointer;
+    z-index: 100;
+    transition: color 0.3s ease;
+    border-radius: 50%;
+    padding: 10px;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 15px rgba(255, 255, 255, 0.5);
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+}
+
+.history-arrow-left {
+    left: 10px;
+}
+
+.history-arrow-right {
+    right: 10px;
+}
+
+.history-caption {
+    background-color: transparent;
+    padding: 1.5rem;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.history-caption-title {
+    font-size: clamp(1.25rem, 4vw, 2rem);
+    margin-bottom: 1rem;
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+    font-weight: bold;
+}
+
+.history-caption-text {
+    text-align: start;
+    background-color: rgba(0, 0, 0, 0.75);
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: clamp(0.875rem, 2vw, 1rem);
+    line-height: 1.6;
+    color: #ffffff;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Scrollbar styling for caption text */
+.history-caption-text::-webkit-scrollbar {
+    width: 6px;
+}
+
+.history-caption-text::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.history-caption-text::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+}
+
+.history-caption-text::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.7);
+}
+
+/* Mobile phones (portrait) - 576px and below */
+@media only screen and (max-width: 576px) {
+    .history-container {
+        padding: 1rem 0.5rem;
+    }
+
+    .history-title {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .history-image {
+        max-height: 250px;
+        min-height: 200px;
+        object-fit: cover;
+        filter: brightness(0.7); /* Darken image slightly for better text contrast */
+    }
+
+    .history-arrow {
+        font-size: 1.25rem;
+        padding: 6px;
+    }
+
+    .history-arrow-left {
+        left: 5px;
+    }
+
+    .history-arrow-right {
+        right: 5px;
+    }
+
+    .history-caption {
+        position: static; /* Move caption below image on mobile */
+        padding: 1rem;
+        background-color: #2b2b2b;
+    }
+
+    .history-caption-title {
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+        text-shadow: none;
+        color: #ffffff;
+    }
+
+    .history-caption-text {
+        font-size: 0.85rem;
+        padding: 0.75rem;
+        background-color: rgba(0, 0, 0, 0.9);
+        max-height: none; /* Allow full text on mobile */
+        line-height: 1.6;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Make carousel item flex column on mobile */
+    .carousel-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Hide carousel indicators on mobile */
+    .carousel-indicators {
+        display: none;
+    }
+}
+
+/* Mobile phones (landscape) and small tablets - 577px to 768px */
+@media only screen and (min-width: 577px) and (max-width: 768px) {
+    .history-container {
+        padding: 1.5rem 1rem;
+    }
+
+    .history-title {
+        font-size: 1.75rem;
+    }
+
+    .history-image {
+        max-height: 350px;
+        min-height: 280px;
+        filter: brightness(0.8);
+    }
+
+    .history-arrow {
+        font-size: 1.5rem;
+        padding: 8px;
+    }
+
+    .history-arrow-left {
+        left: 8px;
+    }
+
+    .history-arrow-right {
+        right: 8px;
+    }
+
+    .history-caption {
+        padding: 1rem;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 50%, transparent 100%);
+    }
+
+    .history-caption-title {
+        font-size: 1.25rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .history-caption-text {
+        font-size: 0.875rem;
+        padding: 0.875rem;
+        background-color: rgba(0, 0, 0, 0.85);
+        max-height: 180px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+}
+
+/* Tablets - 769px to 992px */
+@media only screen and (min-width: 769px) and (max-width: 992px) {
+    .history-image {
+        max-height: 500px;
+    }
+
+    .history-arrow {
+        font-size: 1.75rem;
+    }
+
+    .history-caption {
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.5) 70%, transparent 100%);
+    }
+
+    .history-caption-title {
+        font-size: 1.5rem;
+    }
+
+    .history-caption-text {
+        font-size: 0.9rem;
+        background-color: rgba(0, 0, 0, 0.8);
+        max-height: 250px;
+    }
+}
+
+/* Desktop - 993px and above */
+@media only screen and (min-width: 993px) {
+    .history-image {
+        max-height: 600px;
+    }
+
+    .history-arrow {
+        font-size: 2rem;
+    }
+
+    .history-caption {
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
+    }
+
+    .history-caption-title {
+        font-size: 2rem;
+    }
+
+    .history-caption-text {
+        font-size: 1rem;
+        background-color: rgba(0, 0, 0, 0.75);
+        max-height: 300px;
+    }
+}
+
+/* Large desktops - 1200px and above */
+@media only screen and (min-width: 1200px) {
+    .history-container {
+        max-width: 1400px;
+    }
+
+    .history-image {
+        max-height: 650px;
+    }
+}
+
+/* Touch devices - larger touch targets */
+@media (hover: none) and (pointer: coarse) {
+    .history-arrow {
+        padding: 12px;
+    }
+
+    .carousel-indicators button {
+        width: 12px;
+        height: 12px;
+    }
+}
+
+/* Landscape orientation adjustments for mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .history-image {
+        max-height: 300px;
+    }
+
+    .history-caption {
+        position: absolute;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 70%, transparent 100%);
+    }
+
+    .history-caption-text {
+        max-height: 120px;
+        font-size: 0.75rem;
+        padding: 0.5rem;
+    }
+
+    .history-caption-title {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+}

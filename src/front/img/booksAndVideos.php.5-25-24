@@ -1,0 +1,762 @@
+<HTML>
+<head>
+<title>Gin Soon Tai Chi Chuan Federation</title>
+<link rel="stylesheet" href="include/main.css" type="text/css">
+<link rel="stylesheet" href="include/popup.css" type="text/css">
+<script language="javascript">
+	var g_sPage = "booksAndVideos";
+	var g_sSection = "booksAndVideos";
+	function shippingSelect()
+	{
+		if (document.getElementById("lstInternational").value != "")
+		{
+			if(document.getElementById("lstInternational").value == "US")
+			{
+				fromAJTaiChiChuanDVD.shipping.value = "11";
+				frm22TaiChiSwordDVD.shipping.value = "11";
+				frmComparativeBook.shipping.value = "11";
+				frmApplicationBook.shipping.value = "11";
+				frmMediumDVD.shipping.value = "11";
+				frmBeginnersVCD.shipping.value = "11";
+				frmLargeFrameVCD.shipping.value = "11";
+				frmCenterHarmonyVCD.shipping.value = "11";
+				frmThreeCirclesVCD.shipping.value = "11";
+				frmFifteenShortFrameDVD.shipping.value = "11";
+				frmTwelveLargeFrameDVD.shipping.value = "11";
+				frmEightMediumFrameDVD.shipping.value = "11";
+				fromTaiChiGongFormDVD.shipping.value = "11";
+				frmReturningTaiChiFormDVD.shipping.value = "11";
+				frmTaiChiPushHandDVD.shipping.value = "11";
+				frmtaichifundamentalsDVD.shipping.value = "11";
+                                frmbaduanjinDVD.shipping.value = "11";
+                                frm13animalsDVD.shipping.value = "11";
+                                frmeightinternalDVD.shipping.value = "11";
+                                frm9tenlargeframeDVD.shipping.value = "11";
+                                frmpangutaichiDVD.shipping.value = "11";
+				var modal = document.getElementById("myModal");
+				modal.style.display = "none";
+			}
+			else
+			{
+                                fromAJTaiChiChuanDVD.shipping.value = "20";
+				frm22TaiChiSwordDVD.shipping.value = "20";
+				frmComparativeBook.shipping.value = "26";
+				frmApplicationBook.shipping.value = "20";
+				frmMediumDVD.shipping.value = "20";
+				frmBeginnersVCD.shipping.value = "20";
+				frmLargeFrameVCD.shipping.value = "20";
+				frmCenterHarmonyVCD.shipping.value = "20";
+				frmThreeCirclesVCD.shipping.value = "20";
+				frmFifteenShortFrameDVD.shipping.value = "20";
+				frmTwelveLargeFrameDVD.shipping.value = "20";
+				frmEightMediumFrameDVD.shipping.value = "20";
+				fromTaiChiGongFormDVD.shipping.value = "20";
+				frmReturningTaiChiFormDVD.shipping.value = "20";
+				frmTaiChiPushHandDVD.shipping.value = "20";
+				frmtaichifundamentalsDVD.shipping.value = "20"
+                                frmbaduanjinDVD.shipping.value = "20";
+                                frm13animalsDVD.shipping.value = "20";
+                                frmeightinternalDVD.shipping.value ="20";
+                                frm9tenlargeframeDVD.shipping.value = "20";
+                                frmpangutaichiDVD.shipping.value = "20";
+              
+		                var modal = document.getElementById("myModal");
+				var span = document.getElementsByClassName("close")[0];
+		                modal.style.display = "none";
+			    
+			}
+		}
+		else
+		{
+			alert("Please select a shipping region");
+		}
+	}
+	
+	function checkShipping()
+	{
+		var OK = false;
+		
+		if (document.getElementById("lstInternational").value != "")
+			OK = true;
+		else{
+		       alert("Please select a shipping region");
+                       
+                     }
+                return ok;
+		
+	}
+</script>
+</head>
+
+<body marginwidth="0" marginheight="0" topmargin="0" leftmargin="0" rightmargin="0">
+		<table width="780px" border="0" cellpadding="0" cellspacing="0" align="center">
+			<tr>
+				<td colspan="2" class="menu">
+					<!--Top Menu -->
+					<?php include("topMenu.html") ?>
+				</td>
+			</tr>
+			<tr>
+				<td width="175px" class="menu">
+					<!--Side Menu -->
+					<?php include("booksAndVideosSideMenu.html") ?>
+				</td>
+				<td width="605px">
+					<table width="100%" cellpadding="0" cellspacing="0" border="0">
+						<tr>
+							<td align="left" class="curves">
+								<img src="images/curve.gif" border="0" width="15px" height="15px">
+							</td>
+						</tr>
+						<tr>
+							<td class="content">
+								<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+									<table width="100%" cellpadding="0" cellspacing="0" border="0">
+										<tr>
+											<td class="fontStandard" align="left">
+                                                                                               <div id="myModal" class="modal">
+												<div class="modal-content">
+												<span class="close">&times;</span>
+												Please select the region where you are located:<br>
+												<select id="lstInternational" onchange="shippingSelect();">
+													<option value="">&lt;select&gt;</option>
+													<option value="US">United States</option>
+													<option value="Non US">Outside of US</option>
+												</select>
+                                                                                               </div>
+											       </div>
+											</td>
+											<td align="right">
+												<input type="hidden" name="cmd" value="_cart">
+												<input type="hidden" name="business" value="chu.v@usa.com">
+												<input type="image" src="https://www.paypal.com/en_US/i/btn/view_cart.gif" border="0" name="submit" alt="View Cart">
+												<input type="hidden" name="display" value="1">
+											</td>
+										</tr>
+									</table>
+								</form>
+								<table width="100%" cellpadding="0" cellspacing="0" border="0">
+									<tr>
+										<td class="titleFont" align="center" colspan="2">
+											Books And Videos<br><br>
+										</td>
+									</tr>
+									<tr>
+										<td class="content">
+											<TABLE border="0" cellPadding="0" cellSpacing="0" width="100%">
+												<TR>
+													<TD colspan="2" class="fontStandardBold" align="center">
+														Books
+													</TD>
+												</TR>
+												<TR>
+													<TD class="fontStandard" align="center" valign="top">
+														<form id="frmComparativeBook" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+															<input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add To Cart">
+															<input type="hidden" name="add" value="1">
+															<input type="hidden" name="cmd" value="_cart">
+															<input type="hidden" name="business" value="chu.v@usa.com">
+															<input type="hidden" name="item_name" value="Tai Chi Chuan: A Comparative Study">
+															<input type="hidden" name="item_number" value="1">
+															<input type="hidden" name="amount" value="27.95">
+															<input type="hidden" name="no_note" value="1">
+															<input type="hidden" name="currency_code" value="USD">
+															<input type="hidden" name="shipping" value="7.00">
+															<input type="hidden" name="shipping2" value="7.00">
+															<input type="hidden" name="handling_cart" value="3.00">
+															<input type="hidden" name="no_shipping" value="2">
+														</form>
+														<A href="comparativeStudyBook.php" class="RegularLink"><IMG height=150 src="images/booksAndVideos/comparativeStudy.png" width=90 border="0"></a><br>
+														1.&nbsp;<A href="comparativeStudyBook.php" class="RegularLink">Tai Chi Chuan: A Comparative Study</a><br>
+														USD$27.95
+														<br>
+													</TD>
+													<TD class="fontStandard" align="center" valign="top">
+														<form id="frmApplicationBook" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+															<input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add To Cart">
+															<input type="hidden" name="add" value="1">
+															<input type="hidden" name="cmd" value="_cart">
+															<input type="hidden" name="business" value="chu.v@usa.com">
+															<input type="hidden" name="item_name" value="Practical Use Of Tai Chi Chuan: It's Application and Variations">
+															<input type="hidden" name="item_number" value="2">
+															<input type="hidden" name="amount" value="24.95">
+															<input type="hidden" name="no_note" value="1">
+															<input type="hidden" name="currency_code" value="USD">
+															<input type="hidden" name="shipping" value="7.00">
+															<input type="hidden" name="shipping2" value="7.00">
+															<input type="hidden" name="handling_cart" value="3.00">
+															<input type="hidden" name="no_shipping" value="2">
+														</form>
+														<A href="applicationBook.php" class="RegularLink"><IMG height=150 border="0" src="images/booksAndVideos/ebook.gif"></a><br>
+														2.&nbsp;	<A href="applicationBook.php" class="RegularLink">Practical Use Of Tai Chi Chuan:<br> 
+															It's Application and Variations</a><br>
+															USD$24.95
+														<br>
+													</TD>
+												</TR>
+												<TR>
+													<TD colspan="2">
+														<HR SIZE="2">
+													</TD>
+												</TR>
+												<TR>
+													<TD colspan="2" align="center" class="fontStandardBold">
+      														DVDs<br>
+													</TD>
+												</TR>
+												<TR>
+													<TD class="fontStandard" align="center" valign="top">
+														<form id="frmMediumDVD" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+															<input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add To Cart">
+															<input type="hidden" name="add" value="1">
+															<input type="hidden" name="cmd" value="_cart">
+															<input type="hidden" name="business" value="chu.v@usa.com">
+															<input type="hidden" name="item_name" value="Yang Style Tai Chi Chuan Medium Frame Solo Form">
+															<input type="hidden" name="item_number" value="3">
+															<input type="hidden" name="amount" value="99.95">
+															<input type="hidden" name="no_note" value="1">
+															<input type="hidden" name="currency_code" value="USD">
+															<input type="hidden" name="shipping" value="7.00">
+															<input type="hidden" name="shipping2" value="7.00">
+															<input type="hidden" name="handling_cart" value="3.00">
+															<input type="hidden" name="no_shipping" value="2">
+														</form>
+														<A class="RegularLink" href="mediumFrameSoloFormDVD.php">
+														<IMG height=150 src="images/booksAndVideos/mediumFrameSoloFormDVD.gif" border="0"></A><br>
+														3.&nbsp;<A class="RegularLink" href="mediumFrameSoloFormDVD.php">
+														Yang Style Tai Chi Chuan Medium Frame Solo Form</A><BR>
+														Two DVD set<br>
+														Running Time: 3 hours 20 Minutes<BR>
+														USD$99.95</FONT><BR><BR>
+													</TD>
+													<TD class="fontStandard" align="center" valign="top">
+														<form id="frmFifteenShortFrameDVD" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+															<input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add To Cart">
+															<input type="hidden" name="add" value="1">
+															<input type="hidden" name="cmd" value="_cart">
+															<input type="hidden" name="business" value="chu.v@usa.com">
+															<input type="hidden" name="item_name" value="Fifteen Technique Small Frame Solo Form">
+															<input type="hidden" name="item_number" value="4">
+															<input type="hidden" name="amount" value="29.95">
+															<input type="hidden" name="no_note" value="1">
+															<input type="hidden" name="currency_code" value="USD">
+															<input type="hidden" name="shipping" value="7.00">
+															<input type="hidden" name="shipping2" value="7.00">
+															<input type="hidden" name="handling_cart" value="3.00">
+															<input type="hidden" name="no_shipping" value="2">
+														</form>
+														<A class="RegularLink" href="fifteenTechniqueSmallFrameSoloFormDVD.php">
+														<IMG height=150 src="images/booksAndVideos/15TechniqueSmallFrameSoloFormCover.gif" border="0"></A><br>
+														4.&nbsp;<A class="RegularLink" href="fifteenTechniqueSmallFrameSoloFormDVD.php">
+														Fifteen Technique Small Frame Solo Form</A><BR>
+														Running Time: 58 Minutes<BR>
+														USD$29.95</FONT><BR><BR>
+													</TD>
+												</TR>
+												<TR>
+													<TD class="fontStandard" align="center" valign="top">
+														<form id="frmTwelveLargeFrameDVD" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+															<input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add To Cart">
+															<input type="hidden" name="add" value="1">
+															<input type="hidden" name="cmd" value="_cart">
+															<input type="hidden" name="business" value="chu.v@usa.com">
+															<input type="hidden" name="item_name" value="Twelve Techniques Large Frame Solo Form">
+															<input type="hidden" name="item_number" value="5">
+															<input type="hidden" name="amount" value="29.95">
+															<input type="hidden" name="no_note" value="1">
+															<input type="hidden" name="currency_code" value="USD">
+															<input type="hidden" name="shipping" value="7.00">
+															<input type="hidden" name="shipping2" value="7.00">
+															<input type="hidden" name="handling_cart" value="3.00">
+															<input type="hidden" name="no_shipping" value="2">
+														</form>
+														<A class="RegularLink" href="twelveTechniquesLargeFrameSoloFormDVD.php">
+														<IMG height=150 src="images/booksAndVideos/12TechniquesLargeFrameSoloFormCover.gif" border="0"></A><br>
+														5.&nbsp;<A class="RegularLink" href="twelveTechniquesLargeFrameSoloFormDVD.php">
+														Twelve Techniques Large Frame Solo Form</A><BR>
+														Running Time: 74 Minutes<BR>
+														USD$29.95</FONT><BR><BR>
+													</TD>
+													<TD class="fontStandard" align="center" valign="top">														
+														<form id="frmEightMediumFrameDVD" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+															<input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif"  border="0" name="submit" alt="Add To Cart">
+															<input type="hidden" name="add" value="1">
+															<input type="hidden" name="cmd" value="_cart">
+															<input type="hidden" name="business" value="chu.v@usa.com">
+															<input type="hidden" name="item_name" value="Eight Techniques Medium Frame Solo Form">
+															<input type="hidden" name="item_number" value="6">
+															<input type="hidden" name="amount" value="29.95">
+															<input type="hidden" name="no_note" value="1">
+															<input type="hidden" name="currency_code" value="USD">
+															<input type="hidden" name="shipping" value="7.00">
+															<input type="hidden" name="shipping2" value="7.00">
+															<input type="hidden" name="handling_cart" value="3.00">
+															<input type="hidden" name="no_shipping" value="2">
+														</form>
+														<A class="RegularLink" href="eightTechniquesMediumFrameSoloFormDVD.php">
+														<IMG height=150 src="images/booksAndVideos/8TechniquesMediumFrameSoloFormCover.gif" border="0"></A><br>
+														6.&nbsp;<A class="RegularLink" href="eightTechniquesMediumFrameSoloFormDVD.php">
+														Eigth Techniques Medium Frame Solo Form</A><BR>
+														Running Time: 59 Minutes<BR>
+														USD$29.95</FONT><BR><BR>
+													</TD>
+												</TR>
+												<TR>
+													<TD vAlign="top" class="fontStandard" align="center">
+														<form id="frmBeginnersVCD" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+															<input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add VCD To Cart">
+															<input type="hidden" name="add" value="1">
+															<input type="hidden" name="cmd" value="_cart">
+															<input type="hidden" name="business" value="chu.v@usa.com">
+															<input type="hidden" name="item_name" value="Tai Chi Chuan for Beginners VCD">
+															<input type="hidden" name="item_number" value="7">
+															<input type="hidden" name="amount" value="29.95">
+															<input type="hidden" name="no_note" value="1">
+															<input type="hidden" name="currency_code" value="USD">
+															<input type="hidden" name="shipping" value="7.00">
+															<input type="hidden" name="shipping2" value="7.00">
+															<input type="hidden" name="handling_cart" value="3.00">
+															<input type="hidden" name="no_shipping" value="2">
+														</form>
+														<A class="RegularLink" href="taiChiChuanForBeginners.php">
+														<IMG height=150 src="images/booksAndVideos/beginnersCover.jpg" border="0"></A><br>
+														7.&nbsp;<A class="RegularLink" href="taiChiChuanForBeginners.php">
+														Tai Chi Chuan for Beginners</A><BR>
+														Running Time: 55 Minutes<BR>
+														USD$29.95<BR><BR><br>
+													</TD>
+													<TD vAlign="top" class="fontStandard" align="center">
+														<form id="frmLargeFrameVCD" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+															<input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add DVD To Cart">
+															<input type="hidden" name="add" value="1">
+															<input type="hidden" name="cmd" value="_cart">
+															<input type="hidden" name="business" value="chu.v@usa.com">
+															<input type="hidden" name="item_name" value="Yang Family Tai Chi Chuan: Large Frame Short Form DVD">
+															<input type="hidden" name="item_number" value="8">
+															<input type="hidden" name="amount" value="39.95">
+															<input type="hidden" name="no_note" value="1">
+															<input type="hidden" name="currency_code" value="USD">
+															<input type="hidden" name="no_shipping" value="2">
+															<input type="hidden" name="shipping" value="7.00">
+															<input type="hidden" name="shipping2" value="7.00">
+															<input type="hidden" name="handling_cart" value="3.00">
+														</form>
+														<A class="RegularLink" href="largeFrameShortForm.php">
+														<IMG height=150 src="images/booksAndVideos/largeFrameCover.jpg" border="0"></A><br>
+														8.&nbsp;<A class="RegularLink" href="largeFrameShortForm.php">
+														Yang Family Tai Chi Chuan:<br> Large Frame Short Form</A><BR>
+														Running Time: 52 Minutes<BR>
+														USD$39.95<br><br>
+													</TD>
+												</TR>
+												<TR>
+													<TD class="fontStandard" vAlign="top" align="center">
+														<form id="frmCenterHarmonyVCD" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+															<input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add DVD To Cart">
+															<input type="hidden" name="add" value="1">
+															<input type="hidden" name="cmd" value="_cart">
+															<input type="hidden" name="business" value="chu.v@usa.com">
+															<input type="hidden" name="item_name" value="Center Harmony Qigong DVD">
+															<input type="hidden" name="item_number" value="9">
+															<input type="hidden" name="amount" value="29.95">
+															<input type="hidden" name="no_note" value="1">
+															<input type="hidden" name="currency_code" value="USD">
+															<input type="hidden" name="shipping" value="7.00">
+															<input type="hidden" name="shipping2" value="7.00">
+															<input type="hidden" name="handling_cart" value="3.00">
+															<input type="hidden" name="no_shipping" value="2">
+														</form>
+														<A class="RegularLink" href="centerHarmonyQigong.php">
+														<IMG height=150	src="images/booksAndVideos/centerHarmonyQigong.gif" border="0"></A><br>
+														9.&nbsp;<A class="RegularLink" href="centerHarmonyQigong.php">
+														Center Harmony Qigong</A> <BR>
+														Running Time: 45 Minutes<BR>
+														USD$29.95<BR><BR><BR>
+													</TD>
+													<TD vAlign="top" class="fontStandard" align="center">
+														<form id="frmThreeCirclesVCD" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+															<input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add DVD To Cart">
+															<input type="hidden" name="add" value="1">
+															<input type="hidden" name="cmd" value="_cart">
+															<input type="hidden" name="business" value="chu.v@usa.com">
+															<input type="hidden" name="item_name" value="Three Circles Exercise DVD">
+															<input type="hidden" name="item_number" value="10">
+															<input type="hidden" name="amount" value="29.95">
+															<input type="hidden" name="no_note" value="1">
+															<input type="hidden" name="currency_code" value="USD">
+															<input type="hidden" name="shipping" value="7.00">
+															<input type="hidden" name="shipping2" value="7.00">
+															<input type="hidden" name="handling_cart" value="3.00">
+															<input type="hidden" name="no_shipping" value="2">
+														</form>
+														<A class="RegularLink" href="threeCirclesExercises.php">
+														<IMG height=150	src="images/booksAndVideos/threeCirclesExercise.gif" border="0"></A><br>
+														10.&nbsp;<A class="RegularLink" href="threeCirclesExercises.php">
+														Three Circles Exercise</A> <BR>
+														Running Time: 45 Minutes<BR>
+														USD$29.95<BR><BR><br>
+												</TD>
+												</TR>
+												<TR>
+                                                                                                  <TD vAlign="top" class="fontStandard" align="center">
+                                                                                                                <form id="frmReturningTaiChiFormDVD" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+                                                                                                                        <input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add DVD To Cart">
+                                                                                                                        <input type="hidden" name="add" value="1">
+                                                                                                                        <input type="hidden" name="cmd" value="_cart">
+                                                                                                                        <input type="hidden" name="business" value="chu.v@usa.com">
+                                                                                                                        <input type="hidden" name="item_name" value="12 Techniques Returning Tai Chi Chuan Solo Form">
+                                                                                                                        <input type="hidden" name="item_number" value="11">
+                                                                                                                        <input type="hidden" name="amount" value="29.95">
+                                                                                                                        <input type="hidden" name="no_note" value="1">
+                                                                                                                        <input type="hidden" name="currency_code" value="USD">
+                                                                                                                        <input type="hidden" name="shipping" value="7.00">
+                                                                                                                        <input type="hidden" name="shipping2" value="7.00">
+                                                                                                                        <input type="hidden" name="handling_cart" value="3.00">
+                                                                                                                        <input type="hidden" name="no_shipping" value="2">
+                                                                                                                </form>
+                                                                                                                <A class="RegularLink" href="ReturningTaiChiFormDVD.php">
+                                                                                                                <IMG height=150 src="images/booksAndVideos/ReturningTaiChi.jpg" border="0"></A><br>
+                                                                                                                11.&nbsp;<A class="RegularLink" href="ReturningTaiChiFormDVD.php">
+                                                                                                                12 Techiques Returning Tai Chi Chuan Solo Form</A> <BR>
+                                                                                                                Running Time: 1 hour 39 Minutes<BR>
+                                                                                                                USD$29.95<BR><BR><br>
+                                                                                                 </TD>
+                										   <TD vAlign="top" class="fontStandard" align="center">
+                                                                                                                <form id="fromTaiChiGongFormDVD" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+                                                                                                                        <input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add DVD To Cart">
+                                                                                                                        <input type="hidden" name="add" value="1">
+                                                                                                                        <input type="hidden" name="cmd" value="_cart">
+                                                                                                                        <input type="hidden" name="business" value="chu.v@usa.com">
+                                                                                                                        <input type="hidden" name="item_name" value="Tai Chi Gong DVD">
+                                                                                                                        <input type="hidden" name="item_number" value="12">
+                                                                                                                        <input type="hidden" name="amount" value="29.95">
+                                                                                                                        <input type="hidden" name="no_note" value="1">
+                                                                                                                        <input type="hidden" name="currency_code" value="USD">
+                                                                                                                        <input type="hidden" name="shipping" value="7.00">
+                                                                                                                        <input type="hidden" name="shipping2" value="7.00">
+                                                                                                                        <input type="hidden" name="handling_cart" value="3.00">
+                                                                                                                        <input type="hidden" name="no_shipping" value="2">
+                                                                                                                </form>
+                                                                                                                <A class="RegularLink" href="TaiChiGongFormDVD.php">
+                                                                                                                <IMG height=150 src="images/booksAndVideos/TaiChiGong.png" border="0"></A><br>
+                                                                                                                12.&nbsp;<A class="RegularLink" href="TaiChiGongFormDVD.php">
+                                                                                                                Tai Chi Gong</A> <BR>
+                                                                                                                Running Time: 33 Minutes 27 Seconds<BR>
+                                                                                                                USD$29.95<BR><BR><br>
+                                                                                                 </TD>
+                                                                                                </TR>
+                                                                                                 <TD vAlign="top" class="fontStandard" align="center">
+                                                                                                                <form id="fromAJTaiChiChuanDVD" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+                                                                                                                        <input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add DVD To Cart">
+                                                                                                                        <input type="hidden" name="add" value="1">
+                                                                                                                        <input type="hidden" name="cmd" value="_cart">
+                                                                                                                        <input type="hidden" name="business" value="chu.v@usa.com">
+                                                                                                                        <input type="hidden" name="item_name" value="11 Techniques Tai Chi Chuan DVD">
+                                                                                                                        <input type="hidden" name="item_number" value="13">
+                                                                                                                        <input type="hidden" name="amount" value="29.95">
+                                                                                                                        <input type="hidden" name="no_note" value="1">
+                                                                                                                        <input type="hidden" name="currency_code" value="USD">
+                                                                                                                        <input type="hidden" name="shipping" value="7.00">
+                                                                                                                        <input type="hidden" name="shipping2" value="7.00">
+                                                                                                                        <input type="hidden" name="handling_cart" value="3.00">
+                                                                                                                        <input type="hidden" name="no_shipping" value="2">
+                                                                                                                </form>
+                                                                                                                <A class="RegularLink" href="ElevenTechniquesAJTaiChiChuanDVD.php">
+                                                                                                                <IMG height=150 src="images/booksAndVideos/11_Technique.jpg" border="0"></A><br>
+                                                                                                                13.&nbsp;<A class="RegularLink" href="ElevenTechniquesAJTaiChiChuanDVD.php">
+                                                                                                                11 Techniques AJ Tai Chi Chuan</A> <BR>
+                                                                                                                Running Time: 37 Minutes 9 Seconds<BR>
+                                                                                                                USD$29.95<BR><BR><br>
+                                                                                                 </TD>
+                                                                                                                                                                                                 <TD vAlign="top" class="fontStandard" align="center">
+                                                                                                                <form id="frm22TaiChiSwordDVD" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+                                                                                                                        <input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add DVD To Cart">
+<label> or <a href="https://vimeo.com/ondemand/22taichisword" target="_blank" style="text-decoration:none;font-size:16px">Download</a></br><br></label>
+                                                                                                                        <input type="hidden" name="add" value="1">
+                                                                                                                        <input type="hidden" name="cmd" value="_cart">
+                                                                                                                        <input type="hidden" name="business" value="chu.v@usa.com">
+                                                                                                                        <input type="hidden" name="item_name" value="22 Tai Chi Sword DVD">
+                                                                                                                        <input type="hidden" name="item_number" value="14">
+                                                                                                                        <input type="hidden" name="amount" value="29.95">
+                                                                                                                        <input type="hidden" name="no_note" value="1">
+                                                                                                                        <input type="hidden" name="currency_code" value="USD">
+                                                                                                                        <input type="hidden" name="shipping" value="7.00">
+                                                                                                                        <input type="hidden" name="shipping2" value="7.00">
+                                                                                                                        <input type="hidden" name="handling_cart" value="3.00">
+                                                                                                                        <input type="hidden" name="no_shipping" value="2">
+                                                                                                                </form>
+                                                                                                                <A class="RegularLink" href="22TaiChiSword.php">
+                                                                                                                <IMG height=150 src="images/booksAndVideos/22_sword.jpg" border="0"></A><br>
+                                                                                                                14.&nbsp;<A class="RegularLink" href="22TaiChiSword.php">
+                                                                                22 Technique Tai Chi Sword Form DVD             </A> <BR>
+                                                                                                                Running Time: 28 Minutes 17 Seconds<BR>
+                                                                                                                USD$29.95<BR><BR><br>
+                                                                                                 </TD>
+                                                                                                </TR>
+												<TR>
+													                                                                                                                                                                                                 <TD vAlign="top" class="fontStandard" align="center">
+                                                                                                                <form id="frmTaiChiPushHandDVD" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+                                                                                                                        <input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add DVD To Cart">
+                                                                                                                        <input type="hidden" name="add" value="1">
+                                                                                                                        <input type="hidden" name="cmd" value="_cart">
+                                                                                                                        <input type="hidden" name="business" value="chu.v@usa.com">
+                                                                                                                        <input type="hidden" name="item_name" value="Push Hands Exercises DVD">
+                                                                                                                        <input type="hidden" name="item_number" value="15">
+                                                                                                                        <input type="hidden" name="amount" value="29.95">
+                                                                                                                        <input type="hidden" name="no_note" value="1">
+                                                                                                                        <input type="hidden" name="currency_code" value="USD">
+                                                                                                                        <input type="hidden" name="shipping" value="7.00">
+                                                                                                                        <input type="hidden" name="shipping2" value="7.00">
+                                                                                                                        <input type="hidden" name="handling_cart" value="3.00">
+                                                                                                                        <input type="hidden" name="no_shipping" value="2">
+                                                                                                                </form>
+                                                                                                                <A class="RegularLink" href="TaiChiPushHand.php">
+                                                                                                                <IMG height=150 src="images/booksAndVideos/phcover.jpg" border="0"></A><br>
+                                                                                                                15.&nbsp;<A class="RegularLink" href="TaiChiPushHand.php">
+                                                                               						 Tai Chi chuan Push Hands Exercises DVD             </A> <BR>
+                                                                                                                Running Time: 22 Minutes 39 Seconds<BR>
+                                                                                                                USD$29.95<BR><BR><br>
+												   </TD>
+                                                                <TD vAlign="top" class="fontStandard" align="center">
+                                                                                                                <form id="frmtaichifundamentalsDVD" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+                                                                                                                        <input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add DVD To Cart">
+                                                                                                                        <input type="hidden" name="add" value="1">
+                                                                                                                        <input type="hidden" name="cmd" value="_cart">
+                                                                                                                        <input type="hidden" name="business" value="chu.v@usa.com">
+                                                                                                                        <input type="hidden" name="item_name" value="Tai Chi Chuan Fundamentals Training DVD">
+                                                                                                                        <input type="hidden" name="item_number" value="16">
+                                                                                                                        <input type="hidden" name="amount" value="29.95">
+                                                                                                                        <input type="hidden" name="no_note" value="1">
+                                                                                                                        <input type="hidden" name="currency_code" value="USD">
+                                                                                                                        <input type="hidden" name="shipping" value="7.00">
+                                                                                                                        <input type="hidden" name="shipping2" value="7.00">
+                                                                                                                        <input type="hidden" name="handling_cart" value="3.00">
+                                                                                                                        <input type="hidden" name="no_shipping" value="2">
+                                                                                                                </form>
+                                                                                                                <A class="RegularLink" href="taichifundamentalsDVD.php">
+                                                                                                                <IMG height=150 src="images/booksAndVideos/taichiundamentals.jpg" border="0"></A><br>
+                                                                                                                16.&nbsp;<A class="RegularLink" href="taichifundamentalsDVD.php">
+                                                                                                                         Tai Chi chuan Fundamentals Training DVD             </A> <BR>
+                                                                                                                Running Time: 31 Minutes 17 Seconds<BR>
+                                                                                                                USD$29.95<BR><BR><br>
+                                                                                                   </TD>
+												</TR>
+                                                                                                <tr>
+                                                                                                   </TD>
+                                                                <TD vAlign="top" class="fontStandard" align="center">
+                                                                                                                <form id="frmbaduanjinDVD" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+                                                                                                                        <input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add DVD To Cart">
+                                                                                                                        <input type="hidden" name="add" value="1">
+                                                                                                                        <input type="hidden" name="cmd" value="_cart">
+                                                                                                                        <input type="hidden" name="business" value="chu.v@usa.com">
+                                                                                                                        <input type="hidden" name="item_name" value="Ba Duan Jin Qigong DVD">
+                                                                                                                        <input type="hidden" name="item_number" value="17">
+                                                                                                                        <input type="hidden" name="amount" value="29.95">
+                                                                                                                        <input type="hidden" name="no_note" value="1">
+                                                                                                                        <input type="hidden" name="currency_code" value="USD">
+                                                                                                                        <input type="hidden" name="shipping" value="7.00">
+                                                                                                                        <input type="hidden" name="shipping2" value="7.00">
+                                                                                                                        <input type="hidden" name="handling_cart" value="3.00">
+                                                                                                                        <input type="hidden" name="no_shipping" value="2">
+                                                                                                                </form>
+                                                                                                                <A class="RegularLink" href="baduanjinDVD.php">
+                                                                                                                <IMG height=150 src="images/booksAndVideos/baduanjinfinalcover.jpg" border="0"></A><br>
+                                                                                                                17.&nbsp;<A class="RegularLink" href="baduanjinDVD.php">
+                                                                                                                         Ba Duan Jin Qigong DVD             </A> <BR>
+                                                                                                                Running Time: 40 Minutes 0 Seconds<BR>
+                                                                                                                USD$29.95<BR><BR><br>
+                                                                                                   </TD>											
+                                                                <TD vAlign="top" class="fontStandard" align="center">
+                                                                                                                <form id="frm13animalsDVD" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+                                                                                                                        <input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add DVD To Cart">
+                                                                                                                        <input type="hidden" name="add" value="1">
+                                                                                                                        <input type="hidden" name="cmd" value="_cart">
+                                                                                                                        <input type="hidden" name="business" value="chu.v@usa.com">
+                                                                                                                        <input type="hidden" name="item_name" value="13 Animals Form Part One DVD">
+                                                                                                                        <input type="hidden" name="item_number" value="18">
+                                                                                                                        <input type="hidden" name="amount" value="49.95">
+                                                                                                                        <input type="hidden" name="no_note" value="1">
+                                                                                                                        <input type="hidden" name="currency_code" value="USD">
+                                                                                                                        <input type="hidden" name="shipping" value="7.00">
+                                                                                                                        <input type="hidden" name="shipping2" value="7.00">
+                                                                                                                        <input type="hidden" name="handling_cart" value="3.00">
+                                                                                                                        <input type="hidden" name="no_shipping" value="2">
+                                                                                                                </form>
+                                                                                                                <A class="RegularLink" href="13animalsDVD.php">
+                                                                                                                <IMG height=150 src="images/booksAndVideos/13animalsform1.jpg" border="0"></A><br>
+                                                                                                                18.&nbsp;<A class="RegularLink" href="13animalsDVD.php">
+                                                                                                                         13 Animals Form: 13 Ways to Solidifying the Elixir: Part One</A> <BR>
+                                                                                                                Running Time: 2 hours 9 Minutes 0 Seconds<BR>
+                                                                                                                USD$49.95<BR><BR><br>
+                                                                                                   </TD>
+												</tr>
+                                                                                                <tr>
+                                                                                                <TD vAlign="top" class="fontStandard" align="center">
+                                                                                                                <form id="frm13animals2DVD" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+                                                                                                                        <input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add DVD To Cart">
+                                                                                                                        <input type="hidden" name="add" value="1">
+                                                                                                                        <input type="hidden" name="cmd" value="_cart">
+                                                                                                                        <input type="hidden" name="business" value="chu.v@usa.com">
+                                                                                                                        <input type="hidden" name="item_name" value="13 Animals Form Part Two DVD">
+                                                                                                                        <input type="hidden" name="item_number" value="19">
+                                                                                                                        <input type="hidden" name="amount" value="49.95">
+                                                                                                                        <input type="hidden" name="no_note" value="1">
+                                                                                                                        <input type="hidden" name="currency_code" value="USD">
+                                                                                                                        <input type="hidden" name="shipping" value="7.00">
+                                                                                                                        <input type="hidden" name="shipping2" value="7.00">
+                                                                                                                        <input type="hidden" name="handling_cart" value="3.00">
+                                                                                                                        <input type="hidden" name="no_shipping" value="2">
+                                                                                                                </form>
+                                                                                                                <A class="RegularLink" href="13animals2DVD.php">
+                                                                                                                <IMG height=150 src="images/booksAndVideos/13animalsform2.jpg" border="0"></A><br>
+                                                                                                                19.&nbsp;<A class="RegularLink" href="13animals2DVD.php">
+                                                                                                                         13 Animals Form: 13 Ways to Solidifying the Elixir: Part Two</A> <BR>
+                                                                                                                Running Time: 1 hours 45 Minutes 0 Seconds<BR>
+                                                                                                                USD$49.95<BR><BR><br>
+                                                                                                   </TD>
+                                                                                                <TD vAlign="top" class="fontStandard" align="center">
+                                                                                                                <form id="frm26taichibroadswordDVD" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+                                                                                                                        <input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add DVD To Cart">
+                                                                                                                        <input type="hidden" name="add" value="1">
+                                                                                                                        <input type="hidden" name="cmd" value="_cart">
+                                                                                                                        <input type="hidden" name="business" value="chu.v@usa.com">
+                                                                                                                        <input type="hidden" name="item_name" value="26 Techniques Tai chi Broadsword DVD">
+                                                                                                                        <input type="hidden" name="item_number" value="20">
+                                                                                                                        <input type="hidden" name="amount" value="29.95">
+                                                                                                                        <input type="hidden" name="no_note" value="1">
+                                                                                                                        <input type="hidden" name="currency_code" value="USD">
+                                                                                                                        <input type="hidden" name="shipping" value="7.00">
+                                                                                                                        <input type="hidden" name="shipping2" value="7.00">
+                                                                                                                        <input type="hidden" name="handling_cart" value="3.00">
+                                                                                                                        <input type="hidden" name="no_shipping" value="2">
+                                                                                                                </form>
+                                                                                                                <A class="RegularLink" href="26taichibroadswordDVD.php">
+                                                                                                                <IMG height=150 src="images/booksAndVideos/26taichibroadsword.jpg" border="0"></A><br>
+                                                                                                                20.&nbsp;<A class="RegularLink" href="26taichibroadswordDVD.php">
+                                                                                                                         26 Techniques Tai chi Broadsword</A> <BR>
+                                                                                                                Running Time:  38 Minutes 49 Seconds<BR>
+                                                                                                                USD$49.95<BR><BR><br>
+                                                                                                   </TD>
+                                                                                                </tr>
+                                                                                                <tr>
+                                                                                                 <td vAlign="top" class="fontStandard" align="center">
+                                                                                                                        <form id="frmeightinternalDVD" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+                                                                                                                        <input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add DVD To Cart">
+                                                                                                                        <input type="hidden" name="add" value="1">
+                                                                                                                        <input type="hidden" name="cmd" value="_cart">
+                                                                                                                        <input type="hidden" name="business" value="chu.v@usa.com">
+                                                                                                                        <input type="hidden" name="item_name" value="Internal Martial Art Eight Zhan Zhuang Techniques">
+                                                                                                                        <input type="hidden" name="item_number" value="20">
+                                                                                                                        <input type="hidden" name="amount" value="49.95">
+                                                                                                                        <input type="hidden" name="no_note" value="1">
+                                                                                                                        <input type="hidden" name="currency_code" value="USD">
+                                                                                                                        <input type="hidden" name="shipping" value="7.00">
+                                                                                                                        <input type="hidden" name="shipping2" value="7.00">
+                                                                                                                        <input type="hidden" name="handling_cart" value="3.00">
+                                                                                                                        <input type="hidden" name="no_shipping" value="2">
+                                                                                                                </form>
+                                                                                                                <A class="RegularLink" href="8internalDVD.php">
+                                                                                                                <IMG height=150 src="images/booksAndVideos/8_internal.jpg" border="0"></A><br>
+                                                                                                                21.&nbsp;<A class="RegularLink" href="8internalDVD.php">
+                                                                                                                         Internal Martial Art Eight Zhan Zhuang Techniques</A> <BR>
+                                                                                                                Running Time:  25 Minutes 24 Seconds<BR>
+                                                                                                                USD$49.95<BR><BR><br>
+
+                                                                                                 </td>
+                                                                                                 <td vAlign="top" class="fontStandard" align="center">
+                                                                                                                        <form id="frm9tenlargeframeDVD" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+                                                                                                                        <input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add DVD To Cart">
+                                                                                                                        <input type="hidden" name="add" value="1">
+                                                                                                                        <input type="hidden" name="cmd" value="_cart">
+                                                                                                                        <input type="hidden" name="business" value="chu.v@usa.com">
+                                                                                                                        <input type="hidden" name="item_name" value="Nine Techniques Large Frame Form">
+                                                                                                                        <input type="hidden" name="item_number" value="20">
+                                                                                                                        <input type="hidden" name="amount" value="29.95">
+                                                                                                                        <input type="hidden" name="no_note" value="1">
+                                                                                                                        <input type="hidden" name="currency_code" value="USD">
+                                                                                                                        <input type="hidden" name="shipping" value="7.00">
+                                                                                                                        <input type="hidden" name="shipping2" value="7.00">
+                                                                                                                        <input type="hidden" name="handling_cart" value="3.00">
+                                                                                                                        <input type="hidden" name="no_shipping" value="2">
+                                                                                                                </form>
+                                                                                                                <A class="RegularLink" href="9tenlargeframeDVD.php">
+                                                                                                                <IMG height=150 src="images/booksAndVideos/9_techniq.jpg" border="0"></A><br>
+                                                                                                                22.&nbsp;<A class="RegularLink" href="9tenlargeframeDVD.php">
+                                                                                                                         Nine Techniques Large Frame Form</A> <BR>
+                                                                                                                Running Time:  47 Minutes 08 Seconds<BR>
+                                                                                                                USD$29.95<BR><BR><br>
+
+                                                                                                 </td>
+
+                                                                                                </tr>
+                                                                                                <tr>
+                                                                                                 <td vAlign="top" class="fontStandard" align="center">
+                                                                                                                        <form id="frmpangutaichiDVD" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="return popUpSelection();">
+                                                                                                                        <input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but22.gif" border="0" name="submit" alt="Add DVD To Cart">
+                                                                                                                        <input type="hidden" name="add" value="1">
+                                                                                                                        <input type="hidden" name="cmd" value="_cart">
+                                                                                                                        <input type="hidden" name="business" value="chu.v@usa.com">
+                                                                                                                        <input type="hidden" name="item_name" value="Pan Gu Tai Chi Moving Form">
+                                                                                                                        <input type="hidden" name="item_number" value="20">
+                                                                                                                        <input type="hidden" name="amount" value="29.95">
+                                                                                                                        <input type="hidden" name="no_note" value="1">
+                                                                                                                        <input type="hidden" name="currency_code" value="USD">
+                                                                                                                        <input type="hidden" name="shipping" value="7.00">
+                                                                                                                        <input type="hidden" name="shipping2" value="7.00">
+                                                                                                                        <input type="hidden" name="handling_cart" value="3.00">
+                                                                                                                        <input type="hidden" name="no_shipping" value="2">
+                                                                                                                </form>
+                                                                                                                <A class="RegularLink" href="pangutaichiDVD.php">
+                                                                                                                <IMG height=150 src="images/booksAndVideos/pan_taichi.jpg" border="0"></A><br>
+                                                                                                                23.&nbsp;<A class="RegularLink" href="pangutaichiDVD.php">
+                                                                                                                         Pan Gu Tai Chi Moving Form</A> <BR>
+                                                                                                                Running Time:  59 Minutes 07 Seconds<BR>
+                                                                                                                USD$29.95<BR><BR><br>
+												</tr>
+                                                                                                
+											</TABLE>
+   												<center><B>First Item Shipping and Handling within the U.S.: $11.00<BR></center>
+   												<center><B>First Item Shipping and Handling outside of the U.S.: $20.00<BR></center>
+												<center>For every additional item: $5.00</B></FONT></center>
+												<br>
+
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>		
+			<tr>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+		</table>
+<script>
+function popUpSelection(){
+        var modal = document.getElementById("myModal");
+        var span = document.getElementsByClassName("close")[0];
+	if (document.getElementById("lstInternational").value != "")
+	    return true;
+	else
+	{
+            modal.style.display = "block";
+	    span.onclick = function() {
+	        modal.style.display = "none";
+		return true;
+	     }
+             window.onclick = function(event) {
+		          if (event.target == modal) {
+		                 modal.style.display = "none";
+		            }
+		        }
+	    return false;
+        }
+	
+
+}
+
+</script>
+</body>
+</HTML>

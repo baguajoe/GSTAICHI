@@ -24,7 +24,7 @@ import img11 from "../../img/11.jpg";
 import img12 from "../../img/12.jpg";
 import { Carousel } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import "../../styles/gallery.css";
 
 const images = [
     { src: ginSoonChuck, alt: "" },
@@ -52,42 +52,23 @@ const images = [
     { src: img12, alt: "New Years Celebration 2009" }
 ];
 
-
-
 export const Gallery = () => {
-    const arrowStyle = {
-        position: "absolute",
-        top: "calc(50% + 70px)", // Offset to account for header and nav
-        transform: "translateY(-50%)",
-        fontSize: "2rem",
-        color: "#590d0d",
-        cursor: "pointer",
-        zIndex: 100,
-        transition: "color 0.3s ease",
-        // backgroundColor: "rgba(255, 255, 255, 0.8)",
-        borderRadius: "50%",
-        padding: "10px",
-    };
-
     return (
-        <div className="container py-5">
-            <h1 className="text-center display-4 mb-4">Gallery</h1>
+        <div className="container py-5 gallery-container">
+            <h1 className="text-center display-4 mb-4 gallery-title">Gallery</h1>
 
-            <div className="carousel-container" style={{ backgroundColor: '#f8f9fa' }}>
+            <div className="carousel-wrapper">
                 <Carousel
-                    // ref={carouselRef}
                     prevIcon={
                         <i
-                            className="fa-solid fa-circle-chevron-left"
-                            style={{ ...arrowStyle, left: "0px" }}
+                            className="fa-solid fa-circle-chevron-left carousel-arrow carousel-arrow-left"
                             onMouseOver={(e) => e.target.style.color = "#400909"}
                             onMouseOut={(e) => e.target.style.color = "#590d0d"}
                         />
                     }
                     nextIcon={
                         <i
-                            className="fa-solid fa-circle-chevron-right"
-                            style={{ ...arrowStyle, right: "0px" }}
+                            className="fa-solid fa-circle-chevron-right carousel-arrow carousel-arrow-right"
                             onMouseOver={(e) => e.target.style.color = "#400909"}
                             onMouseOut={(e) => e.target.style.color = "#590d0d"}
                         />
@@ -95,31 +76,18 @@ export const Gallery = () => {
                 >
                     {images.map((image, index) => (
                         <Carousel.Item key={index}>
-                            <div
-                                style={{
-                                    height: '70vh',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    backgroundColor: '#e9ecef'
-                                }}
-                            >
+                            <div className="carousel-image-container">
                                 <img
                                     src={image.src}
                                     alt={image.alt}
-                                    style={{
-                                        height: 'auto',
-                                        width: 'auto',
-                                        minHeight: '100%',
-                                        maxHeight: '100%',
-                                        maxWidth: '100%',
-                                        objectFit: 'contain'
-                                    }}
+                                    className="carousel-image"
                                 />
                             </div>
-                            <Carousel.Caption className="bg-dark bg-opacity-50 rounded p-2">
-                                <h5 className="mb-0">{image.alt}</h5>
-                            </Carousel.Caption>
+                            {image.alt && (
+                                <Carousel.Caption className="carousel-caption-custom">
+                                    <h5 className="mb-0 caption-text">{image.alt}</h5>
+                                </Carousel.Caption>
+                            )}
                         </Carousel.Item>
                     ))}
                 </Carousel>

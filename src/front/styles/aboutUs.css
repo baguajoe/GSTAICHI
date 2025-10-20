@@ -1,7 +1,254 @@
+/* aboutUs.css */
+
 .about-us-div {
-    .nav-link {
-        font-weight: 600;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.about-us-div .nav-link {
+    font-weight: 600;
+}
+
+.about-us-div h1 {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    margin-bottom: 1.5rem;
+}
+
+/* Navigation Pills */
+.about-us-div .nav-pills .nav-link {
+    font-size: clamp(0.875rem, 2vw, 1rem);
+    padding: 10px 15px;
+    margin: 5px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.about-us-div .nav-pills .nav-link.active {
+    background-color: #590d0d;
+}
+
+.about-us-div .nav-pills .nav-link:hover {
+    background-color: #400909;
+    color: white;
+}
+
+/* Card styles */
+.about-us-div .card-body p {
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    line-height: 1.6;
+}
+
+/* Mobile phones (portrait) - 576px and below */
+@media only screen and (max-width: 576px) {
+    .about-us-div {
+        padding: 10px;
     }
 
-   
+    .about-us-div h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Stack navigation vertically on mobile */
+    .about-us-div .nav-pills {
+        flex-direction: column;
+    }
+
+    .about-us-div .nav-pills .nav-link {
+        width: 100%;
+        margin: 5px 0;
+        font-size: 0.875rem;
+        padding: 12px;
+    }
+
+    /* Hide arrows on mobile */
+    .about-us-div .fa-circle-chevron-right,
+    .about-us-div .fa-circle-chevron-left {
+        display: none !important;
+    }
+
+    /* Adjust content padding */
+    .about-us-div .content {
+        padding: 10px !important;
+    }
+
+    /* Stack card content vertically */
+    .about-us-div .card .row {
+        flex-direction: column;
+    }
+
+    .about-us-div .card .col-md-4,
+    .about-us-div .card .col-md-8 {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Image takes full width on mobile */
+    .about-us-div .card img {
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .about-us-div .card-body {
+        padding: 15px;
+    }
+
+    .about-us-div .card-text {
+        font-size: 0.9rem;
+        padding: 10px !important;
+    }
+}
+
+/* Mobile phones (landscape) and small tablets - 577px to 768px */
+@media only screen and (min-width: 577px) and (max-width: 768px) {
+    .about-us-div {
+        padding: 15px;
+    }
+
+    .about-us-div h1 {
+        font-size: 1.75rem;
+    }
+
+    /* Wrap navigation on 2 rows */
+    .about-us-div .nav-pills {
+        flex-wrap: wrap;
+    }
+
+    .about-us-div .nav-pills .nav-link {
+        font-size: 0.9rem;
+        padding: 10px 12px;
+        flex: 1 1 45%;
+    }
+
+    /* Smaller arrows */
+    .about-us-div .fa-circle-chevron-right,
+    .about-us-div .fa-circle-chevron-left {
+        font-size: 1.5rem !important;
+        padding: 8px !important;
+    }
+
+    .about-us-div .content {
+        padding: 15px !important;
+    }
+
+    /* Stack card content vertically */
+    .about-us-div .card .row {
+        flex-direction: column;
+    }
+
+    .about-us-div .card .col-md-4,
+    .about-us-div .card .col-md-8 {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .about-us-div .card img {
+        height: 250px;
+        object-fit: cover;
+    }
+
+    .about-us-div .card-body {
+        padding: 20px;
+    }
+}
+
+/* Tablets - 769px to 992px */
+@media only screen and (min-width: 769px) and (max-width: 992px) {
+    .about-us-div {
+        padding: 20px;
+    }
+
+    .about-us-div .nav-pills .nav-link {
+        font-size: 0.95rem;
+        padding: 10px 15px;
+    }
+
+    .about-us-div .fa-circle-chevron-right,
+    .about-us-div .fa-circle-chevron-left {
+        font-size: 1.75rem !important;
+    }
+
+    .about-us-div .content {
+        padding: 25px !important;
+    }
+
+    /* Side by side layout starts here */
+    .about-us-div .card .col-md-4 {
+        flex: 0 0 35%;
+        max-width: 35%;
+    }
+
+    .about-us-div .card .col-md-8 {
+        flex: 0 0 65%;
+        max-width: 65%;
+    }
+
+    .about-us-div .card img {
+        height: 100%;
+        min-height: 250px;
+    }
+}
+
+/* Desktop - 993px and above */
+@media only screen and (min-width: 993px) {
+    .about-us-div {
+        padding: 30px;
+    }
+
+    .about-us-div .nav-pills .nav-link {
+        font-size: 1rem;
+        padding: 12px 20px;
+    }
+
+    .about-us-div .fa-circle-chevron-right,
+    .about-us-div .fa-circle-chevron-left {
+        font-size: 2rem !important;
+    }
+
+    .about-us-div .content {
+        padding: 30px !important;
+    }
+
+    /* Optimal side by side layout */
+    .about-us-div .card .col-md-4 {
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+    }
+
+    .about-us-div .card .col-md-8 {
+        flex: 0 0 66.666667%;
+        max-width: 66.666667%;
+    }
+
+    .about-us-div .card img {
+        height: 100%;
+        min-height: 300px;
+    }
+
+    .about-us-div .card-text {
+        font-size: 1.1rem;
+    }
+}
+
+/* Large desktops - 1200px and above */
+@media only screen and (min-width: 1200px) {
+    .about-us-div .col-lg-10 {
+        max-width: 1000px;
+    }
+
+    .about-us-div .card img {
+        min-height: 350px;
+    }
+}
+
+/* Extra spacing for touch devices */
+@media (hover: none) and (pointer: coarse) {
+    .about-us-div .nav-pills .nav-link {
+        padding: 15px 20px;
+        margin: 8px 5px;
+    }
+
+    .about-us-div .card-body {
+        padding: 25px;
+    }
 }

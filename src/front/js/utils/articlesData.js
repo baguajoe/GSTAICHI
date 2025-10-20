@@ -899,98 +899,74 @@ export const articlesData = [
     section: "Forms",
     content: `
     <fragment>
-      <h1>10 Methods to Remember the Tai Chi Solo Form</h1>
-      
-      <p>
-          With the popularity of Tai Chi Chuan, the quality of students is diverse and the comments and complaints from students are increasing. It does not matter who the students are, the theme is the same; it is difficult to remember the Solo Form.
-      </p>
-      
-      <p>
-          After three decades of involvement in Tai Chi Chuan as a student as well as an instructor, I observed that successful students have their methods and techniques to remember the creative Solo Form. Here are some of them.
-      </p>
-      
-      <div class="method">
-          <h2>1. Name</h2>
-          <p>
-              Many movements in the Solo Form have very unique and distinctive names which can be classified into three groups:
-          </p>
-          <ol type="a">
-              <li>The name describes the movements: e.g. Brush Knee, Twist Step, Cross Hands, Single Whip, Lower the Body, etc.</li>
-              <li>The name describes the movements as a defensive and offensive martial application: e.g. Step Forward Intercept, Parry and Punch, Brush Knee and Punch Downward, Hit Tiger, etc.</li>
-              <li>The name is associated with an animal such as White Crane Spreads its Wing, Retreat and Ride the Tiger, Wild Horse Parts Its Mane, etc.</li>
-          </ol>
-          <p>
-              When one remembers the names of the movements, one will better understand the mechanics of the movements. e.g. Left Brush Knee and Twist Step means the left foot steps forward, left hand brushes the left knee downward, and the right palm pushes forward.
-          </p>
-      </div>
-      
-      <div class="method">
-          <h2>2. Offensive and Defensive Movement</h2>
-          <p>
-              Although the movements are slow and relaxed, each movement has its value as a defensive or offensive maneuver. This is especially important for those practitioners who treat Tai Chi Chuan as a martial art. Many times the student does not fully understand the practical value of the movement and is not able to execute the movement correctly. Therefore, although there are multiple applications in each movement, if the instructor correctly interprets the application of the movement, the student will quickly understand the movement or try to understand and perfect the movement.
-          </p>
-      </div>
-      
-      <div class="method">
-          <h2>3. Visualization</h2>
-          <p>
-              From the name, one can imagine the movement. For example, in White Crane Spread its Wing, one can visualize the crane has an upright body, chest relaxed, one arm going up and the other going down, and the body's weight is on one foot. Remember, this technique also helps the students to increase their creativity and master some of the more difficult movement.
-          </p>
-      </div>
-      
-      <div class="method">
-          <h2>4. Number or Digital</h2>
-          <p>
-              Since Tai Chi Chuan has so many unique and distinctive names, to remember all the names themselves is already a difficult task. One can substitute the name with a number. Therefore, one can assign a number corresponding to one movement and some time one movement divided into number of moves. This is a perfect method for students who are good with numbers.
-          </p>
-      </div>
-      
-      <div class="method">
-          <h2>5. Balance</h2>
-          <p>
-              Tai Chi Chuan is the art of balance and there are many people who are interested because of its benefit in balance. In each movement, left always goes with right, top always goes with bottom and front with back. If one can incorporate this concept of balance in learning, one will comprehend the Solo Form quickly.
-          </p>
-      </div>
-      
-      <div class="method">
-          <h2>6. Repetition</h2>
-          <p>
-              Tai Chi Chuan's Solo Form is composed of a series of circular movements. One can practice each circular movement or a number of circular movements in each lesson repeatedly until familiar and understood. e.g. One can practice the Part the Wild Horse's Mane repeatedly to better understand the movements.
-          </p>
-      </div>
-      
-      <div class="method">
-          <h2>7. Competition and Demonstration</h2>
-          <p>
-              Competition and demonstration encourage the practitioner to better himself and achieve higher skill. This is so because the situation requires the practitioner to be serious, the movement has to be perfect and correctly executed. Therefore, if a student practices regularly under these conditions, one will excel to a higher level.
-          </p>
-      </div>
-      
-      <div class="method">
-          <h2>8. Environment</h2>
-          <p>
-              When a student is in a comfortable environment, he will perform better. This association applies to many things in life as well. Seek a good place for your practice. A space in the house or in the park is a great help. To be comfortable, the first criterion is to achieve serenity. The most common way to relax is to take a deep breath.
-          </p>
-      </div>
-      
-      <div class="method">
-          <h2>9. Practice</h2>
-          <p>
-              Tai Chi Chuan is one of the physical activities that involves two steps to remember. Knowing how to do it intellectually is not enough; a correct understanding requires a student to know it physically as well as intellectually. Many students do not remember the lesson the next day because they do not practice or do not practice enough. In order to remember, one must transfer the information from short term to long term memory with practice.
-          </p>
-      </div>
-      
-      <div class="method">
-          <h2>10. Group</h2>
-          <p>
-              When students help each other, they are able to remember the movements better. This method of group support provides a comfortable environment. Every student is at the same level so that they can share their experiences and understanding about each movement and help each other. In other words, they have the same level of communication.
-          </p>
-      </div>
-      
-      <p>
-          The traditional method of teaching Tai Chi Chuan was done on a one on one basis by the instructor. Time is not an issue so that a student can master one movement at a time so that the quality remained. However, this method of teaching is too slow for today's fast paced students. Although Tai Chi Chuan instructors had been compromised with this fast pace, high stress society with a shorter and simpler Solo Form, students still find it difficult to remember and execute the Solo Form correctly. If a student utilizes the ten methods described above in remembering the Solo Form, he should be successful.
-      </p>
-    </fragment>
+    <h2>Solo Drill Training</h2>
+    
+    <p class="intro">
+        The Solo Drill is a dynamic qigong exercise incorporating the concept of Fa Jing with the applications from the 
+        individual movements of Tai Chi Chuan's Solo Form's. It is an extension of <a href="zhanzhuangtraining.php">Zhan Zhuang 
+        training</a>. The objective is to discharge power accumulated from Zhan Zhuang training by executing physical movements.
+    </p>
+    
+    <p>
+        The relationship between Zhan Zhuang training and the Solo Drill training is that Zhan Zhuang training is a method of 
+        accumulating power so that all the physiological organs are strong and energetic, and Solo Drill training is the method 
+        used to discharge power through some of these physiological organs. Therefore, skillful practitioners often focus on the 
+        combination of internal and external training. If one emphasizes only Zhan Zhuang training, he or she will not be able to 
+        discharge power outside the body efficiently. On the other hand, if one emphasizes only the Solo Drill training, there will 
+        not be enough power to discharge.
+    </p>
+    
+    <p>
+        From my years of teaching, I have seen this happen to many people whom possess power but do not know what to do with it. 
+        Therefore, Zhan Zhuang training and Solo Drill training are important components of Tai Chi Chuan as a martial arts system. 
+        The power accumulated from Zhan Zhuang training and discharged in the Solo Drill training is the same as the process of 
+        moving from a physically static to a dynamic state, or in other words "from wu chi to tai chi". Therefore, this transition 
+        is very significant and also difficult for all practitioners to accomplish.
+    </p>
+    
+    <p>
+        It requires a very special kind of person. From my experience, those that are successful are people who have discipline, 
+        confidence, intelligence, patience and are consistent. In addition to accumulating power, Zhan Zhuang training also improves 
+        the practitioner's physical condition. However, this fact is often ignored by many practitioners until one is engaging in 
+        the physically demanding Solo Drill training. In Zhan Zhuang training, when one feels that the body is comfortable and 
+        energetic in a particular position after few minutes, this is a sign that one is ready to engage in Solo Drill training.
+    </p>
+    
+    <h3 class="section-title">Training Guidelines</h3>
+    <p>
+        In Solo Drill training, one should follow the concepts of 'slow is better than fast', and 'fluid is better than hurried' 
+        to reduced the risk of physical injury. First, one works with large and slow movements. Later, one works with small movements 
+        with speed and power. When one follows these instructions, one will be able to understand all the powers changed inside the 
+        body and performed by the body accordingly.
+    </p>
+    
+    <h3 class="section-title">Similarities with Zhan Zhuang</h3>
+    <p>
+        The training in Solo Drill is similar to Zhan Zhuang in a few important ways. 1) It is highly demanding of physical endurance 
+        and mental concentration. Therefore, one should expect to experience all sorts of discomfort and boredom at the beginning. 
+        2) All the movements are guided by the intent, not physical force. When one is applying physical force, the muscles tense up 
+        and this inhibits flexibility and all circulation. Therefore, as long as one is applying the intent to guide the chi circulation, 
+        which is expressing outwardly in physical movement, the discomfort will be gone and the training is achievable.
+    </p>
+    
+    <h3 class="section-title">Progression and Understanding</h3>
+    <p>
+        In the beginning, practicing the Solo Drill's movements are but a series of simple exercises for the hands and feet. With 
+        experience, one will understand the power behind each exercise is not coming only from the hands and feet but from the whole 
+        body. This is what we call 'when the top portion moves, the lower portion follows. When the lower portion moves, the top 
+        portion leads.'
+    </p>
+    
+    <h3 class="section-title">Practice Mechanics</h3>
+    <p>
+        When one is practicing the Solo Drill, one should pay closer attention to the mechanics of each movement. The intent and 
+        movement should be coordinated to result in a powerful strike. The movement should be natural, comfortable, and muscles, 
+        joints, and tendons should stay relaxed. Each movement's motion should be large at the beginning to fine tune all the 
+        different components, later, the same movement should have smaller motion so that it is fast and powerful. The slower the 
+        motion, the better the control, and focus. This is the reason why Yang Cheng Fu said that first one seeks large movement 
+        and later seeks smaller movement.
+    </p>
+</fragment>
     `,
     author: "Vincent Chu"
   },

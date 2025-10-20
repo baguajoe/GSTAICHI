@@ -1,4 +1,4 @@
-/* navbar.css */
+/* navbar.css - IMPROVED VERSION */
 .navbar {
     padding: 5px 20px;
     background-color: white !important;
@@ -6,6 +6,7 @@
     position: sticky;
     top: 0;
     z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-content {
@@ -13,7 +14,6 @@
     width: 100%;
     align-items: stretch;
     min-height: 100px;
-    /* Ensure minimum height to accommodate logo */
 }
 
 .logo-container {
@@ -26,23 +26,16 @@
 .navbar-logo {
     margin-left: 20px;
     height: 85px;
-    /* border: 2.5px solid #70604c; */
-    /* border: 2.5px solid #8b1818; */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
-    /* transition: transform 0.2s ease, box-shadow 0.2s ease; */
     box-shadow: 0 0 0 2.5px rgba(139, 24, 24, 0.6),
-        /* Softer border using box-shadow */
         0 4px 10px rgba(0, 0, 0, 0.1);
-    /* Elevation shadow */
-
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .navbar-logo:hover {
     transform: translateY(-2px);
-    /* box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); */
     box-shadow: 0 0 0 2.5px rgba(139, 24, 24, 0.8),
-        /* Slightly more visible on hover */
         0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
@@ -51,12 +44,6 @@
     align-items: center;
     justify-content: start;
     flex: 1.8;
-
-}
-
-.banner-image:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 .banner-image {
@@ -64,6 +51,11 @@
     height: auto;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.banner-image:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 .nav-section {
@@ -106,8 +98,40 @@
     align-self: flex-end;
 }
 
-/* Medium screen adjustments */
-@media (max-width: 1200px) and (min-width: 992px) {
+/* Large desktops - 1201px and above */
+@media (min-width: 1201px) {
+    .navbar {
+        padding: 5px 30px;
+    }
+    
+    .navbar-logo {
+        height: 90px;
+    }
+    
+    .banner-image {
+        max-width: 400px;
+    }
+}
+
+/* Medium-Large screens - 1000px to 1200px */
+@media (max-width: 1200px) and (min-width: 1000px) {
+    .navbar-nav .nav-link {
+        font-size: 0.95rem;
+        padding-left: 0.6rem;
+        padding-right: 0.6rem;
+    }
+
+    .nav-section {
+        min-width: 420px;
+    }
+    
+    .banner-image {
+        max-width: 320px;
+    }
+}
+
+/* Medium screens - 992px to 999px */
+@media (max-width: 999px) and (min-width: 992px) {
     .navbar-nav .nav-link {
         font-size: 0.9rem;
         padding-left: 0.5rem;
@@ -117,13 +141,81 @@
     .nav-section {
         min-width: 400px;
     }
+    
+    .banner-image {
+        max-width: 300px;
+    }
+    
+    .navbar-logo {
+        height: 75px;
+    }
 }
 
-/* Mobile Responsive Adjustments */
-@media (max-width: 991px) {
+/* Tablets - 768px to 991px */
+@media (max-width: 991px) and (min-width: 768px) {
+    .navbar {
+        padding: 10px 15px;
+    }
+
     .navbar-content {
         flex-direction: column;
         min-height: auto;
+        align-items: center;
+    }
+
+    .logo-container {
+        flex: none;
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+    .navbar-logo {
+        margin: 0;
+        height: 70px;
+    }
+
+    .banner-container {
+        flex: none;
+        width: 100%;
+        justify-content: center;
+        padding: 10px 0;
+    }
+
+    .banner-image {
+        max-width: 300px;
+    }
+
+    .nav-section {
+        flex: none;
+        width: 100%;
+        align-items: center;
+        align-self: stretch;
+        min-width: unset;
+        margin-top: 10px;
+    }
+
+    .navbar-nav {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .navbar-nav .nav-link {
+        font-size: 0.95rem;
+        padding: 8px 12px;
+    }
+}
+
+/* Mobile phones - 576px to 767px */
+@media (max-width: 767px) and (min-width: 576px) {
+    .navbar {
+        padding: 10px;
+    }
+
+    .navbar-content {
+        flex-direction: column;
+        min-height: auto;
+        align-items: center;
     }
 
     .logo-container,
@@ -131,15 +223,17 @@
     .nav-section {
         flex: none;
         width: 100%;
-        margin: 10px 0;
+        margin: 8px 0;
+        justify-content: center;
     }
 
     .navbar-logo {
-        margin: 0 auto;
+        margin: 0;
+        height: 65px;
     }
 
-    .banner-container {
-        padding: 10px 0;
+    .banner-image {
+        max-width: 280px;
     }
 
     .nav-section {
@@ -152,10 +246,79 @@
         text-align: center;
         width: 100%;
         flex-wrap: wrap;
+        justify-content: center;
     }
 
     .navbar-nav .nav-link {
-        font-size: 1rem;
-        padding: 10px 15px;
+        font-size: 0.9rem;
+        padding: 8px 10px;
+    }
+}
+
+/* Small mobile phones - 575px and below */
+@media (max-width: 575px) {
+    .navbar {
+        padding: 8px 10px;
+    }
+
+    .navbar-content {
+        flex-direction: column;
+        min-height: auto;
+        align-items: center;
+    }
+
+    .logo-container,
+    .banner-container,
+    .nav-section {
+        flex: none;
+        width: 100%;
+        margin: 5px 0;
+        justify-content: center;
+    }
+
+    .navbar-logo {
+        margin: 0;
+        height: 55px;
+    }
+
+    .banner-image {
+        max-width: 100%;
+        padding: 0 10px;
+    }
+
+    .nav-section {
+        align-items: center;
+        align-self: stretch;
+        min-width: unset;
+    }
+
+    .navbar-nav {
+        text-align: center;
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 0;
+    }
+
+    .navbar-nav .nav-link {
+        font-size: 0.85rem;
+        padding: 8px 8px;
+        flex: 0 0 auto;
+    }
+
+    /* Disable hover effects on small touch screens */
+    .navbar-logo:hover,
+    .banner-image:hover {
+        transform: none;
+        box-shadow: 0 0 0 2.5px rgba(139, 24, 24, 0.6),
+            0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* Touch devices - larger tap targets */
+@media (hover: none) and (pointer: coarse) {
+    .navbar-nav .nav-link {
+        padding: 12px 15px;
+        min-height: 44px;
     }
 }

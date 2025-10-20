@@ -1,0 +1,212 @@
+/* workshops.css */
+
+.workshops-container {
+    padding: 2rem 1rem;
+}
+
+.workshops-container h1 {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    margin-bottom: 1.5rem;
+}
+
+.workshops-info {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.workshops-info p {
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.workshop-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.workshop-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
+}
+
+.workshop-card .card-title {
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    margin-bottom: 1rem;
+}
+
+.workshop-card .card-title i {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+}
+
+.workshop-card .card-text {
+    font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+/* Mobile phones (portrait) - 576px and below */
+@media only screen and (max-width: 576px) {
+    .workshops-container {
+        padding: 1rem 0.5rem;
+    }
+
+    .workshops-container h1 {
+        font-size: 1.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .workshops-info {
+        padding: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .workshops-info p {
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+    }
+
+    /* Stack cards vertically with full width */
+    .workshop-card {
+        margin-bottom: 1rem;
+    }
+
+    .workshop-card .card-body {
+        padding: 1rem;
+    }
+
+    .workshop-card .card-title {
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .workshop-card .card-title i {
+        font-size: 1rem;
+        margin-right: 0.5rem;
+    }
+
+    .workshop-card .card-text {
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Email link wrapping */
+    .workshops-info a {
+        word-break: break-all;
+        font-size: 0.875rem;
+    }
+}
+
+/* Mobile phones (landscape) and small tablets - 577px to 768px */
+@media only screen and (min-width: 577px) and (max-width: 768px) {
+    .workshops-container {
+        padding: 1.5rem 1rem;
+    }
+
+    .workshops-container h1 {
+        font-size: 2rem;
+    }
+
+    .workshops-info {
+        padding: 1rem;
+    }
+
+    .workshops-info p {
+        font-size: 0.95rem;
+    }
+
+    .workshop-card .card-body {
+        padding: 1.25rem;
+    }
+
+    .workshop-card .card-title {
+        font-size: 1.25rem;
+    }
+
+    .workshop-card .card-text {
+        font-size: 0.9rem;
+    }
+}
+
+/* Tablets - 769px to 992px */
+@media only screen and (min-width: 769px) and (max-width: 992px) {
+    .workshops-container {
+        padding: 2rem 1rem;
+    }
+
+    .workshops-info {
+        padding: 1.25rem;
+    }
+
+    .workshop-card .card-body {
+        padding: 1.5rem;
+    }
+
+    /* 2 columns side by side */
+    .workshop-row .col-md-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+/* Desktop - 993px and above */
+@media only screen and (min-width: 993px) {
+    .workshops-container {
+        padding: 2.5rem 1rem;
+    }
+
+    .workshops-info {
+        padding: 1.5rem;
+        max-width: 900px;
+        margin: 0 auto 2rem;
+    }
+
+    .workshop-card .card-body {
+        padding: 1.5rem;
+    }
+
+    /* 2 columns with better spacing */
+    .workshop-row {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+}
+
+/* Large desktops - 1200px and above */
+@media only screen and (min-width: 1200px) {
+    .workshops-container {
+        max-width: 1400px;
+    }
+
+    .workshops-info {
+        max-width: 1000px;
+    }
+}
+
+/* Touch devices - better tap targets */
+@media (hover: none) and (pointer: coarse) {
+    .workshop-card {
+        margin-bottom: 1.5rem;
+    }
+
+    .workshop-card .card-body {
+        padding: 1.5rem;
+    }
+
+    .workshops-info a {
+        padding: 0.5rem;
+        display: inline-block;
+    }
+}
+
+/* Print styles */
+@media print {
+    .workshop-card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .workshop-card:hover {
+        transform: none;
+        box-shadow: none !important;
+    }
+}

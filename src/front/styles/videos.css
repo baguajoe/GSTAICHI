@@ -1,0 +1,84 @@
+/* videos.css */
+
+.videos-container {
+    padding: 2rem 1rem;
+}
+
+.videos-title {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    margin-bottom: 1.5rem;
+    color: #2b2b2b;
+    font-weight: bold;
+}
+
+.videos-intro {
+    max-width: 800px;
+    margin: 0 auto 2rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.videos-intro p {
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    color: #555;
+    margin-bottom: 0;
+    line-height: 1.6;
+}
+
+/* Mobile phones (portrait) - 576px and below */
+@media only screen and (max-width: 576px) {
+    .videos-container {
+        padding: 1rem 0.5rem;
+    }
+
+    .videos-title {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .videos-intro {
+        padding: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .videos-intro p {
+        font-size: 0.9rem;
+    }
+}
+
+/* Mobile phones (landscape) and small tablets - 577px to 768px */
+@media only screen and (min-width: 577px) and (max-width: 768px) {
+    .videos-container {
+        padding: 1.5rem 1rem;
+    }
+
+    .videos-title {
+        font-size: 1.75rem;
+    }
+
+    .videos-intro {
+        margin-bottom: 1.75rem;
+    }
+}
+
+/* Tablets - 769px to 992px */
+@media only screen and (min-width: 769px) and (max-width: 992px) {
+    .videos-container {
+        padding: 2rem 1rem;
+    }
+}
+
+/* Desktop - 993px and above */
+@media only screen and (min-width: 993px) {
+    .videos-container {
+        padding: 2.5rem 1rem;
+    }
+}
+
+/* Large desktops - 1200px and above */
+@media only screen and (min-width: 1200px) {
+    .videos-container {
+        max-width: 1400px;
+    }
+}
