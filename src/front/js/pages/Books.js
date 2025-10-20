@@ -29,7 +29,7 @@ import techniq9Img from '../../img/9_techniq.jpg';
 import panTaichiImg from '../../img/pan_taichi.jpg';
 
 // PayPal configuration - REPLACE WITH YOUR CLIENT ID
-const PAYPAL_CLIENT_ID = "ATTjrh45CReRAmMlXPZkg68UPPxW9DPJEoin7XvIvxSbrUjCOyYMhIjtP2DB2Il9CMX7KuOfcTcK9gHz";
+const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
 
 export const BooksAndVideos = () => {
   const [shippingRegion, setShippingRegion] = useState('');
@@ -45,7 +45,7 @@ export const BooksAndVideos = () => {
       cost: 27.95,
       image: comparativeStudyImg,
       type: 'book',
-      externalLink: "https://www.gstaichi.org"
+      
     },
     {
       id: 2,
