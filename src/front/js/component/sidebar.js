@@ -85,7 +85,7 @@ export const Sidebar = () => {
                     className={`nav-link mt-2 ${location.pathname === "/books" ? "active" : ""}`}
                     to="/books"
                 >
-                    Books
+                    Books & DVDs
                 </Link>
             </nav>
         </div>
