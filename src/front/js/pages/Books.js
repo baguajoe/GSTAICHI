@@ -106,7 +106,6 @@ export const BooksAndVideos = () => {
   const handleAddToCart = (product) => {
     if (!shippingRegion) {
       setShowModal(true);
-      return false;
     }
     
     const existingItem = cart.find(item => item.id === product.id);
