@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ShoppingCart, X, Plus, Minus, Trash2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ShoppingCart, X, Plus, Minus, Trash2, Check } from 'lucide-react';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 // Import all images
@@ -36,6 +36,19 @@ export const BooksAndVideos = () => {
   const [showModal, setShowModal] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [cart, setCart] = useState([]);
+  
+  // Toast notification state
+  const [toast, setToast] = useState({ show: false, item: null });
+
+  // Auto-hide toast after 3 seconds
+  useEffect(() => {
+    if (toast.show) {
+      const timer = setTimeout(() => {
+        setToast({ show: false, item: null });
+      }, 8000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast.show]);
 
   const books = [
     {
@@ -118,6 +131,10 @@ export const BooksAndVideos = () => {
     } else {
       setCart([...cart, { ...product, quantity: 1 }]);
     }
+    
+    // Show toast notification
+    setToast({ show: true, item: product });
+    
     return true;
   };
 
@@ -174,6 +191,71 @@ export const BooksAndVideos = () => {
   return (
     <PayPalScriptProvider options={{ "client-id": PAYPAL_CLIENT_ID, currency: "USD" }}>
       <div className="container-fluid px-4 my-5">
+        {/* Toast Notification */}
+        {toast.show && toast.item && (
+          <div 
+            style={{
+              position: 'fixed',
+              top: '20px',
+              right: '20px',
+              zIndex: 1100,
+              animation: 'slideIn 0.3s ease-out'
+            }}
+          >
+            <div 
+              className="d-flex align-items-center gap-3 p-3 bg-success text-white rounded shadow-lg"
+              style={{ maxWidth: '350px' }}
+            >
+              <div 
+                className="d-flex align-items-center justify-content-center rounded-circle bg-white"
+                style={{ width: '32px', height: '32px', flexShrink: 0 }}
+              >
+                <Check size={20} className="text-success" />
+              </div>
+              <div className="flex-grow-1">
+                <p className="mb-1 fw-bold" style={{ fontSize: '0.9rem' }}>Added to Cart!</p>
+                <p className="mb-0" style={{ fontSize: '0.85rem', opacity: 0.9 }}>
+                  {toast.item.title.length > 40 
+                    ? `${toast.item.title.substring(0, 40)}...` 
+                    : toast.item.title}
+                </p>
+              </div>
+              <button 
+                className="btn btn-sm btn-outline-light"
+                onClick={() => {
+                  setToast({ show: false, item: null });
+                  setShowCart(true);
+                }}
+              >
+                View Cart
+              </button>
+              <button 
+                className="btn btn-link text-white p-0 ms-1"
+                onClick={() => setToast({ show: false, item: null })}
+                style={{ opacity: 0.8 }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Toast animation styles */}
+        <style>
+          {`
+            @keyframes slideIn {
+              from {
+                transform: translateX(100%);
+                opacity: 0;
+              }
+              to {
+                transform: translateX(0);
+                opacity: 1;
+              }
+            }
+          `}
+        </style>
+
         {/* Header */}
         <div className="row mb-4">
           <div className="col-12">

@@ -1,7 +1,8 @@
 import React from "react";
 import vincentImage from "../../img/VincentHoldBall.jpg";
 import ginSoonImage from "../../img/GinSoon2.jpg";
-import tonyZhuImage from "../../img/IMG_0986.jpg"; // You'll need to add this image to your img folder
+import gordonImage from "../../img/gordonfairlady2.png";
+import tonyZhuImage from "../../img/IMG_0986.jpg";
 
 export const Instructors = () => {
     const instructors = [
@@ -15,7 +16,6 @@ export const Instructors = () => {
                 Master Chu personally supervises his classes with the assistance of senior students.
             `,
             image: ginSoonImage,
-            link: "/interviews/gin-soon-chu",
         },
         {
             name: "Master Vincent Chu, M.Ed.",
@@ -26,12 +26,20 @@ export const Instructors = () => {
                 and is a frequent contributor to martial arts publications.
             `,
             image: vincentImage,
-            link: "/interviews/vincent-chu",
+        },
+        {
+            name: "Master Gordon Chu",
+            description: `
+                Gordon Chu is a sixth-generation lineage practitioner of Classical Yang Family Tai Chi Chuan. He is the third of three sons 
+                of Grandmaster Gin Soon Chu. Gordon currently teaches at Gin Soon Tai Chi Club and is a co-successor of Gin Soon Tai Chi 
+                Chuan Federation USA.
+            `,
+            image: gordonImage,
         },
         {
             name: "Master Tony Zhu",
             description: `
-                Tony Zhu is the sixth generation Yang Style Tai Chi Chuan lineage practitioner. He was introduced to the theory and practice 
+                Tony Zhu is a sixth-generation Yang Style Tai Chi Chuan lineage practitioner. He was introduced to the theory and practice 
                 of Yang Tai Chi Chuan in 1986 by his uncle, Grandmaster Gin Soon Chu. Ever since then, he has been an active Yang Style Tai Chi 
                 practitioner. Since 1996, Tony Zhu has been an assistant instructor at the headquarters of the Gin Soon Tai Chi Chuan Federation. 
                 In 2000, Tony Zhu travelled with Grandmaster Gin Soon Chu and his son to give seminars on Tai Chi Chuan in Europe. With more than 
@@ -47,17 +55,19 @@ export const Instructors = () => {
             <h1 className="text-center mb-4">Instructors</h1>
             <div className="row justify-content-center">
                 {instructors.map((instructor, index) => (
-                    <div key={index} className="col-md-6 col-lg-4 mb-4">
+                    <div key={index} className="col-lg-3 col-md-6 mb-4">
                         <div className="card shadow-sm h-100">
-                            <img
-                                src={instructor.image}
-                                className="card-img-top"
-                                style={{ height: "400px", objectFit: "contain", backgroundColor: "#f8f9fa" }}
-                                alt={`Image of ${instructor.name}`}
-                            />
+                            <div style={{ height: "350px", backgroundColor: "#f8f9fa", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                <img
+                                    src={instructor.image}
+                                    className="card-img-top"
+                                    style={{ maxHeight: "350px", width: "auto", maxWidth: "100%", objectFit: "contain" }}
+                                    alt={`Image of ${instructor.name}`}
+                                />
+                            </div>
                             <div className="card-body d-flex flex-column">
-                                <h4 className="card-title">{instructor.name}</h4>
-                                <p className="card-text" style={{ textAlign: "justify", flex: 1 }}>
+                                <h5 className="card-title">{instructor.name}</h5>
+                                <p className="card-text" style={{ flex: 1 }}>
                                     {instructor.description}
                                 </p>
                             </div>

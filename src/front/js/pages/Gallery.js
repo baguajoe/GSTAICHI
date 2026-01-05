@@ -22,6 +22,10 @@ import img9 from "../../img/9.jpg";
 import img10 from "../../img/10.jpg";
 import img11 from "../../img/11.jpg";
 import img12 from "../../img/12.jpg";
+import vincentAndLin from "../../img/vincent and lin.jpg";
+import gordonpush from "../../img/gordonpush.jpg";
+import lin from "../../img/lin.jpg";
+import form from "../../img/form.jpg";
 import { Carousel } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../styles/gallery.css";
@@ -49,7 +53,11 @@ const images = [
     { src: img9, alt: "New Years Celebration 2009" },
     { src: img10, alt: "New Years Celebration 2009" },
     { src: img11, alt: "New Years Celebration 2009" },
-    { src: img12, alt: "New Years Celebration 2009" }
+    { src: img12, alt: "New Years Celebration 2009" },
+    { src: vincentAndLin, alt: "Vincent and Lin" },
+    { src: gordonpush, alt: "Gordon Push Hands" },
+    { src: lin, alt: "Lin" },
+    { src: form, alt: "Form Practice" }
 ];
 
 export const Gallery = () => {
