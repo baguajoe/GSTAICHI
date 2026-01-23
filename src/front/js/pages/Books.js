@@ -36,7 +36,7 @@ export const BooksAndVideos = () => {
   const [showModal, setShowModal] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [cart, setCart] = useState([]);
-  
+
   // Toast notification state
   const [toast, setToast] = useState({ show: false, item: null });
 
@@ -58,7 +58,7 @@ export const BooksAndVideos = () => {
       cost: 27.95,
       image: comparativeStudyImg,
       type: 'book',
-      
+
     },
     {
       id: 2,
@@ -120,21 +120,21 @@ export const BooksAndVideos = () => {
     if (!shippingRegion) {
       setShowModal(true);
     }
-    
+
     const existingItem = cart.find(item => item.id === product.id);
     if (existingItem) {
-      setCart(cart.map(item => 
-        item.id === product.id 
+      setCart(cart.map(item =>
+        item.id === product.id
           ? { ...item, quantity: item.quantity + 1 }
           : item
       ));
     } else {
       setCart([...cart, { ...product, quantity: 1 }]);
     }
-    
+
     // Show toast notification
     setToast({ show: true, item: product });
-    
+
     return true;
   };
 
@@ -142,8 +142,8 @@ export const BooksAndVideos = () => {
     if (newQuantity === 0) {
       setCart(cart.filter(item => item.id !== productId));
     } else {
-      setCart(cart.map(item => 
-        item.id === productId 
+      setCart(cart.map(item =>
+        item.id === productId
           ? { ...item, quantity: newQuantity }
           : item
       ));
@@ -180,9 +180,42 @@ export const BooksAndVideos = () => {
   };
 
   // PayPal payment approval
+  // PayPal payment approval
   const onApprove = (data, actions) => {
-    return actions.order.capture().then((details) => {
-      alert(`Transaction completed by ${details.payer.name.given_name}!`);
+    return actions.order.capture().then(async (details) => {
+      // Build shipping address string
+      const address = details.purchase_units[0]?.shipping?.address;
+      const shippingAddress = address
+        ? `${address.address_line_1 || ''}\n${address.admin_area_2 || ''}, ${address.admin_area_1 || ''} ${address.postal_code || ''}\n${address.country_code || ''}`
+        : 'Not provided';
+
+      // Send purchase notification to backend
+      try {
+        await fetch(`${process.env.BACKEND_URL}/api/purchase-notification`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderId: details.id,
+            transactionId: details.purchase_units[0]?.payments?.captures[0]?.id || 'N/A',
+            payerEmail: details.payer.email_address,
+            payerName: `${details.payer.name.given_name} ${details.payer.name.surname}`,
+            shippingAddress: shippingAddress,
+            items: cart.map(item => ({
+              name: item.title,
+              quantity: item.quantity,
+              price: item.cost.toFixed(2)
+            })),
+            subtotal: subtotal.toFixed(2),
+            shipping: shipping.toFixed(2),
+            total: total.toFixed(2),
+            shippingRegion: shippingRegion
+          })
+        });
+      } catch (error) {
+        console.error('Failed to send notification:', error);
+      }
+
+      alert(`Transaction completed by ${details.payer.name.given_name}! Thank you for your purchase.`);
       setCart([]);
       setShowCart(false);
     });
@@ -193,7 +226,7 @@ export const BooksAndVideos = () => {
       <div className="container-fluid px-4 my-5">
         {/* Toast Notification */}
         {toast.show && toast.item && (
-          <div 
+          <div
             style={{
               position: 'fixed',
               top: '20px',
@@ -202,11 +235,11 @@ export const BooksAndVideos = () => {
               animation: 'slideIn 0.3s ease-out'
             }}
           >
-            <div 
+            <div
               className="d-flex align-items-center gap-3 p-3 bg-success text-white rounded shadow-lg"
               style={{ maxWidth: '350px' }}
             >
-              <div 
+              <div
                 className="d-flex align-items-center justify-content-center rounded-circle bg-white"
                 style={{ width: '32px', height: '32px', flexShrink: 0 }}
               >
@@ -215,12 +248,12 @@ export const BooksAndVideos = () => {
               <div className="flex-grow-1">
                 <p className="mb-1 fw-bold" style={{ fontSize: '0.9rem' }}>Added to Cart!</p>
                 <p className="mb-0" style={{ fontSize: '0.85rem', opacity: 0.9 }}>
-                  {toast.item.title.length > 40 
-                    ? `${toast.item.title.substring(0, 40)}...` 
+                  {toast.item.title.length > 40
+                    ? `${toast.item.title.substring(0, 40)}...`
                     : toast.item.title}
                 </p>
               </div>
-              <button 
+              <button
                 className="btn btn-sm btn-outline-light"
                 onClick={() => {
                   setToast({ show: false, item: null });
@@ -229,7 +262,7 @@ export const BooksAndVideos = () => {
               >
                 View Cart
               </button>
-              <button 
+              <button
                 className="btn btn-link text-white p-0 ms-1"
                 onClick={() => setToast({ show: false, item: null })}
                 style={{ opacity: 0.8 }}
@@ -270,7 +303,7 @@ export const BooksAndVideos = () => {
                 <option value="US">United States</option>
                 <option value="Non US">Outside of US</option>
               </select>
-              <button 
+              <button
                 className="btn btn-primary d-flex align-items-center gap-2"
                 onClick={() => setShowCart(true)}
               >
@@ -290,9 +323,9 @@ export const BooksAndVideos = () => {
             {books.map((book) => (
               <div key={book.id} className="col">
                 <div className="card shadow-sm h-100">
-                  <img 
-                    src={book.image} 
-                    className="card-img-top p-3" 
+                  <img
+                    src={book.image}
+                    className="card-img-top p-3"
                     alt={book.title}
                     style={{ height: '250px', objectFit: 'contain' }}
                   />
@@ -300,8 +333,8 @@ export const BooksAndVideos = () => {
                     <h5 className="card-title">{book.title}</h5>
                     {book.description && (
                       <p className="card-text" style={{ textAlign: 'justify', fontSize: '0.9rem' }}>
-                        {book.description.length > 150 
-                          ? `${book.description.substring(0, 150)}...` 
+                        {book.description.length > 150
+                          ? `${book.description.substring(0, 150)}...`
                           : book.description}
                       </p>
                     )}
@@ -309,17 +342,17 @@ export const BooksAndVideos = () => {
                       Cost: ${book.cost.toFixed(2)}
                     </p>
                     <div className="d-flex flex-column gap-2">
-                      <button 
-                        onClick={() => handleAddToCart(book)} 
+                      <button
+                        onClick={() => handleAddToCart(book)}
                         className="btn btn-warning w-100"
                       >
                         Add To Cart
                       </button>
                       {book.externalLink && (
-                        <a 
-                          href={book.externalLink} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
+                        <a
+                          href={book.externalLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="btn btn-outline-primary w-100"
                         >
                           Buy Direct
@@ -342,9 +375,9 @@ export const BooksAndVideos = () => {
             {dvds.map((dvd) => (
               <div key={dvd.id} className="col">
                 <div className="card shadow-sm h-100">
-                  <img 
-                    src={dvd.image} 
-                    className="card-img-top p-3" 
+                  <img
+                    src={dvd.image}
+                    className="card-img-top p-3"
                     alt={dvd.title}
                     style={{ height: '200px', objectFit: 'contain' }}
                   />
@@ -354,17 +387,17 @@ export const BooksAndVideos = () => {
                     <p className="text-muted small mb-2">Running Time: {dvd.runtime}</p>
                     <p className="font-weight-bold mb-3">USD ${dvd.cost.toFixed(2)}</p>
                     <div className="d-flex flex-column gap-2 mt-auto">
-                      <button 
-                        onClick={() => handleAddToCart(dvd)} 
+                      <button
+                        onClick={() => handleAddToCart(dvd)}
                         className="btn btn-warning w-100"
                       >
                         Add To Cart
                       </button>
                       {dvd.downloadLink && (
-                        <a 
-                          href={dvd.downloadLink} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
+                        <a
+                          href={dvd.downloadLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="btn btn-outline-primary w-100"
                         >
                           Download
@@ -387,8 +420,8 @@ export const BooksAndVideos = () => {
 
         {/* Region Selection Modal */}
         {showModal && (
-          <div 
-            className="modal show d-block" 
+          <div
+            className="modal show d-block"
             style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}
             onClick={() => setShowModal(false)}
           >
@@ -396,16 +429,16 @@ export const BooksAndVideos = () => {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Select Shipping Region</h5>
-                  <button 
-                    type="button" 
-                    className="btn-close" 
+                  <button
+                    type="button"
+                    className="btn-close"
                     onClick={() => setShowModal(false)}
                   ></button>
                 </div>
                 <div className="modal-body">
                   <p>Please select the region where you are located:</p>
-                  <select 
-                    onChange={(e) => { if (e.target.value) { handleRegionSelect(e.target.value); }}} 
+                  <select
+                    onChange={(e) => { if (e.target.value) { handleRegionSelect(e.target.value); } }}
                     className="form-select"
                   >
                     <option value="">Select</option>
@@ -420,8 +453,8 @@ export const BooksAndVideos = () => {
 
         {/* Shopping Cart Modal */}
         {showCart && (
-          <div 
-            className="modal show d-block" 
+          <div
+            className="modal show d-block"
             style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}
             onClick={() => setShowCart(false)}
           >
@@ -429,9 +462,9 @@ export const BooksAndVideos = () => {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Shopping Cart</h5>
-                  <button 
-                    type="button" 
-                    className="btn-close" 
+                  <button
+                    type="button"
+                    className="btn-close"
                     onClick={() => setShowCart(false)}
                   ></button>
                 </div>
@@ -448,20 +481,20 @@ export const BooksAndVideos = () => {
                             <p className="mb-0 text-muted">${item.cost.toFixed(2)}</p>
                           </div>
                           <div className="d-flex align-items-center gap-2">
-                            <button 
+                            <button
                               className="btn btn-sm btn-outline-secondary"
                               onClick={() => updateQuantity(item.id, item.quantity - 1)}
                             >
                               <Minus size={16} />
                             </button>
                             <span className="px-2">{item.quantity}</span>
-                            <button 
+                            <button
                               className="btn btn-sm btn-outline-secondary"
                               onClick={() => updateQuantity(item.id, item.quantity + 1)}
                             >
                               <Plus size={16} />
                             </button>
-                            <button 
+                            <button
                               className="btn btn-sm btn-outline-danger ms-2"
                               onClick={() => removeFromCart(item.id)}
                             >
@@ -470,7 +503,7 @@ export const BooksAndVideos = () => {
                           </div>
                         </div>
                       ))}
-                      
+
                       <div className="mt-4">
                         <div className="d-flex justify-content-between mb-2">
                           <span>Subtotal:</span>

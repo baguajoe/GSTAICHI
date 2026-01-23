@@ -114,6 +114,50 @@ def delete_article(id):
     db.session.commit()
     return jsonify({'message': 'Article deleted successfully'})
 
+@api.route("/purchase-notification", methods=['POST'])
+def purchase_notification():
+    """Send email notification when a purchase is completed"""
+    data = request.get_json()
+    
+    # Build items list for email
+    items_list = ""
+    for item in data.get('items', []):
+        items_list += f"  - {item.get('name')} (Qty: {item.get('quantity')}) - ${item.get('price')}\n"
+    
+    email_body = f"""
+New Purchase Completed!
+
+Order ID: {data.get('orderId')}
+Transaction ID: {data.get('transactionId')}
+
+Customer Information:
+  Name: {data.get('payerName')}
+  Email: {data.get('payerEmail')}
+
+Shipping Address:
+{data.get('shippingAddress', 'Not provided')}
+
+Order Details:
+{items_list}
+Subtotal: ${data.get('subtotal')}
+Shipping: ${data.get('shipping')}
+Total: ${data.get('total')}
+
+Shipping Region: {data.get('shippingRegion')}
+"""
+    
+    try:
+        recipient = os.getenv("NOTIFICATION_EMAIL", os.getenv("GMAIL"))
+        send_email(
+            recipient=recipient,
+            subject=f"New Purchase - ${data.get('total')} - {data.get('payerName')}",
+            body=email_body
+        )
+        return jsonify({"message": "Notification sent successfully"}), 200
+    except Exception as e:
+        print(f"Failed to send purchase notification: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
 @api.route("/contact", methods=['POST'])
 def submit_contact():
     data= request.get_json()
@@ -128,10 +172,10 @@ def submit_contact():
         email_body = f"New contact form submission:\n\nName: {name}\nEmail: {email}\n\nMessage:\n{message}"
 
         send_email(
-            recipient=os.getenv("GMAIL"),
-            subject="New Contact Form Submission",
+            recipient=os.getenv("NOTIFICATION_EMAIL", os.getenv("GMAIL")),
+            subject="New Contact Form Submission - Gin Soon Tai Chi",
             body=email_body
-        )
+    )
 
         return jsonify ({"message": "Contact form submitted successfully"}), 200
     
