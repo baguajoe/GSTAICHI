@@ -35,6 +35,10 @@ export const BooksAndVideos = () => {
   const [showCart, setShowCart] = useState(false);
   const [cart, setCart] = useState([]);
 
+  // Remember the product the user clicked while no region was set,
+  // so we can add it to the cart after they pick a region.
+  const [pendingProduct, setPendingProduct] = useState(null);
+
   // Toast notification state
   const [toast, setToast] = useState({ show: false, item: null });
 
@@ -123,27 +127,35 @@ export const BooksAndVideos = () => {
     return '';
   };
 
+  // Pure helper that adds a product to the cart and shows the toast.
+  // Used both by direct clicks (when a region is already set) and after
+  // the user picks a region in the modal for a pending product.
+  const addProductToCart = (product) => {
+    setCart(prevCart => {
+      const existingItem = prevCart.find(item => item.id === product.id);
+      if (existingItem) {
+        return prevCart.map(item =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+      return [...prevCart, { ...product, quantity: 1 }];
+    });
+    setToast({ show: true, item: product });
+  };
+
   const handleAddToCart = (product) => {
-    // If no shipping region is selected, prompt for it FIRST
-    // and stop here - don't add to cart until region is selected
+    // If no shipping region is selected, remember which product the user
+    // wanted, prompt for region, and stop. The product will be added to
+    // the cart automatically once they pick a region.
     if (!shippingRegion) {
+      setPendingProduct(product);
       setShowModal(true);
       return;
     }
 
-    const existingItem = cart.find(item => item.id === product.id);
-    if (existingItem) {
-      setCart(cart.map(item =>
-        item.id === product.id
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      ));
-    } else {
-      setCart([...cart, { ...product, quantity: 1 }]);
-    }
-
-    // Show toast notification
-    setToast({ show: true, item: product });
+    addProductToCart(product);
   };
 
   const updateQuantity = (productId, newQuantity) => {
@@ -164,10 +176,23 @@ export const BooksAndVideos = () => {
 
   // Only allow setting a valid region. Ignore empty values so the
   // shipping region cannot accidentally be cleared back to ''.
+  // Also: if there's a pending product (the user clicked Add to Cart
+  // before picking a region), add it now.
   const handleRegionSelect = (region) => {
     if (!region) return;
     setShippingRegion(region);
     setShowModal(false);
+
+    if (pendingProduct) {
+      addProductToCart(pendingProduct);
+      setPendingProduct(null);
+    }
+  };
+
+  // Closing the modal without picking a region clears any pending product.
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setPendingProduct(null);
   };
 
   // PayPal order creation
@@ -440,7 +465,7 @@ export const BooksAndVideos = () => {
           <div
             className="modal show d-block"
             style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}
-            onClick={() => setShowModal(false)}
+            onClick={handleCloseModal}
           >
             <div className="modal-dialog modal-dialog-centered" onClick={(e) => e.stopPropagation()}>
               <div className="modal-content">
@@ -449,7 +474,7 @@ export const BooksAndVideos = () => {
                   <button
                     type="button"
                     className="btn-close"
-                    onClick={() => setShowModal(false)}
+                    onClick={handleCloseModal}
                   ></button>
                 </div>
                 <div className="modal-body">
