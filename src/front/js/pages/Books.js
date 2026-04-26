@@ -116,9 +116,19 @@ export const BooksAndVideos = () => {
   const shipping = calculateShipping();
   const total = subtotal + shipping;
 
+  // Get readable region name for display
+  const getRegionLabel = () => {
+    if (shippingRegion === 'US') return 'United States';
+    if (shippingRegion === 'Non US') return 'Outside US';
+    return '';
+  };
+
   const handleAddToCart = (product) => {
+    // If no shipping region is selected, prompt for it FIRST
+    // and stop here - don't add to cart until region is selected
     if (!shippingRegion) {
       setShowModal(true);
+      return;
     }
 
     const existingItem = cart.find(item => item.id === product.id);
@@ -134,8 +144,6 @@ export const BooksAndVideos = () => {
 
     // Show toast notification
     setToast({ show: true, item: product });
-
-    return true;
   };
 
   const updateQuantity = (productId, newQuantity) => {
@@ -154,7 +162,10 @@ export const BooksAndVideos = () => {
     setCart(cart.filter(item => item.id !== productId));
   };
 
+  // Only allow setting a valid region. Ignore empty values so the
+  // shipping region cannot accidentally be cleared back to ''.
   const handleRegionSelect = (region) => {
+    if (!region) return;
     setShippingRegion(region);
     setShowModal(false);
   };
@@ -292,13 +303,19 @@ export const BooksAndVideos = () => {
         <div className="row mb-4">
           <div className="col-12">
             <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 p-3 bg-white rounded shadow-sm">
+              {/* Shipping region selector
+                - Once a region is chosen, the empty option is removed so
+                  the region cannot accidentally be cleared back to ''.
+                - handleRegionSelect also ignores empty values defensively. */}
               <select
                 value={shippingRegion}
                 onChange={(e) => handleRegionSelect(e.target.value)}
                 className="form-select"
                 style={{ maxWidth: '250px' }}
               >
-                <option value="">Select Shipping Region</option>
+                {!shippingRegion && (
+                  <option value="">Select Shipping Region</option>
+                )}
                 <option value="US">United States</option>
                 <option value="Non US">Outside of US</option>
               </select>
@@ -436,10 +453,11 @@ export const BooksAndVideos = () => {
                   ></button>
                 </div>
                 <div className="modal-body">
-                  <p>Please select the region where you are located:</p>
+                  <p>Please select the region where you are located before adding items to your cart:</p>
                   <select
                     onChange={(e) => { if (e.target.value) { handleRegionSelect(e.target.value); } }}
                     className="form-select"
+                    defaultValue=""
                   >
                     <option value="">Select</option>
                     <option value="US">United States</option>
@@ -510,7 +528,7 @@ export const BooksAndVideos = () => {
                           <span>${subtotal.toFixed(2)}</span>
                         </div>
                         <div className="d-flex justify-content-between mb-2">
-                          <span>Shipping ({shippingRegion}):</span>
+                          <span>Shipping ({getRegionLabel()}):</span>
                           <span>${shipping.toFixed(2)}</span>
                         </div>
                         <div className="d-flex justify-content-between fw-bold fs-5 pt-2 border-top">
