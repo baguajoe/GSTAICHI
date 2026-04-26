@@ -175,7 +175,7 @@ def submit_contact():
             recipient=os.getenv("NOTIFICATION_EMAIL", os.getenv("GMAIL")),
             subject="New Contact Form Submission - Gin Soon Tai Chi",
             body=email_body
-    )
+        )
 
         return jsonify ({"message": "Contact form submitted successfully"}), 200
     

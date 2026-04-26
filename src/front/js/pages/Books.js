@@ -6,7 +6,6 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import comparativeStudyImg from '../../img/comparativeStudy.png';
 import taiChiCirclesImg from '../../img/TaiChiChuanCircles.jpg';
 import ebookImg from '../../img/ebook.gif';
-import newImg from '../../img/new.png';
 import smallFrame15Img from '../../img/15TechniqueSmallFrameSoloFormCover.gif';
 import largeFrame12Img from '../../img/12TechniquesLargeFrameSoloFormCover.gif';
 import mediumFrame8Img from '../../img/8TechniquesMediumFrameSoloFormCover.gif';
@@ -17,7 +16,6 @@ import threeCirclesImg from '../../img/threeCirclesExercise.gif';
 import returningTaiChiImg from '../../img/ReturningTaiChi.jpg';
 import taiChiGongImg from '../../img/TaiChiGong.gif';
 import technique11Img from '../../img/11_Technique.jpg';
-import sword22Img from '../../img/22_sword.jpg';
 import phcoverImg from '../../img/phcover.jpg';
 import taichiFundamentalsImg from '../../img/taichifundamentals.jpg';
 import baduanjinImg from '../../img/baduanjinfinalcover.jpg';
@@ -40,7 +38,7 @@ export const BooksAndVideos = () => {
   // Toast notification state
   const [toast, setToast] = useState({ show: false, item: null });
 
-  // Auto-hide toast after 3 seconds
+  // Auto-hide toast after 8 seconds
   useEffect(() => {
     if (toast.show) {
       const timer = setTimeout(() => {
@@ -80,7 +78,6 @@ export const BooksAndVideos = () => {
   ];
 
   const dvds = [
-    { id: 4, title: 'Yang Style Tai Chi Chuan Medium Frame Solo Form', cost: 99.95, runtime: '3 hours 20 Minutes', details: 'Two DVD set', image: newImg, type: 'dvd' },
     { id: 5, title: 'Fifteen Technique Small Frame Solo Form', cost: 29.95, runtime: '58 Minutes', image: smallFrame15Img, type: 'dvd' },
     { id: 6, title: 'Twelve Techniques Large Frame Solo Form', cost: 29.95, runtime: '74 Minutes', image: largeFrame12Img, type: 'dvd' },
     { id: 7, title: 'Eight Techniques Medium Frame Solo Form', cost: 29.95, runtime: '59 Minutes', image: mediumFrame8Img, type: 'dvd' },
@@ -91,7 +88,6 @@ export const BooksAndVideos = () => {
     { id: 12, title: '12 Techniques Returning Tai Chi Chuan Solo Form', cost: 29.95, runtime: '1 hour 39 Minutes', image: returningTaiChiImg, type: 'dvd' },
     { id: 13, title: 'Tai Chi Gong', cost: 29.95, runtime: '33 Minutes 27 Seconds', image: taiChiGongImg, type: 'dvd' },
     { id: 14, title: '11 Techniques AJ Tai Chi Chuan', cost: 29.95, runtime: '37 Minutes 9 Seconds', image: technique11Img, type: 'dvd' },
-    { id: 15, title: '22 Technique Tai Chi Sword Form DVD', cost: 29.95, runtime: '28 Minutes 17 Seconds', image: sword22Img, type: 'dvd', downloadLink: 'https://vimeo.com/ondemand/22taichisword' },
     { id: 16, title: 'Tai Chi Chuan Push Hands Exercises DVD', cost: 29.95, runtime: '22 Minutes 39 Seconds', image: phcoverImg, type: 'dvd' },
     { id: 17, title: 'Tai Chi Chuan Fundamentals Training DVD', cost: 29.95, runtime: '31 Minutes 17 Seconds', image: taichiFundamentalsImg, type: 'dvd' },
     { id: 18, title: 'Ba Duan Jin Qigong DVD', cost: 29.95, runtime: '40 Minutes 0 Seconds', image: baduanjinImg, type: 'dvd' },
@@ -103,11 +99,15 @@ export const BooksAndVideos = () => {
     { id: 24, title: 'Pan Gu Tai Chi Moving Form', cost: 29.95, runtime: '59 Minutes 07 Seconds', image: panTaichiImg, type: 'dvd' }
   ];
 
-  // Calculate shipping
+  // Calculate shipping based on total quantity of items
+  // US: $11 first item + $5 each additional
+  // International: $28 first item + $10 each additional (based on USPS First-Class Package International rates)
   const calculateShipping = () => {
     if (!shippingRegion || cart.length === 0) return 0;
-    const firstItemShipping = shippingRegion === 'US' ? 11.00 : 20.00;
-    const additionalItemsShipping = (cart.length - 1) * 5.00;
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    const firstItemShipping = shippingRegion === 'US' ? 11.00 : 28.00;
+    const additionalItemRate = shippingRegion === 'US' ? 5.00 : 10.00;
+    const additionalItemsShipping = (totalItems - 1) * additionalItemRate;
     return firstItemShipping + additionalItemsShipping;
   };
 
@@ -179,7 +179,6 @@ export const BooksAndVideos = () => {
     });
   };
 
-  // PayPal payment approval
   // PayPal payment approval
   const onApprove = (data, actions) => {
     return actions.order.capture().then(async (details) => {
@@ -308,7 +307,7 @@ export const BooksAndVideos = () => {
                 onClick={() => setShowCart(true)}
               >
                 <ShoppingCart size={20} />
-                <span>View Cart ({cart.length})</span>
+                <span>View Cart ({cart.reduce((sum, item) => sum + item.quantity, 0)})</span>
               </button>
             </div>
           </div>
@@ -413,9 +412,10 @@ export const BooksAndVideos = () => {
 
         {/* Shipping Info */}
         <div className="alert alert-info text-center">
-          <p className="mb-1"><strong>First Item Shipping and Handling within the U.S.: $11.00</strong></p>
-          <p className="mb-1"><strong>First Item Shipping and Handling outside of the U.S.: $20.00</strong></p>
-          <p className="mb-0"><strong>For every additional item: $5.00</strong></p>
+          <p className="mb-2"><strong>Shipping & Handling Rates</strong></p>
+          <p className="mb-1">Within the U.S.: $11.00 first item, $5.00 each additional item</p>
+          <p className="mb-1">Outside of the U.S.: $28.00 first item, $10.00 each additional item</p>
+          <p className="mb-0 small text-muted mt-2">International orders may incur additional customs fees on delivery, which are the responsibility of the buyer.</p>
         </div>
 
         {/* Region Selection Modal */}
