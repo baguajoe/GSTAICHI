@@ -59,7 +59,11 @@ export const Workshops = () => {
 				</p>
 				<p>
 					<strong>Czech Republic:</strong> These workshops are held in Prague from approximately November 21st to December
-					1st each year. However, the exact dates may differ per year. For more information, contact Karel Nuhlicek at{" "}
+					1st each year. However, the exact dates may differ per year. For more information, contact Dan Tkadlcik at{" "}
+					<a href="mailto:tkadlcik@centrum.cz">
+						tkadlcik@centrum.cz
+					</a>{" "}
+					or Karel Nuhlicek at{" "}
 					<a href="mailto:karel.nuhlicek@impromat.cz">
 						karel.nuhlicek@impromat.cz
 					</a>.
