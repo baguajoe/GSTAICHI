@@ -16,15 +16,13 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 
 from functools import wraps
-from flask_httpauth import HTTPBasicAuth
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
+from api.extensions import limiter
+from api.taichi_company import tcc
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-auth = HTTPBasicAuth()
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
@@ -43,8 +41,8 @@ CORS(app, resources={
     # API routes - full CORS with credentials
     r"/api/*": {
         "origins": allowed_origins,
-        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization", "X-Request-Id"],
+        "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization", "X-Request-Id", "X-Playback-Session"],
         "supports_credentials": True
     },
     # Admin routes - restricted CORS (typically you only need GET/POST)
@@ -56,11 +54,7 @@ CORS(app, resources={
     }
 })
 
-limiter = Limiter(
-    app=app,
-    key_func=get_remote_address,
-    default_limits=["500 per day", "25 per minute"]
-)
+limiter.init_app(app)
 
 # Add more detailed debug logging for CORS issues
 @app.before_request
@@ -76,42 +70,7 @@ def log_cors_debug():
     logger.debug(f"Access-Control-Request-Method: {request.headers.get('Access-Control-Request-Method')}")
     logger.debug(f"Access-Control-Request-Headers: {request.headers.get('Access-Control-Request-Headers')}")
 
-# Authentication only for admin routes
-@app.before_request
-def before_request():
-    # Debug information
-    logger.debug(f"Request path: {request.path}")
-    logger.debug(f"Request method: {request.method}")
-    logger.debug(f"Request headers: {dict(request.headers)}")
-    
-    # Skip authentication for all non-admin routes
-    if not request.path.startswith('/admin/'):
-        logger.debug("Non-admin route, authentication bypassed")
-        return None
-    
-    # For admin routes, apply authentication
-    auth = request.authorization
-    if not auth:
-        logger.debug("No auth provided for admin route")
-        return Response(
-            "could not verify your access level for admin interface.\n"
-            "you have to login with proper credentials", 401,
-            {"WWW-Authenticate": "Basic realm='Admin Login Required'"}
-        )
-    
-    ADMIN_USER = os.environ.get("ADMIN_USER", "admin")
-    ADMIN_PASS = os.environ.get("ADMIN_PASS", "your-secured-password")
-    
-    if auth.username == ADMIN_USER and auth.password == ADMIN_PASS:
-        logger.debug("Auth successful for admin route")
-        return None
-    
-    logger.debug("Auth failed for admin route")
-    return Response(
-        "could not verify your access level for admin interface.\n"
-        "you have to login with proper credentials", 401,
-        {"WWW-Authenticate": "Basic realm='Admin Login Required'"}
-    )
+# Admin routes are protected inside api/admin.py: only logged-in users with role "admin" get in.
 
 # Add logging for responses
 @app.after_request
@@ -126,7 +85,12 @@ def options_handler(path):
     logger.debug(f"OPTIONS request for /api/{path}")
     return app.make_default_options_response()
 
-app.config["JWT_SECRET_KEY"] = os.environ.get('JWT_SECRET')  # Change this!
+app.config["JWT_SECRET_KEY"] = os.environ.get('JWT_SECRET_KEY') or os.environ.get('JWT_SECRET')
+
+# Session cookie is only used for the /admin login
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_SECURE"] = ENV == "production"
 jwt = JWTManager(app)
 
 # database configuration
@@ -149,6 +113,7 @@ setup_commands(app)
 
 # Add all endpoints form the API with a "api" prefix
 app.register_blueprint(api, url_prefix='/api')
+app.register_blueprint(tcc, url_prefix='/api/tcc')
 
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)

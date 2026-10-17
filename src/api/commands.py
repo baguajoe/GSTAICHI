@@ -2,6 +2,7 @@
 import click
 from api.models import db, User, Article
 from datetime import datetime
+from api.tcc_commands import setup_tcc_commands
 
 
 """
@@ -10,6 +11,7 @@ Flask commands are usefull to run cronjobs or tasks outside of the API but sill 
 with youy database, for example: Import the price of bitcoin every night as 12am
 """
 def setup_commands(app):
+    setup_tcc_commands(app)
     
     """ 
     This is an example command "insert-test-users" that you can run from the command line
@@ -120,12 +122,8 @@ Kindness does not mean weakness.
 
         article = Article(
             title="Combat Tai Chi Chuan",
-            content_part1=part_one,
-            content_part2=part_two,
+            content=part_one.strip() + "\n\n" + part_two.strip(),
             author="Vincent Chu",
-            publication_date=datetime.strptime("2024-01-01", "%Y-%m-%d"),
-            download_url=None,
-            is_downloadable=True
         )
 
         db.session.add(article)

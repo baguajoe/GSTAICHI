@@ -110,12 +110,8 @@ Kindness does not mean weakness.
 
         article = Article(
             title="Combat Tai Chi Chuan",
-            content_part1=part_one,
-            content_part2=part_two,  # Note: changed from content to content_part1 and content_part2
+            content=part_one.strip() + "\n\n" + part_two.strip(),
             author="Vincent Chu",
-            publication_date=datetime.strptime("2024-01-01", "%Y-%m-%d"),
-            download_url=None,
-            is_downloadable=True
         )
 
         # Add the article to the database

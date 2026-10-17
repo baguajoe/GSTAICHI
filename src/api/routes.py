@@ -1,42 +1,120 @@
 from flask import Blueprint, request, jsonify, abort
-from api.models import db, User, Class, Book, Video, Article
+from api.models import db, User, Class, Book, Video, Article, SiteSettings
+from api.extensions import limiter
+from api.tcc_auth import role_required
 from api.send_email import send_email
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 # from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
+from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
+from sqlalchemy import func
 import os
 
 api = Blueprint('api', __name__)
 CORS(api)
 
+MIN_PASSWORD_LENGTH = 8
+RESET_TOKEN_MAX_AGE = 60 * 60  # one hour
+
+
+def _find_user_by_email(email):
+    return User.query.filter(func.lower(User.email) == (email or "").strip().lower()).first()
+
+
 # User Signup
 @api.route("/signup", methods=["POST"])
+@limiter.limit("10 per hour")
 def create_signup():
-    email = request.json.get("email")
-    password = request.json.get("password")
-    if User.query.filter_by(email=email).first():
+    data = request.get_json(silent=True) or {}
+    email = (data.get("email") or "").strip().lower()
+    password = data.get("password") or ""
+    name = (data.get("name") or "").strip()
+    if not email or "@" not in email:
+        return jsonify({"msg": "Please enter a valid email address."}), 400
+    if len(password) < MIN_PASSWORD_LENGTH:
+        return jsonify({"msg": f"Password must be at least {MIN_PASSWORD_LENGTH} characters."}), 400
+    if _find_user_by_email(email):
         return jsonify({"msg": "User already exists"}), 400
 
     hashed_password = generate_password_hash(password)
-    new_user = User(email=email, password=hashed_password, is_active=True)
+    new_user = User(email=email, password=hashed_password, is_active=True, name=name or None)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({"msg": "User created successfully"}), 201
 
 # User Login
 @api.route("/login", methods=["POST"])
+@limiter.limit("10 per minute;50 per hour")
 def create_login():
-    email = request.json.get("email")
-    password = request.json.get("password")
-    user = User.query.filter_by(email=email).first()
+    data = request.get_json(silent=True) or {}
+    email = data.get("email")
+    password = data.get("password") or ""
+    user = _find_user_by_email(email)
     if user is None or not check_password_hash(user.password, password):
         return jsonify({"msg": "Invalid email or password"}), 401
+    if user.is_suspended:
+        return jsonify({"msg": "This account has been suspended. Please contact us for help."}), 403
+
+    user.last_login_at = datetime.utcnow()
+    db.session.commit()
 
     expiration = timedelta(days=7)
     access_token = create_access_token(identity=user.email, expires_delta=expiration)
-    return jsonify({"token": access_token}), 200
+    return jsonify({"token": access_token, "user": user.serialize_account()}), 200
+
+
+def _reset_serializer():
+    return URLSafeTimedSerializer(os.environ.get("FLASK_APP_KEY", "sample key"), salt="password-reset")
+
+
+@api.route("/forgot-password", methods=["POST"])
+@limiter.limit("5 per hour")
+def forgot_password():
+    data = request.get_json(silent=True) or {}
+    user = _find_user_by_email(data.get("email"))
+    # Always answer the same way so nobody can test which emails have accounts
+    response = jsonify({"msg": "If that email has an account, a reset link is on its way."})
+    if user is None:
+        return response, 200
+
+    # Including part of the current password hash makes the link stop working once it has been used
+    token = _reset_serializer().dumps({"uid": user.id, "ph": user.password[-12:]})
+    frontend = os.getenv("FRONTEND_URL", "").rstrip("/")
+    link = f"{frontend}/tai-chi-company/reset-password?token={token}"
+    settings = SiteSettings.get()
+    body = (
+        f"Hello{(' ' + user.name) if user.name else ''},\n\n"
+        f"Someone asked to reset the password for your {settings.app_name} account.\n"
+        f"To choose a new password, open this link within one hour:\n\n{link}\n\n"
+        f"If you did not ask for this, you can ignore this email.\n\n"
+        f"Need help? Call {settings.contact_phone or ''}\n{settings.school_name}"
+    )
+    try:
+        send_email(recipient=user.email, subject=f"Reset your {settings.app_name} password", body=body)
+    except Exception as e:
+        print(f"Failed to send password reset email: {e}")
+    return response, 200
+
+
+@api.route("/reset-password", methods=["POST"])
+@limiter.limit("10 per hour")
+def reset_password():
+    data = request.get_json(silent=True) or {}
+    password = data.get("password") or ""
+    if len(password) < MIN_PASSWORD_LENGTH:
+        return jsonify({"msg": f"Password must be at least {MIN_PASSWORD_LENGTH} characters."}), 400
+    try:
+        payload = _reset_serializer().loads(data.get("token") or "", max_age=RESET_TOKEN_MAX_AGE)
+    except (BadSignature, SignatureExpired):
+        return jsonify({"msg": "This reset link has expired or was already used. Please ask for a new one."}), 400
+    user = db.session.get(User, payload.get("uid"))
+    if user is None or user.password[-12:] != payload.get("ph"):
+        return jsonify({"msg": "This reset link has expired or was already used. Please ask for a new one."}), 400
+    user.password = generate_password_hash(password)
+    db.session.commit()
+    return jsonify({"msg": "Your password has been changed. You can sign in now."}), 200
 
 # Protected Route
 @api.route("/private", methods=["GET"])
@@ -52,62 +130,51 @@ def create_private():
 # Articles Routes
 @api.route('/articles', methods=['GET'])
 def get_articles():
-    articles = Article.query.all()
+    # Member-only Tai Chi Company articles are served by /api/tcc/articles instead
+    articles = Article.query.filter(Article.members_only.is_(False)).all()
     return jsonify([article.serialize() for article in articles])
 
 @api.route('/articles/<int:id>', methods=['GET'])
 def get_article(id):
-    article = Article.query.get_or_404(id)
+    article = Article.query.filter(Article.id == id, Article.members_only.is_(False)).first_or_404()
     return jsonify(article.serialize())
 
 
 @api.route("/articles", methods=["POST"])
+@role_required("admin")
 def add_article():
     data = request.get_json()
-    full_content = data.get("content")
-    
-    # Split the content into two parts
-    split_index = len(full_content) // 2
-    split_index = full_content.rfind(". ", 0, split_index) + 1
-
-    part1 = full_content[:split_index].strip()
-    part2 = full_content[split_index:].strip()
 
     article = Article(
         title=data.get("title"),
-        content_part1=part1,
-        content_part2=part2,
+        section=data.get("section", "Other"),
+        content=data.get("content"),
         author=data.get("author"),
-        publication_date=datetime.strptime(data.get("publication_date"), "%Y-%m-%d")
     )
     db.session.add(article)
     db.session.commit()
     return jsonify({"message": "Article added successfully"}), 201
 
 @api.route('/articles/<int:id>', methods=['PUT'])
+@role_required("admin")
 def update_article(id):
     data = request.get_json()
     article = Article.query.get_or_404(id)
 
     if 'title' in data:
         article.title = data['title']
-    if 'content_part1' in data:
-        article.content_part1 = data['content_part1']
-    if 'content_part2' in data:
-        article.content_part2 = data['content_part2']
+    if 'content' in data:
+        article.content = data['content']
+    if 'section' in data:
+        article.section = data['section']
     if 'author' in data:
         article.author = data['author']
-    if 'publication_date' in data:
-        article.publication_date = datetime.strptime(data['publication_date'], '%Y-%m-%d')
-    if 'download_url' in data:
-        article.download_url = data['download_url']
-    if 'is_downloadable' in data:
-        article.is_downloadable = data['is_downloadable']
 
     db.session.commit()
     return jsonify({'message': 'Article updated successfully', 'article': article.serialize()})
 
 @api.route('/articles/<int:id>', methods=['DELETE'])
+@role_required("admin")
 def delete_article(id):
     article = Article.query.get_or_404(id)
     db.session.delete(article)
