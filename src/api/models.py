@@ -25,8 +25,15 @@ class User(db.Model):
     current_plan_id = db.Column(db.Integer, db.ForeignKey("plan.id"), nullable=True)
     paid_through = db.Column(db.DateTime, nullable=True)  # access lasts until this date after cancelling
     next_billing_at = db.Column(db.DateTime, nullable=True)  # from PayPal, shown on the account page
+    subscribed_at = db.Column(db.DateTime, nullable=True)  # last time the subscription became active (dashboard)
+    cancelled_at = db.Column(db.DateTime, nullable=True)  # when the member or PayPal cancelled (dashboard)
     is_founding_member = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
     is_suspended = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
+    # Free access given by an admin (a gift, a scholarship, a PayPal problem). Kept apart from the paid
+    # tier so PayPal updates never remove it. granted_until empty = no end date.
+    granted_tier_rank = db.Column(db.Integer, nullable=True)
+    granted_until = db.Column(db.DateTime, nullable=True)
+    suspended_reason = db.Column(db.String(300), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, server_default=db.func.now())
     last_login_at = db.Column(db.DateTime, nullable=True)
 
@@ -41,10 +48,19 @@ class User(db.Model):
 
     @property
     def is_paying_member(self):
-        """Any paid tier counts. Teachers and admins see everything."""
+        """Any paid (or admin-granted) tier counts. Teachers and admins see everything."""
         if self.is_staff:
             return True
-        return self.tier_rank >= 1 and self.has_active_access
+        return (self.tier_rank >= 1 and self.has_active_access) or self.granted_rank >= 1
+
+    @property
+    def granted_rank(self):
+        """The admin-granted tier, if it has not ended."""
+        if not self.granted_tier_rank:
+            return 0
+        if self.granted_until and self.granted_until <= datetime.utcnow():
+            return 0
+        return self.granted_tier_rank
 
     @property
     def has_active_access(self):
@@ -62,7 +78,7 @@ class User(db.Model):
     def effective_tier_rank(self):
         if self.is_staff:
             return 999
-        return self.tier_rank if self.has_active_access else 0
+        return max(self.tier_rank if self.has_active_access else 0, self.granted_rank)
 
     def serialize(self):
         return {

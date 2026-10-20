@@ -1,0 +1,135 @@
+{% extends 'admin/master.html' %}
+{% block head_css %}
+{{ super() }}
+<style>
+  .tcc-dash { font-size: 17px; }
+  .tcc-dash h1 { color: #590d0d; margin-top: 10px; }
+  .tcc-dash .stat { font-size: 34px; font-weight: 700; color: #590d0d; line-height: 1.1; }
+  .tcc-dash .stat-label { font-size: 15px; color: #444; }
+  .tcc-dash .panel-heading { font-weight: 700; font-size: 17px; }
+  .tcc-dash td, .tcc-dash th { vertical-align: middle !important; }
+  .tcc-dash .btn { min-height: 38px; }
+  .tcc-dash .muted { color: #666; }
+  .tcc-dash .stat-row .panel { min-height: 104px; }
+</style>
+{% endblock %}
+{% block body %}
+<div class="tcc-dash">
+  <h1>Dashboard</h1>
+  <p class="muted">{{ settings.app_name }} &middot; {{ stats.month_name }}</p>
+  {% for category, message in get_flashed_messages(with_categories=true) %}
+    <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">{{ message }}</div>
+  {% endfor %}
+
+  <div class="row stat-row">
+    <div class="col-sm-3"><div class="panel panel-default"><div class="panel-body">
+      <div class="stat">{{ stats.paid_total }}</div><div class="stat-label">paying members{% if stats.granted_total %} (+{{ stats.granted_total }} given free access){% endif %}</div>
+    </div></div></div>
+    <div class="col-sm-3"><div class="panel panel-default"><div class="panel-body">
+      <div class="stat">${{ "{:,.2f}".format(stats.monthly_revenue) }}</div><div class="stat-label">estimated income per month (yearly plans counted as 1/12)</div>
+    </div></div></div>
+    <div class="col-sm-2"><div class="panel panel-default"><div class="panel-body">
+      <div class="stat">{{ stats.signups }}</div><div class="stat-label">new accounts this month ({{ stats.new_subscribers }} started paying)</div>
+    </div></div></div>
+    <div class="col-sm-2"><div class="panel panel-default"><div class="panel-body">
+      <div class="stat">{{ stats.cancellations }}</div><div class="stat-label">cancellations this month</div>
+    </div></div></div>
+    <div class="col-sm-2"><div class="panel panel-default"><div class="panel-body">
+      <div class="stat">{{ stats.open_questions }}</div><div class="stat-label"><a href="{{ url_for('question.index_view') }}">unanswered questions</a></div>
+    </div></div></div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel {{ 'panel-danger' if stats.flagged else 'panel-default' }}">
+        <div class="panel-heading">Accounts to check ({{ stats.flagged|length }})</div>
+        {% if stats.flagged %}
+        <table class="table">
+          <tr><th>Member</th><th>Why</th></tr>
+          {% for f in stats.flagged %}
+          <tr>
+            <td>{{ f.name or '' }}<br><span class="muted">{{ f.email }}</span><br><span class="muted">{{ f.count }} event(s), last {{ f.last.strftime('%b %d %H:%M') }} UTC</span></td>
+            <td>{% for r in f.reasons %}<div>{{ r }}</div>{% endfor %}</td>
+          </tr>
+          <tr class="flag-actions">
+            <td colspan="2" style="border-top:0; padding-top:0">
+              <a class="btn btn-default btn-sm" href="{{ url_for('securityevent.index_view', search=f.email) }}">See events</a>
+              {% if f.is_suspended %}
+                <span class="label label-danger">Suspended</span>
+              {% else %}
+              <form method="post" action="{{ url_for('.suspend', user_id=f.id) }}" style="display:inline"
+                    onsubmit="var r = prompt('Suspend {{ f.email }}? They will be signed out of videos and cannot sign in. Reason (shown only to admins):'); if (r === null) return false; this.reason.value = r; return true;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <input type="hidden" name="reason" value="">
+                <button class="btn btn-danger btn-sm" type="submit">Suspend</button>
+              </form>
+              <form method="post" action="{{ url_for('.dismiss', user_id=f.id) }}" style="display:inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <button class="btn btn-default btn-sm" type="submit">Looks fine</button>
+              </form>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+        {% else %}
+        <div class="panel-body">Nothing to check. Accounts are listed here when videos are downloaded too fast, keys are requested too often, an account is used from more than 3 places in a day, or the two-device limit is hit again and again.</div>
+        {% endif %}
+        {% if stats.suspended %}<div class="panel-footer"><a href="{{ url_for('user.index_view', flt1_0=1) }}">{{ stats.suspended }} suspended account(s)</a></div>{% endif %}
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">Members by level</div>
+        <table class="table">
+          <tr><th>Level</th><th>Paying</th><th>Given free access</th></tr>
+          {% for t in stats.tiers %}<tr><td>{{ t.tier }}</td><td>{{ t.paid }}</td><td>{{ t.granted }}</td></tr>{% endfor %}
+        </table>
+      </div>
+
+      <div class="panel {{ 'panel-warning' if stats.failed_videos else 'panel-default' }}">
+        <div class="panel-heading">Videos that could not be prepared ({{ stats.failed_videos|length }})</div>
+        {% if stats.failed_videos %}
+        <table class="table">
+          {% for v in stats.failed_videos %}<tr><td><strong>{{ v.title }}</strong><br><span class="muted">{{ v.reason or '' }}</span></td></tr>{% endfor %}
+        </table>
+        <div class="panel-footer">Retry from the Studio, or from <a href="{{ url_for('encodingjob.index_view') }}">Encoding Jobs</a>.</div>
+        {% else %}
+        <div class="panel-body">None. {% if stats.waiting_jobs %}{{ stats.waiting_jobs }} video(s) being prepared now.{% endif %}</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">Most watched (last 30 days)</div>
+        {% if stats.most_watched %}
+        <table class="table">
+          <tr><th>Video</th><th>Plays</th><th>Members</th></tr>
+          {% for v in stats.most_watched %}<tr><td>{{ v.title }}</td><td>{{ v.plays }}</td><td>{{ v.members }}</td></tr>{% endfor %}
+        </table>
+        {% else %}<div class="panel-body">No videos watched yet.</div>{% endif %}
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">Most read articles</div>
+        {% if stats.most_read %}
+        <table class="table">
+          <tr><th>Article</th><th>Reads</th></tr>
+          {% for a in stats.most_read %}<tr><td>{{ a.title }}</td><td>{{ a.reads }}</td></tr>{% endfor %}
+        </table>
+        {% else %}<div class="panel-body">No articles read yet.</div>{% endif %}
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">Oldest unanswered questions</div>
+        {% if stats.oldest_questions %}
+        <table class="table">
+          {% for q in stats.oldest_questions %}<tr><td><span class="muted">{{ q.asked.strftime('%b %d') }} &middot; {{ q.member }}</span><br>{{ q.text }}</td></tr>{% endfor %}
+        </table>
+        <div class="panel-footer">Teachers answer these in the Studio (Questions tab).</div>
+        {% else %}<div class="panel-body">All questions are answered.</div>{% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

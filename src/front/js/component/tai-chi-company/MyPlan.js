@@ -122,8 +122,15 @@ const MyPlan = () => {
                     )}
                     {!sub.managed_by_paypal && <p>Your plan was set up by the school. Please call us to make changes.</p>}
                 </>
-            ) : (
+            ) : sub.granted ? null : (
                 <p>You have a <strong>free account</strong>. You can watch the free sample video.</p>
+            )}
+
+            {!staff && sub.granted && (
+                <p className="tcc-notice">
+                    The school has given you access to the <strong>{sub.granted.tier_name}</strong> level
+                    {sub.granted.until ? <> until <strong>{longDate(sub.granted.until)}</strong></> : null}.
+                </p>
             )}
 
             {!staff && sub.managed_by_paypal && sub.status === "active" && (

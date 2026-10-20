@@ -69,10 +69,15 @@ def sync_subscription(user, sub):
     billing = sub.get("billing_info") or {}
     next_billing = _parse_time(billing.get("next_billing_time"))
 
+    before = user.subscription_status
     user.paypal_subscription_id = sub["id"]
     user.current_plan_id = plan.id
     user.tier_rank = plan.tier.rank
     user.subscription_status = status
+    if status == "active" and before != "active":
+        user.subscribed_at, user.cancelled_at = datetime.utcnow(), None
+    if status == "cancelled" and before != "cancelled":
+        user.cancelled_at = datetime.utcnow()
     if status == "active":
         user.next_billing_at = next_billing
         if next_billing:
@@ -83,6 +88,11 @@ def sync_subscription(user, sub):
     if status == "active" and plan.is_founding and founding_offer_open(_parse_time(sub.get("start_time"))):
         user.is_founding_member = True
     return status
+
+
+def _tier_name(rank):
+    tier = Tier.query.filter_by(rank=rank).first()
+    return tier.name if tier else f"Level {rank}"
 
 
 def _subscription_summary(user):
@@ -96,6 +106,9 @@ def _subscription_summary(user):
         "paid_through": user.paid_through.isoformat() if user.paid_through else None,
         "is_founding_member": user.is_founding_member,
         "managed_by_paypal": bool(user.paypal_subscription_id),
+        "granted": ({"tier_name": _tier_name(user.granted_rank),
+                     "until": user.granted_until.isoformat() if user.granted_until else None}
+                    if user.granted_rank else None),
         "options": [p.serialize() for p in plan_options_for(user)],
         "paypal_ready": paypal.is_configured(),
     }
@@ -217,6 +230,7 @@ def cancel_my_subscription():
         print(f"PayPal cancel failed: {e} {e.details}")
         return jsonify({"msg": "PayPal could not cancel the plan right now. Please try again, or call us."}), 502
     user.subscription_status = "cancelled"
+    user.cancelled_at = datetime.utcnow()
     user.next_billing_at = None
     db.session.commit()
     until = user.paid_through.strftime("%B %d, %Y") if user.paid_through else "the end of your paid period"
