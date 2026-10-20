@@ -3,7 +3,7 @@ from datetime import datetime
 from decimal import Decimal
 import click
 from sqlalchemy import func
-from .models import db, User, SiteSettings, Tier, Plan, Video, USER_ROLES
+from .models import db, User, SiteSettings, Tier, Plan, Video, Article, USER_ROLES
 from .seed_data.tcc_catalog import DEFAULT_SITE_SETTINGS, TIERS, VIDEOS, SECTION_TIER_RANK
 from .seed_data.video_descriptions import VIDEO_LONG_DESCRIPTIONS
 
@@ -70,6 +70,25 @@ def setup_tcc_commands(app):
             print(f"  Updated '{slug}'.")
         db.session.commit()
         print(f"{updated} video descriptions updated.")
+
+    @app.cli.command("seed-tcc-articles")
+    def seed_tcc_articles():
+        """Add the first member article, "Combat Tai Chi Chuan" by Vincent Chu. Safe to run again."""
+        from .commands import COMBAT_PART_ONE, COMBAT_PART_TWO
+        title = "Combat Tai Chi Chuan"
+        if Article.query.filter_by(title=title, members_only=True).first():
+            print(f"Member article '{title}' already exists.")
+            return
+        text = COMBAT_PART_ONE.strip() + "\n\n" + COMBAT_PART_TWO.strip()
+        if text.startswith(title):
+            text = text[len(title):].strip()  # the title is shown separately
+        first_paragraph = text.split("\n\n")[0].strip()
+        db.session.add(Article(
+            title=title, author="Vincent Chu", content=text, members_only=True, category="Application",
+            section="Application", summary=first_paragraph, status="published", publish_at=datetime.utcnow(),
+        ))
+        db.session.commit()
+        print(f"Member article '{title}' added.")
 
     @app.cli.command("set-role")
     @click.argument("email")

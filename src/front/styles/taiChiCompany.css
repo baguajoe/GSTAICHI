@@ -468,3 +468,54 @@
 .tcc-plan-line { font-size: 1.25rem !important; }
 .tcc-paypal { max-width: 420px; margin-top: 12px; }
 .tcc-myplan h3 { margin-top: 28px; }
+
+/* ----- Member articles ----- */
+.tcc-search { margin-bottom: 20px; max-width: 640px; }
+.tcc-search label { display: block; font-weight: 700; margin-bottom: 6px; }
+.tcc-search-row { display: flex; gap: 10px; }
+.tcc-search-row .tcc-input { flex: 1; min-width: 0; }
+.tcc-link-button { background: none; border: 0; padding: 0; color: var(--primary-color); font-size: 18px; text-decoration: underline; cursor: pointer; min-height: 48px; }
+.tcc-article-card { display: flex; flex-direction: column; border: 2px solid #d0d0d0; border-radius: 10px; overflow: hidden; color: #1a1a1a !important; text-decoration: none; background: #ffffff; }
+.tcc-article-card:hover { border-color: var(--primary-color); }
+.tcc-article-card-body { padding: 16px; }
+.tcc-article-cover { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: flex; border-radius: 8px; }
+.tcc-article-card .tcc-article-cover { border-radius: 0; }
+.tcc-article-meta { color: #444444; }
+.tcc-article { max-width: 760px; margin: 0 auto; }
+.tcc-article-page > p { max-width: 760px; margin-left: auto; margin-right: auto; }
+.tcc-article-protected {
+    position: relative;
+    overflow: hidden;
+    margin-top: 16px;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+.tcc-article-body { position: relative; z-index: 1; line-height: 1.75; }
+.tcc-article-body p { font-size: inherit; margin-bottom: 1em; }
+.tcc-article-watermark {
+    position: absolute;
+    inset: -15%;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 90px 60px;
+    padding: 40px 10px;
+    transform: rotate(-12deg);
+    opacity: 0.07;
+    font-size: 16px;
+    font-weight: 700;
+    color: #000000;
+}
+.tcc-figure { margin: 24px 0; }
+.tcc-figure img { max-width: 100%; height: auto; border-radius: 8px; display: block; }
+.tcc-figure figcaption { color: #444444; font-size: 16px; margin-top: 6px; }
+.tcc-article-licence { color: #444444; font-size: 16px !important; border-top: 1px solid #d0d0d0; padding-top: 12px; }
+.tcc-print-notice { display: none; }
+@media print {
+    .tcc-article-body, .tcc-article-watermark, .tcc-figure, .tcc-font-buttons { display: none !important; }
+    .tcc-print-notice { display: block; font-size: 20px; }
+}

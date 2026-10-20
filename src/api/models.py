@@ -244,6 +244,7 @@ class Article(db.Model):
     status = db.Column(db.String(20), nullable=False, default="published", server_default="published")  # draft / scheduled / published
     publish_at = db.Column(db.DateTime, nullable=True)
     created_by = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
+    read_count = db.Column(db.Integer, nullable=False, default=0, server_default="0")
     created_at = db.Column(db.DateTime, default=datetime.utcnow, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

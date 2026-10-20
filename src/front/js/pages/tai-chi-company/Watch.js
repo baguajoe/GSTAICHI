@@ -5,47 +5,19 @@ import { apiFetch, formatDuration, toParagraphs } from "../../component/tai-chi-
 import PlaceholderPlayer from "../../component/tai-chi-company/PlaceholderPlayer";
 import ProtectedPlayer from "../../component/tai-chi-company/ProtectedPlayer";
 import { VideoBadges } from "../../component/tai-chi-company/VideoCard";
-
-const FONT_SIZES = [18, 20, 22, 25, 28, 32];
-const FONT_KEY = "tccAboutFontSize";
-
-const readFontIndex = () => {
-    try {
-        const saved = Number(localStorage.getItem(FONT_KEY));
-        return FONT_SIZES[saved] ? saved : 2;
-    } catch (e) {
-        return 2;
-    }
-};
+import { useTextSize, TextSizeButtons, RichText } from "../../component/tai-chi-company/TextSize";
 
 const AboutThisForm = ({ text }) => {
-    const [sizeIndex, setSizeIndex] = useState(readFontIndex);
-    const paragraphs = toParagraphs(text);
-    if (paragraphs.length === 0) return null;
-
-    const change = (step) => {
-        const next = Math.min(FONT_SIZES.length - 1, Math.max(0, sizeIndex + step));
-        setSizeIndex(next);
-        try {
-            localStorage.setItem(FONT_KEY, String(next));
-        } catch (e) {
-            // Remembering the size is only a convenience
-        }
-    };
-
+    const size = useTextSize();
+    if (!toParagraphs(text).length) return null;
     return (
         <section className="tcc-section tcc-about">
             <div className="tcc-about-header">
                 <h2>About This Form</h2>
-                <div className="tcc-font-buttons" role="group" aria-label="Text size">
-                    <button type="button" className="tcc-btn tcc-btn-outline" onClick={() => change(-1)}
-                        disabled={sizeIndex === 0} aria-label="Make text smaller">A-</button>
-                    <button type="button" className="tcc-btn tcc-btn-outline" onClick={() => change(1)}
-                        disabled={sizeIndex === FONT_SIZES.length - 1} aria-label="Make text larger">A+</button>
-                </div>
+                <TextSizeButtons size={size} />
             </div>
-            <div className="tcc-about-text" style={{ fontSize: `${FONT_SIZES[sizeIndex]}px` }}>
-                {paragraphs.map((p, i) => <p key={i}>{p}</p>)}
+            <div className="tcc-about-text" style={{ fontSize: `${size.fontSize}px` }}>
+                <RichText text={text} />
             </div>
         </section>
     );

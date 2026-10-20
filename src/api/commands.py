@@ -10,34 +10,8 @@ In this file, you can add as many commands as you want using the @app.cli.comman
 Flask commands are usefull to run cronjobs or tasks outside of the API but sill in integration 
 with youy database, for example: Import the price of bitcoin every night as 12am
 """
-def setup_commands(app):
-    setup_tcc_commands(app)
-    
-    """ 
-    This is an example command "insert-test-users" that you can run from the command line
-    by typing: $ flask insert-test-users 5
-    Note: 5 is the number of users to add
-    """
-    @app.cli.command("insert-test-users") # name of our command
-    @click.argument("count") # argument of out command
-    def insert_test_users(count):
-        print("Creating test users")
-        for x in range(1, int(count) + 1):
-            user = User()
-            user.email = "test_user" + str(x) + "@test.com"
-            user.password = "123456"
-            user.is_active = True
-            db.session.add(user)
-            db.session.commit()
-            print("User: ", user.email, " created.")
-
-        print("All test users created")
-
-    @app.cli.command("seed-articles")
-    def seed_articles():
-        print("Creating article...")
-        
-        part_one = """
+# "Combat Tai Chi Chuan" by Vincent Chu, used by seed-articles and by seed-tcc-articles (member edition)
+COMBAT_PART_ONE = """
 Combat Tai Chi Chuan
 
 The martial art of Tai Chi Chuan follows Tai Chi philosophy. Everything that relates to Tai Chi Chuan has Yin and Yang components -- from the philosophy, the physical movement, the training to the functions of the art.
@@ -69,7 +43,7 @@ c. No empty strike
 With its emphasis on Yin and Yang balance, Tai Chi Chuan's movements are soft, relaxed and circular. This means that all movements have both the soft component power and the hard component power. The dynamics shift to either side based on the opponent's strike. When the opponent strikes, the soft component makes the opponent lose balance and the hard component strikes back. When the movement is circular, it does not overextend; thus, the body is balanced and is able to issue power to strike or to get a superior position. This is why in Solo Form practice, all the movements are circular. When one is balanced, one is able to move the feet to get a superior position and to avoid falling into an inferior position.
 """
 
-        part_two = """
+COMBAT_PART_TWO = """
 2. Tranquility Controls Action
 Although the principle of soft component for yielding and hard component for attacking is sound, it will only work when the practitioner has good timing and correct execution. This requires good skill, calmness, and a nimble body. If one is not calm, one is not able to let the opponent come in until the last minute. If the body is not nimble, one cannot react suddenly without hurting the body. If the skill is not good, one cannot control the opponent quickly. Tai Chi Chuan does not believe in taking the initiative but if the situation requires, one will make it happen.
 The Tai Chi Chuan Classics say, "Retreating circle is easy to do, the advancing circle is difficult." Retreating circle refers to defensive movement and advancing circle refers to offensive movement. The two components always go together. Which one to use is determined by the opponent's strike. When the practitioner takes the inactive position, there are some advantages over the opponent:
@@ -119,10 +93,35 @@ Kindness does not mean weakness.
 """
 
 
+def setup_commands(app):
+    setup_tcc_commands(app)
+    
+    """ 
+    This is an example command "insert-test-users" that you can run from the command line
+    by typing: $ flask insert-test-users 5
+    Note: 5 is the number of users to add
+    """
+    @app.cli.command("insert-test-users") # name of our command
+    @click.argument("count") # argument of out command
+    def insert_test_users(count):
+        print("Creating test users")
+        for x in range(1, int(count) + 1):
+            user = User()
+            user.email = "test_user" + str(x) + "@test.com"
+            user.password = "123456"
+            user.is_active = True
+            db.session.add(user)
+            db.session.commit()
+            print("User: ", user.email, " created.")
 
+        print("All test users created")
+
+    @app.cli.command("seed-articles")
+    def seed_articles():
+        print("Creating article...")
         article = Article(
             title="Combat Tai Chi Chuan",
-            content=part_one.strip() + "\n\n" + part_two.strip(),
+            content=COMBAT_PART_ONE.strip() + "\n\n" + COMBAT_PART_TWO.strip(),
             author="Vincent Chu",
         )
 
