@@ -2,6 +2,8 @@
 import React from 'react';
 import VideoComponent from "../component/VideoComponent"
 import Header from "../component/Header";
+import { Link } from "react-router-dom";
+import "../../styles/taiChiCompany.css";
 
 // Organized video data by category
 const videoCategories = {
@@ -118,7 +120,11 @@ const Video = () => {
         <div>
             <Header />
             <div className="container-fluid px-4 py-4">
-                
+                <div className="tcc-site-banner">
+                    <span>Our complete video library, organized by level, is now in the Tai Chi Company member app.</span>
+                    <Link to="/tai-chi-company" className="custom-btn1 tcc-btn">Go to Tai Chi Company</Link>
+                </div>
+
                 {/* Beginners Section */}
                 <h2 className="mb-4 mt-4">Beginner Forms</h2>
                 <div className="row g-4">

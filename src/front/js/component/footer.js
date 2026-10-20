@@ -67,6 +67,11 @@ const Footer = () => {
 									<i className="fas fa-chevron-right me-2"></i>Videos
 								</Link>
 							</li>
+							<li className="mb-2 text-end">
+								<Link to="/tai-chi-company" className="text-white text-decoration-none hover-opacity">
+									<i className="fas fa-chevron-right me-2"></i>Tai Chi Company
+								</Link>
+							</li>
 						</ul>
 					</div>
 				</div>

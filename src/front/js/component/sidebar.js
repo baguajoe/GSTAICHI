@@ -87,6 +87,13 @@ export const Sidebar = () => {
                 >
                     Books & DVDs
                 </Link>
+
+                <Link
+                    className={`nav-link mt-2 ${location.pathname.startsWith("/tai-chi-company") ? "active" : ""}`}
+                    to="/tai-chi-company"
+                >
+                    Tai Chi Company
+                </Link>
             </nav>
         </div>
     );

@@ -25,6 +25,16 @@ import { Navbar } from "./component/navbar";
 import Footer from "./component/footer";
 import injectContext from "./store/appContext";
 import { Gallery } from "./pages/Gallery";
+import TccLayout from "./component/tai-chi-company/TccLayout";
+import TccLanding from "./pages/tai-chi-company/Landing";
+import TccJoin from "./pages/tai-chi-company/Join";
+import TccLogin from "./pages/tai-chi-company/Login";
+import TccResetPassword from "./pages/tai-chi-company/ResetPassword";
+import TccLibrary from "./pages/tai-chi-company/Library";
+import TccWatch from "./pages/tai-chi-company/Watch";
+import TccArticles from "./pages/tai-chi-company/Articles";
+import TccAccount from "./pages/tai-chi-company/Account";
+import TccTerms from "./pages/tai-chi-company/Terms";
 
 // Create your Layout component
 const Layout = () => {
@@ -62,6 +72,19 @@ const Layout = () => {
                                 <Route element={<Gallery />} path="/gallery" />
                                 <Route element={<Video />} path="/videos" />
                                 <Route element={<Books />} path="/books" />
+
+                                {/* Tai Chi Company member app */}
+                                <Route element={<TccLayout />} path="/tai-chi-company">
+                                    <Route index element={<TccLanding />} />
+                                    <Route element={<TccJoin />} path="join" />
+                                    <Route element={<TccLogin />} path="login" />
+                                    <Route element={<TccResetPassword />} path="reset-password" />
+                                    <Route element={<TccLibrary />} path="library" />
+                                    <Route element={<TccWatch />} path="watch/:slug" />
+                                    <Route element={<TccArticles />} path="articles" />
+                                    <Route element={<TccAccount />} path="account" />
+                                    <Route element={<TccTerms />} path="terms" />
+                                </Route>
 
                                 <Route element={<Single />} path="/single/:theid" />
                                 <Route element={<h1>Not found!</h1>} path="*" />
