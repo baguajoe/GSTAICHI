@@ -519,3 +519,49 @@
     .tcc-article-body, .tcc-article-watermark, .tcc-figure, .tcc-font-buttons { display: none !important; }
     .tcc-print-notice { display: block; font-size: 20px; }
 }
+
+/* ----- Teacher Studio ----- */
+.tcc-studio-tabs { margin-bottom: 28px; }
+.tcc-studio-panel { background: #fbf8f8; border: 2px solid #e2d5d5; border-radius: 10px; padding: 20px; margin-bottom: 24px; }
+.tcc-form-wide { max-width: 760px; }
+.tcc-label, .tcc-field legend { display: block; font-weight: 700; margin-bottom: 6px; font-size: 18px; }
+.tcc-field fieldset, fieldset.tcc-field { border: 0; padding: 0; margin: 0 0 20px; min-width: 0; }
+.tcc-textarea { min-height: auto; line-height: 1.5; resize: vertical; }
+.tcc-article-editor { font-family: inherit; }
+select.tcc-input { background: #ffffff; }
+.tcc-left { justify-content: flex-start; }
+.tcc-checkbox { display: flex; align-items: center; gap: 12px; min-height: 48px; font-weight: 600; margin-bottom: 20px; cursor: pointer; }
+.tcc-checkbox input { width: 28px; height: 28px; flex: none; }
+.tcc-chapter-row { display: grid; grid-template-columns: 100px minmax(0, 1fr) auto; gap: 8px; margin-bottom: 8px; }
+.tcc-time-input { text-align: center; }
+.tcc-file-label { margin: 0; }
+.tcc-btn-danger { color: #8a1111; border-color: #8a1111; }
+.tcc-confirm { width: 100%; }
+.tcc-progress-wrap { margin: 20px 0; }
+.tcc-progress-label { font-size: 1.3rem !important; }
+.tcc-progress { height: 36px; background: #e6e6e6; border-radius: 18px; overflow: hidden; border: 2px solid #c9c9c9; }
+.tcc-progress-bar { height: 100%; background: var(--primary-color); transition: width 0.4s ease; }
+.tcc-studio-list { list-style: none; padding: 0; margin: 0; }
+.tcc-studio-item { border: 2px solid #d0d0d0; border-radius: 10px; padding: 16px; margin-bottom: 16px; background: #ffffff; }
+.tcc-studio-item h3 { margin: 0 0 8px; }
+.tcc-studio-item-main { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 12px; }
+.tcc-studio-thumb { width: 160px; flex: none; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 6px; display: flex; font-size: 1rem; }
+.tcc-thumb-picker { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-bottom: 12px; }
+.tcc-thumb-choice { border: 3px solid #d0d0d0; border-radius: 8px; padding: 0; background: #ffffff; cursor: pointer; overflow: hidden; display: flex; flex-direction: column; }
+.tcc-thumb-choice img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.tcc-thumb-choice span { padding: 8px; font-weight: 700; min-height: 40px; }
+.tcc-thumb-choice.active { border-color: var(--primary-color); }
+.tcc-thumb-choice.active span { background: var(--primary-color); color: #ffffff; }
+.tcc-cover-preview { max-width: 320px; width: 100%; border-radius: 8px; display: block; margin-bottom: 10px; }
+.tcc-preview { border: 2px dashed #c9c9c9; border-radius: 8px; padding: 16px; font-size: 20px; }
+.tcc-question-text { border-left: 6px solid var(--primary-color); padding: 8px 16px; margin: 8px 0 12px; font-size: 1.15rem; white-space: pre-wrap; }
+.tcc-question-meta { margin: 0; }
+.tcc-ask { border-top: 3px solid #e2d5d5; padding-top: 24px; max-width: 760px; }
+.tcc-ask label { display: block; font-weight: 700; margin-bottom: 6px; }
+@media (max-width: 575px) {
+    .tcc-studio-item-main { flex-direction: column; }
+    .tcc-studio-thumb { width: 100%; }
+    .tcc-chapter-row { grid-template-columns: 80px minmax(0, 1fr); }
+    .tcc-chapter-row .tcc-btn { grid-column: 1 / -1; }
+    .tcc-studio-panel { padding: 12px; }
+}

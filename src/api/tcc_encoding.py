@@ -19,6 +19,21 @@ def key_uri_base():
     return f"{base}/api/tcc/key/"
 
 
+def apply_encode_result(video, result):
+    """Saves what video_pipeline.encode_video() produced. Used by the import endpoint and src/worker.py."""
+    video.hls_master_path = result["hls_master_path"]
+    video.thumbnail_options = result.get("thumbnail_options") or []
+    video.thumbnail_path = result.get("thumbnail_path")
+    video.chapters_vtt_path = result.get("chapters_vtt_path")
+    video.duration_seconds = result.get("duration_seconds")
+    video.width = result.get("width")
+    video.height = result.get("height")
+    video.renditions = result.get("renditions")
+    video.encryption_key_enc = encrypt_key(bytes.fromhex(result["key_hex"]))
+    video.status = "ready"
+    video.failure_reason = None
+
+
 def _bad(msg):
     return jsonify({"msg": msg}), 400
 
@@ -79,16 +94,6 @@ def admin_videos_import():
             return _bad(f"tier_rank must be one of {sorted(ranks)}.")
         video.tier_rank = int(data["tier_rank"])
 
-    video.hls_master_path = data["hls_master_path"]
-    video.thumbnail_options = data.get("thumbnail_options") or []
-    video.thumbnail_path = data.get("thumbnail_path")
-    video.chapters_vtt_path = data.get("chapters_vtt_path")
-    video.duration_seconds = data.get("duration_seconds")
-    video.width = data.get("width")
-    video.height = data.get("height")
-    video.renditions = data.get("renditions")
-    video.encryption_key_enc = encrypt_key(bytes.fromhex(key_hex))
-    video.status = "ready"
-    video.failure_reason = None
+    apply_encode_result(video, data)
     db.session.commit()
     return jsonify({"msg": f"{video.title} is ready.", "video": video.serialize_card()}), 200

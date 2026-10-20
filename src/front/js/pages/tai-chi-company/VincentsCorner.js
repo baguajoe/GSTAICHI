@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useTcc } from "../../component/tai-chi-company/TccContext";
 import { apiFetch } from "../../component/tai-chi-company/api";
 import VideoCard from "../../component/tai-chi-company/VideoCard";
+import AskTeacher from "../../component/tai-chi-company/AskTeacher";
 
 // The teacher's short videos: tips, corrections, explanations and answers to member questions.
 const VincentsCorner = () => {
@@ -59,6 +60,8 @@ const VincentsCorner = () => {
                     {shown.map(v => <VideoCard key={v.id} video={v} />)}
                 </div>
             )}
+
+            <AskTeacher />
         </div>
     );
 };

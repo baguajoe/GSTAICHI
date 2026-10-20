@@ -177,11 +177,34 @@ class Video(db.Model):
     sort_order = db.Column(db.Integer, nullable=False, default=0, server_default="0")
     is_published = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
     uploaded_by = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
+    # Studio uploads (browser -> taichi-masters, multipart)
+    upload_id = db.Column(db.String(1024), nullable=True)
+    upload_size = db.Column(db.BigInteger, nullable=True)
+    original_filename = db.Column(db.String(300), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+    uploader = db.relationship("User", foreign_keys=[uploaded_by])
+
     def __repr__(self):
         return f"<Video {self.title}>"
+
+    @property
+    def studio_status(self):
+        """Plain-English status for the Teacher Studio."""
+        if self.status == "placeholder":
+            return "Waiting for video"
+        if self.status == "uploading":
+            return "Uploading"
+        if self.status == "processing":
+            return "Processing"
+        if self.status == "failed":
+            return "Failed"
+        if not self.is_published:
+            return "Ready"
+        if self.publish_at and self.publish_at > datetime.utcnow():
+            return "Scheduled"
+        return "Published"
 
     @property
     def is_coming_soon(self):
@@ -302,6 +325,43 @@ class ArticlePhotos(db.Model):
             "image_url": self.image_url
         }
 
+
+
+QUESTION_STATUSES = ("new", "answered")
+
+
+class Question(db.Model):
+    """'Ask Vincent': a paying member's question. The teacher can answer with a short video."""
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, index=True)
+    question = db.Column(db.Text, nullable=False)
+    status = db.Column(db.String(20), nullable=False, default="new", server_default="new")
+    answer_video_id = db.Column(db.Integer, db.ForeignKey("video.id", ondelete="SET NULL"), nullable=True)
+    answer_note = db.Column(db.Text, nullable=True)  # optional words from the teacher
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, server_default=db.func.now(), index=True)
+    answered_at = db.Column(db.DateTime, nullable=True)
+    member_notified_at = db.Column(db.DateTime, nullable=True)
+
+    user = db.relationship("User")
+    answer_video = db.relationship("Video")
+
+    def __repr__(self):
+        return f"<Question {self.id} {self.status}>"
+
+    def serialize(self, for_staff=False):
+        data = {
+            "id": self.id,
+            "question": self.question,
+            "status": self.status,
+            "answer_note": self.answer_note,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "answered_at": self.answered_at.isoformat() if self.answered_at else None,
+            "answer_video": {"slug": self.answer_video.slug, "title": self.answer_video.title,
+                             "status": self.answer_video.studio_status} if self.answer_video else None,
+        }
+        if for_staff:
+            data["member"] = {"name": self.user.name, "email": self.user.email} if self.user else None
+        return data
 
 
 class SiteSettings(db.Model):

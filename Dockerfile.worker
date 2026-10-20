@@ -1,0 +1,19 @@
+# Background encoding worker (src/worker.py) for Render. Render's plain Python services have no ffmpeg,
+# so the worker runs from this image. See render.yaml (service "tcc-worker").
+FROM python:3.10-slim
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY Pipfile Pipfile.lock ./
+RUN pip install --no-cache-dir pipenv==2023.12.1 \
+    && pipenv install --system --deploy \
+    && pip uninstall -y pipenv
+
+COPY src ./src
+COPY migrations ./migrations
+
+ENV PYTHONUNBUFFERED=1
+CMD ["python", "src/worker.py"]
