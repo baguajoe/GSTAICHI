@@ -1,0 +1,25 @@
+# Cloudflare Worker that serves the protected videos at media.gstaichi.org.
+# Deploy instructions: cloudflare-worker/README.md
+name = "tai-chi-company-media"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+
+# The media address. The domain must be on your Cloudflare account.
+routes = [{ pattern = "media.gstaichi.org", custom_domain = true }]
+
+# The private bucket with the encoded videos (never turn on public access for it)
+[[r2_buckets]]
+binding = "STREAMS"
+bucket_name = "taichi-streams"
+
+[vars]
+# Websites allowed to play the videos (comma separated, no trailing slash)
+ALLOWED_ORIGINS = "https://gstaichi.org,https://www.gstaichi.org"
+# Chromecast's player runs on this origin
+CAST_ORIGINS = "https://www.gstatic.com"
+# The site's API, for reporting video pieces served (copy detection). Same as BACKEND_URL on Render.
+BACKEND_URL = "https://gstaichi.org"
+
+# MEDIA_TOKEN_SECRET is a secret, not a var. Set it with:
+#   npx wrangler secret put MEDIA_TOKEN_SECRET
+# It must be exactly the same as MEDIA_TOKEN_SECRET on Render.

@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTcc } from "./TccContext";
 import { formatDuration } from "./api";
 
 export const VideoThumbnail = ({ video }) => {
     const { sectionLabel } = useTcc();
-    if (video.thumbnail_url) {
-        return <img src={video.thumbnail_url} alt="" className="tcc-thumb" />;
+    const [broken, setBroken] = useState(false);
+    if (video.thumbnail_url && !broken) {
+        return <img src={video.thumbnail_url} alt="" className="tcc-thumb" loading="lazy" onError={() => setBroken(true)} />;
     }
     return (
         <div className="tcc-thumb tcc-thumb-placeholder" aria-hidden="true">

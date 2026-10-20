@@ -51,7 +51,7 @@ export const apiFetch = async (path, { method = "GET", body, auth = true } = {})
     }
     if (!response.ok) {
         const message = (data && (data.msg || data.error)) || FRIENDLY_ERROR;
-        throw Object.assign(new Error(message), { status: response.status });
+        throw Object.assign(new Error(message), { status: response.status, data });
     }
     return data;
 };

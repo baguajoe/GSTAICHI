@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { useTcc } from "../../component/tai-chi-company/TccContext";
 import { apiFetch, formatDuration, toParagraphs } from "../../component/tai-chi-company/api";
 import PlaceholderPlayer from "../../component/tai-chi-company/PlaceholderPlayer";
+import ProtectedPlayer from "../../component/tai-chi-company/ProtectedPlayer";
 import { VideoBadges } from "../../component/tai-chi-company/VideoCard";
 
 const FONT_SIZES = [18, 20, 22, 25, 28, 32];
@@ -74,6 +75,17 @@ const UpgradeMessage = ({ video }) => {
     );
 };
 
+const SignInToWatch = () => (
+    <div className="tcc-upgrade" role="note">
+        <p className="tcc-player-title">Please log in to watch</p>
+        <p>This video is free to watch with a free account.</p>
+        <div className="tcc-button-row">
+            <Link to="/tai-chi-company/join" className="custom-btn1 tcc-btn">Start your free account</Link>
+            <Link to="/tai-chi-company/login" className="tcc-btn tcc-btn-outline">Log in</Link>
+        </div>
+    </div>
+);
+
 const Watch = () => {
     const { slug } = useParams();
     const { user, userLoaded } = useTcc();
@@ -105,7 +117,10 @@ const Watch = () => {
     return (
         <div className="tcc-page">
             <p><Link to="/tai-chi-company/library" className="tcc-text-link">&larr; Back to the Library</Link></p>
-            {video.locked ? <UpgradeMessage video={video} /> : <PlaceholderPlayer video={video} />}
+            {video.locked ? <UpgradeMessage video={video} />
+                : video.coming_soon ? <PlaceholderPlayer />
+                : !user ? <SignInToWatch />
+                : <ProtectedPlayer key={video.slug} video={video} />}
 
             <h1 className="tcc-watch-title">{video.title}</h1>
             <VideoBadges video={video} />

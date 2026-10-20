@@ -86,7 +86,7 @@ def _viewer():
     return user
 
 
-def _visible_videos():
+def visible_videos():
     now = datetime.utcnow()
     return (Video.query
             .filter(Video.slug.isnot(None), Video.is_published.is_(True))
@@ -108,10 +108,12 @@ def _is_new_this_month(video, now):
     return bool(video.publish_at) and video.publish_at.year == now.year and video.publish_at.month == now.month
 
 
+@tcc.route('/library', methods=['GET'])
 @tcc.route('/videos', methods=['GET'])
+@limiter.limit("60 per minute")
 def get_videos():
     viewer = _viewer()
-    videos = _visible_videos().all()
+    videos = visible_videos().all()
     now = datetime.utcnow()
     newest = sorted((v for v in videos if _is_new_this_month(v, now)),
                     key=lambda v: (v.publish_at, v.id), reverse=True)[:NEW_THIS_MONTH_LIMIT]
@@ -125,18 +127,30 @@ def get_videos():
     })
 
 
+@tcc.route('/new-this-month', methods=['GET'])
+@limiter.limit("60 per minute")
+def get_new_this_month():
+    viewer = _viewer()
+    now = datetime.utcnow()
+    newest = sorted((v for v in visible_videos().all() if _is_new_this_month(v, now)),
+                    key=lambda v: (v.publish_at, v.id), reverse=True)[:NEW_THIS_MONTH_LIMIT]
+    return jsonify([_card(v, viewer) for v in newest])
+
+
 @tcc.route('/videos/<slug>', methods=['GET'])
+@limiter.limit("60 per minute")
 def get_video(slug):
     viewer = _viewer()
-    video = _visible_videos().filter(Video.slug == slug).first()
+    video = visible_videos().filter(Video.slug == slug).first()
     if video is None:
         return jsonify({"msg": "We could not find that video."}), 404
     data = _card(video, viewer)
     data["long_description"] = video.long_description or ""
-    others = _visible_videos().filter(Video.section == video.section, Video.id != video.id).all()
+    data["chapters"] = video.chapters or []
+    others = visible_videos().filter(Video.section == video.section, Video.id != video.id).all()
     data["up_next"] = [_card(v, viewer) for v in others]
     return jsonify(data)
 
 
 # Route modules register on the same blueprint
-from . import tcc_encoding  # noqa: E402,F401
+from . import tcc_encoding, tcc_playback  # noqa: E402,F401

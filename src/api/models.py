@@ -439,9 +439,32 @@ class PlaybackSession(db.Model):
     ip = db.Column(db.String(64), nullable=True)
     user_agent = db.Column(db.String(500), nullable=True)
     is_active = db.Column(db.Boolean, nullable=False, default=True, server_default=db.true())
+    position_seconds = db.Column(db.Integer, nullable=True)  # last position reported by the player
+    key_request_count = db.Column(db.Integer, nullable=False, default=0, server_default="0")
+    last_key_at = db.Column(db.DateTime, nullable=True)
+    segment_count = db.Column(db.Integer, nullable=False, default=0, server_default="0")  # reported by the Worker
+    flagged = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
+    ended_at = db.Column(db.DateTime, nullable=True)
+    end_reason = db.Column(db.String(40), nullable=True)  # stopped / timeout / replaced / access_lost
 
     user = db.relationship("User")
     video = db.relationship("Video")
+
+    def end(self, reason):
+        if self.is_active:
+            self.is_active = False
+            self.ended_at = datetime.utcnow()
+            self.end_reason = reason
+
+    def device_label(self):
+        """Plain description of the device, from the browser's user agent."""
+        ua = self.user_agent or ""
+        for needle, label in (("iPhone", "iPhone"), ("iPad", "iPad"), ("Android", "Android phone or tablet"),
+                              ("CrKey", "Chromecast"), ("Windows", "Windows computer"),
+                              ("Macintosh", "Mac computer"), ("Linux", "computer")):
+            if needle in ua:
+                return label
+        return "another device"
 
 
 class SecurityEvent(db.Model):

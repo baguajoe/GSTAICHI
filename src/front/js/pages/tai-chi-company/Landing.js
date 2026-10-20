@@ -4,6 +4,7 @@ import { useTcc } from "../../component/tai-chi-company/TccContext";
 import { apiFetch } from "../../component/tai-chi-company/api";
 import TierCards, { IntervalToggle, FoundingBanner } from "../../component/tai-chi-company/TierCards";
 import PlaceholderPlayer from "../../component/tai-chi-company/PlaceholderPlayer";
+import { VideoThumbnail } from "../../component/tai-chi-company/VideoCard";
 
 const Landing = () => {
     const { settings } = useTcc();
@@ -57,7 +58,12 @@ const Landing = () => {
                 <section className="tcc-section">
                     <h2>Watch a free sample</h2>
                     <h3>{sample.title}</h3>
-                    <PlaceholderPlayer video={sample} />
+                    {sample.coming_soon ? <PlaceholderPlayer /> : (
+                        <Link to={`/tai-chi-company/watch/${sample.slug}`} className="tcc-sample-preview">
+                            <VideoThumbnail video={sample} />
+                            <span className="custom-btn1 tcc-btn tcc-btn-big">Watch the free sample</span>
+                        </Link>
+                    )}
                     {sample.short_description && <p className="tcc-sample-desc">{sample.short_description}</p>}
                     <Link to={`/tai-chi-company/watch/${sample.slug}`} className="tcc-text-link">
                         Go to the free sample page

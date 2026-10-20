@@ -42,6 +42,14 @@ allowed_origins = [
 
 # Configure CORS for different route patterns
 CORS(app, resources={
+    # Video keys: TVs (Chromecast) fetch the key from their own origin. Safe because every key request
+    # needs an active playback session (sign-in token + session header, or the signed ?t= token); no cookies.
+    r"/api/tcc/key/*": {
+        "origins": "*",
+        "methods": ["GET", "OPTIONS"],
+        "allow_headers": ["Authorization", "X-Playback-Session"],
+        "supports_credentials": False
+    },
     # API routes - full CORS with credentials
     r"/api/*": {
         "origins": allowed_origins,
