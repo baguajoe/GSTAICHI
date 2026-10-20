@@ -4,15 +4,17 @@ import { useTcc } from "../../component/tai-chi-company/TccContext";
 import { apiFetch } from "../../component/tai-chi-company/api";
 import TierCards, { IntervalToggle, FoundingBanner } from "../../component/tai-chi-company/TierCards";
 import FormField, { FormMessage } from "../../component/tai-chi-company/FormField";
+import SubscribeButton from "../../component/tai-chi-company/SubscribeButton";
 
 const Join = () => {
-    const { user, login } = useTcc();
+    const { user, login, setUser } = useTcc();
     const [billing, setBilling] = useState("month");
     const [chosen, setChosen] = useState(null);
     const [form, setForm] = useState({ name: "", email: "", password: "" });
     const [error, setError] = useState(null);
     const [busy, setBusy] = useState(false);
     const [justJoined, setJustJoined] = useState(false);
+    const [subscribed, setSubscribed] = useState(null);
     const formRef = useRef(null);
 
     const choose = (tier, plan) => {
@@ -60,15 +62,38 @@ const Join = () => {
                 {user ? (
                     <div className="tcc-notice">
                         {justJoined && <p className="tcc-success" role="status">Welcome{user.name ? `, ${user.name}` : ""}! Your free account is ready.</p>}
-                        {choice}
-                        <p><strong>Payment coming soon.</strong> For now you have a free account, and you can watch the free sample video.</p>
-                        <Link to="/tai-chi-company/library" className="custom-btn1 tcc-btn">Go to the Library</Link>
+                        {subscribed ? (
+                            <>
+                                <p className="tcc-success" role="status">{subscribed}</p>
+                                <Link to="/tai-chi-company/library" className="custom-btn1 tcc-btn">Go to the Library</Link>
+                            </>
+                        ) : user.is_paying_member ? (
+                            <>
+                                <p>You already have a plan. You can change it on your Account page.</p>
+                                <Link to="/tai-chi-company/account" className="custom-btn1 tcc-btn">Go to my Account</Link>
+                            </>
+                        ) : chosen ? (
+                            <>
+                                {choice}
+                                <h3>Pay with PayPal</h3>
+                                <p>You can pay with your PayPal account or a credit or debit card. You can cancel any time.</p>
+                                <SubscribeButton plan={chosen.plan} user={user} onSubscribed={(result) => {
+                                    setUser(result.user);
+                                    setSubscribed(result.msg);
+                                }} />
+                            </>
+                        ) : (
+                            <>
+                                <p><strong>Next, choose a plan above</strong> by pressing "Choose this plan".</p>
+                                <p>Or start with the free sample video in the <Link to="/tai-chi-company/library">Library</Link>.</p>
+                            </>
+                        )}
                     </div>
                 ) : (
                     <form onSubmit={submit} className="tcc-form" noValidate>
                         <h2>Create your free account</h2>
                         {choice}
-                        <p>Payment coming soon. Today we will create a free account for you.</p>
+                        <p>First create your account. Then you can pay for your plan with PayPal or a card.</p>
                         <FormField id="join-name" label="Your name" name="name" autoComplete="name"
                             value={form.name} onChange={update} required />
                         <FormField id="join-email" label="Email" name="email" type="email" autoComplete="email"

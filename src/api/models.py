@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, timedelta
 import uuid
 
 db = SQLAlchemy()
@@ -24,6 +24,7 @@ class User(db.Model):
     paypal_subscription_id = db.Column(db.String(64), nullable=True, index=True)
     current_plan_id = db.Column(db.Integer, db.ForeignKey("plan.id"), nullable=True)
     paid_through = db.Column(db.DateTime, nullable=True)  # access lasts until this date after cancelling
+    next_billing_at = db.Column(db.DateTime, nullable=True)  # from PayPal, shown on the account page
     is_founding_member = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
     is_suspended = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
     created_at = db.Column(db.DateTime, default=datetime.utcnow, server_default=db.func.now())
@@ -47,8 +48,11 @@ class User(db.Model):
 
     @property
     def has_active_access(self):
-        if self.subscription_status in ("active", "past_due"):
+        if self.subscription_status == "active":
             return True
+        if self.subscription_status == "past_due":
+            # PayPal retries a failed payment for a few days; keep access for a week after the paid period
+            return self.paid_through is None or self.paid_through + timedelta(days=7) > datetime.utcnow()
         # Cancelled members keep access until the end of the paid period
         if self.subscription_status == "cancelled" and self.paid_through:
             return self.paid_through > datetime.utcnow()
@@ -77,6 +81,8 @@ class User(db.Model):
             "subscription_status": self.subscription_status,
             "current_plan": self.current_plan.serialize() if self.current_plan else None,
             "paid_through": self.paid_through.isoformat() if self.paid_through else None,
+            "next_billing_at": self.next_billing_at.isoformat() if self.next_billing_at else None,
+            "has_paypal_subscription": bool(self.paypal_subscription_id),
             "is_founding_member": self.is_founding_member,
             "is_paying_member": self.is_paying_member,
             "created_at": self.created_at.isoformat() if self.created_at else None,

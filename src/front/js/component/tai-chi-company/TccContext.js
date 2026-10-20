@@ -75,7 +75,7 @@ export const TccProvider = ({ children }) => {
     };
 
     const value = {
-        settings, tiers, user, userLoaded, loadError,
+        settings, tiers, user, setUser, userLoaded, loadError,
         loadSite, refreshUser, login, logout, tierName, sectionLabel
     };
     return <TccContext.Provider value={value}>{children}</TccContext.Provider>;

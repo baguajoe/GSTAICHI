@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useTcc } from "../../component/tai-chi-company/TccContext";
 import { apiFetch } from "../../component/tai-chi-company/api";
 import FormField, { FormMessage } from "../../component/tai-chi-company/FormField";
+import MyPlan from "../../component/tai-chi-company/MyPlan";
 
 const ChangePassword = () => {
     const empty = { current_password: "", new_password: "", confirm: "" };
@@ -54,16 +55,11 @@ const ChangePassword = () => {
 };
 
 const Account = () => {
-    const { user, userLoaded, logout, tierName } = useTcc();
+    const { user, userLoaded, logout } = useTcc();
     const navigate = useNavigate();
 
     if (!userLoaded) return <p className="tcc-page tcc-center">Loading…</p>;
     if (!user) return <Navigate to="/tai-chi-company/login" replace state={{ from: "/tai-chi-company/account" }} />;
-
-    const staff = user.role === "admin" || user.role === "teacher";
-    const plan = staff
-        ? `Full access (${user.role === "admin" ? "administrator" : "teacher"})`
-        : (user.effective_tier_rank > 0 && tierName(user.effective_tier_rank)) || "Free account";
 
     const signOut = () => {
         logout();
@@ -78,13 +74,9 @@ const Account = () => {
                 <dd>{user.name || "Not given"}</dd>
                 <dt>Email</dt>
                 <dd>{user.email}</dd>
-                <dt>Your plan</dt>
-                <dd>
-                    {plan}
-                    {user.is_founding_member && <span className="tcc-badge tcc-badge-founding">Founding member</span>}
-                </dd>
             </dl>
-            <p className="tcc-notice">Plan changes and billing coming soon.</p>
+
+            <MyPlan />
 
             <ChangePassword />
 

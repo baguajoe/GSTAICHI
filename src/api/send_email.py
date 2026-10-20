@@ -11,6 +11,10 @@ MAIL_PASSWORD = os.getenv("GMAIL_PASSWORD")
 
 
 def send_email(recipient, body, subject):
+    if os.getenv("EMAIL_MODE", "smtp").lower() == "console":
+        # Local development and tests: print instead of sending real email
+        print(f"EMAIL (not sent) to {recipient}: {subject}\n{body}\n---")
+        return
     try:
         with smtplib.SMTP_SSL(MAIL_SERVER, MAIL_PORT) as server:
             server.login(MAIL_USERNAME, MAIL_PASSWORD)

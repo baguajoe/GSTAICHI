@@ -460,3 +460,11 @@
     .tcc-btn-big { width: 100%; }
     .tcc-tab { flex: 1 1 40%; }
 }
+
+/* ----- Plans and PayPal ----- */
+.tcc-plan-options { display: grid; gap: 10px; max-width: 560px; }
+.tcc-plan-option { justify-content: flex-start; text-align: left; width: 100%; }
+.tcc-plan-option.active { background: var(--primary-color); color: #ffffff; }
+.tcc-plan-line { font-size: 1.25rem !important; }
+.tcc-paypal { max-width: 420px; margin-top: 12px; }
+.tcc-myplan h3 { margin-top: 28px; }
