@@ -34,11 +34,21 @@ app.url_map.strict_slashes = False
 # apply per visitor (not to the proxy's IP) and redirects use https
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
 
+def _with_www_twin(url):
+    """https://example.org -> also https://www.example.org (and the other way), so both addresses work."""
+    url = (url or "").rstrip("/")
+    if "://" not in url:
+        return [url] if url else []
+    scheme, host = url.split("://", 1)
+    twin = host[4:] if host.startswith("www.") else f"www.{host}"
+    return [url] if "localhost" in host or host.count(".") == 0 else [url, f"{scheme}://{twin}"]
+
+
 # Configure allowed origins
-allowed_origins = [
-    os.getenv('FRONTEND_URL', 'https://shiny-funicular-9746vqgg99j3qw6-3000.app.github.dev'),
-    os.getenv('BACKEND_URL', 'https://shiny-funicular-9746vqgg99j3qw6-3001.app.github.dev')
-]
+allowed_origins = (
+    _with_www_twin(os.getenv('FRONTEND_URL') or 'https://shiny-funicular-9746vqgg99j3qw6-3000.app.github.dev')
+    + [(os.getenv('BACKEND_URL') or 'https://shiny-funicular-9746vqgg99j3qw6-3001.app.github.dev').rstrip("/")]
+)
 
 # Configure CORS for different route patterns
 CORS(app, resources={

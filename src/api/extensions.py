@@ -9,7 +9,7 @@ limiter = Limiter(
     # Generous default: a page load makes several API calls and the video player sends heartbeats.
     # Sensitive endpoints (login, keys, play, articles) set their own tighter limits.
     default_limits=["3000 per day", "60 per minute"],
-    storage_uri=os.getenv("REDIS_URL", "memory://"),
+    storage_uri=os.getenv("REDIS_URL") or "memory://",
 )
 
 

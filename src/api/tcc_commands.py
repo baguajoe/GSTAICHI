@@ -2,7 +2,7 @@
 from datetime import datetime
 from decimal import Decimal
 import click
-from sqlalchemy import func
+from sqlalchemy import func, inspect
 from .models import db, User, SiteSettings, Tier, Plan, Video, Article, USER_ROLES
 from .seed_data.tcc_catalog import DEFAULT_SITE_SETTINGS, TIERS, VIDEOS, SECTION_TIER_RANK
 from .seed_data.video_descriptions import VIDEO_LONG_DESCRIPTIONS
@@ -10,8 +10,27 @@ from .seed_data.video_descriptions import VIDEO_LONG_DESCRIPTIONS
 
 def setup_tcc_commands(app):
 
+    @app.cli.command("setup-database")
+    def setup_database():
+        """Run at every deploy. Brings the database up to date; on a brand-new, empty database it creates all
+        tables first (the oldest migrations assume tables from the original site, so they cannot start from empty)."""
+        from flask_migrate import upgrade, stamp
+        tables = set(inspect(db.engine).get_table_names())
+        if not tables:
+            print("Empty database: creating all tables.")
+            db.create_all()
+            stamp()
+            print("Done. Next: flask seed-tcc (or flask seed-tcc --no-videos for a new teacher).")
+        elif "alembic_version" not in tables:
+            raise click.ClickException("This database has tables but no migration history. "
+                                       "Ask a developer before going further.")
+        else:
+            upgrade()
+            print("Database is up to date.")
+
     @app.cli.command("seed-tcc")
-    def seed_tcc():
+    @click.option("--no-videos", is_flag=True, help="Skip the Gin Soon video list (for a new teacher's own site).")
+    def seed_tcc(no_videos):
         """Create site settings, tiers, plans and placeholder videos. Never overwrites existing rows."""
         settings = SiteSettings.query.first()
         if settings is None:
@@ -36,7 +55,7 @@ def setup_tcc_commands(app):
 
         now = datetime.utcnow()
         created = 0
-        for order, v in enumerate(VIDEOS, start=1):
+        for order, v in enumerate([] if no_videos else VIDEOS, start=1):
             if Video.query.filter_by(slug=v["slug"]).first():
                 continue
             db.session.add(Video(
@@ -54,7 +73,10 @@ def setup_tcc_commands(app):
             ))
             created += 1
         db.session.commit()
-        print(f"{created} placeholder videos created ({len(VIDEOS) - created} already existed).")
+        if no_videos:
+            print("No placeholder videos created (--no-videos). Upload videos in the Studio.")
+        else:
+            print(f"{created} placeholder videos created ({len(VIDEOS) - created} already existed).")
 
     @app.cli.command("seed-video-descriptions")
     def seed_video_descriptions():

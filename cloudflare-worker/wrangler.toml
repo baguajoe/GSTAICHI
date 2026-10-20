@@ -18,7 +18,7 @@ ALLOWED_ORIGINS = "https://gstaichi.org,https://www.gstaichi.org"
 # Chromecast's player runs on this origin
 CAST_ORIGINS = "https://www.gstatic.com"
 # The site's API, for reporting video pieces served (copy detection). Same as BACKEND_URL on Render.
-BACKEND_URL = "https://gstaichi.org"
+BACKEND_URL = "https://api.gstaichi.org"
 
 # MEDIA_TOKEN_SECRET is a secret, not a var. Set it with:
 #   npx wrangler secret put MEDIA_TOKEN_SECRET

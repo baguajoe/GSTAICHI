@@ -270,7 +270,7 @@ class SiteSettingsAdmin(SecureModelView):
     column_list = ("app_name", "school_name", "contact_phone", "contact_email", "founding_member_end_date")
     form_args = {
         "founding_member_end_date": {"description": "Members who subscribe before this date are founding members and "
-                                                    "keep their price for life. Empty = the founding offer is closed."},
+                                                    "keep their price for life. Empty = the founding offer is open with no end date yet."},
         "notification_email": {"description": "Gets emails about new subscribers, cancellations and member questions. "
                                               "Never shown on the website."},
         "video_sections": {"description": 'List of {"key", "label", "tier_rank"}. Keys must not change once videos use them.'},

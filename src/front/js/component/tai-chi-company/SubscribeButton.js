@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { apiFetch } from "./api";
 import { FormMessage } from "./FormField";
@@ -50,6 +51,7 @@ const SubscribeButton = ({ plan, user, onSubscribed }) => {
                     onError={() => setError("PayPal could not start the payment. Please try again, or call us for help.")}
                 />
             </PayPalScriptProvider>
+            <p className="tcc-field-hint">By subscribing you agree to the <Link to="/tai-chi-company/terms">Terms of Use</Link>.</p>
             <FormMessage error={error} />
         </div>
     );
