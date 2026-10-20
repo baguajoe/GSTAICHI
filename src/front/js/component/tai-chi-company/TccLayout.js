@@ -1,13 +1,18 @@
 import React from "react";
 import { NavLink, Outlet, Link } from "react-router-dom";
 import { TccProvider, useTcc } from "./TccContext";
+import { useHomeScreenApp } from "./homeScreenApp";
 import "../../../styles/taiChiCompany.css";
 
-const NAV_ITEMS = [
+const navItems = (settings, user) => [
     { to: "/tai-chi-company", label: "Home", end: true },
     { to: "/tai-chi-company/library", label: "Library" },
+    { to: "/tai-chi-company/vincents-corner", label: settings.corner_name || "Corner" },
     { to: "/tai-chi-company/articles", label: "Articles" },
-    { to: "/tai-chi-company/account", label: "Account" }
+    { to: "/tai-chi-company/account", label: "Account" },
+    ...(user && (user.role === "teacher" || user.role === "admin")
+        ? [{ to: "/tai-chi-company/studio", label: "Studio" }]
+        : [])
 ];
 
 const navClass = ({ isActive }) => `tcc-nav-link${isActive ? " active" : ""}`;
@@ -21,7 +26,7 @@ const TccNav = () => {
                 <span>{settings.app_name}</span>
             </Link>
             <nav className="tcc-nav" aria-label={`${settings.app_name} menu`}>
-                {NAV_ITEMS.map(item => (
+                {navItems(settings, user).map(item => (
                     <NavLink key={item.to} to={item.to} end={item.end} className={navClass}>
                         {item.label}
                     </NavLink>
@@ -53,6 +58,8 @@ const TccFooter = () => {
                 &copy; {new Date().getFullYear()} {settings.copyright_line || settings.school_name}
             </p>
             <p className="tcc-footer-links">
+                <Link to="/tai-chi-company/add-to-phone">Add this app to your phone</Link>
+                <span aria-hidden="true"> · </span>
                 <Link to="/tai-chi-company/terms">Terms of Use</Link>
             </p>
         </footer>
@@ -61,6 +68,7 @@ const TccFooter = () => {
 
 const TccShell = () => {
     const { settings, loadError, loadSite } = useTcc();
+    useHomeScreenApp(settings);
 
     if (loadError) {
         return (

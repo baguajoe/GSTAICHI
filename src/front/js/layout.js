@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
 
@@ -17,7 +17,6 @@ import { Instructors } from "./pages/Instructors";
 import { Articles } from "./pages/Articles";
 import { Lineage } from "./pages/Lineage";
 import { ArticlesList } from "./pages/ArticlesList";
-import Video from "./pages/Video";
 import Books from "./pages/Books";
 import { Single } from "./pages/single";
 import { Sidebar } from "./component/sidebar";
@@ -35,6 +34,8 @@ import TccWatch from "./pages/tai-chi-company/Watch";
 import TccArticles from "./pages/tai-chi-company/Articles";
 import TccAccount from "./pages/tai-chi-company/Account";
 import TccTerms from "./pages/tai-chi-company/Terms";
+import TccVincentsCorner from "./pages/tai-chi-company/VincentsCorner";
+import TccAddToPhone from "./pages/tai-chi-company/AddToPhone";
 
 // Create your Layout component
 const Layout = () => {
@@ -70,7 +71,7 @@ const Layout = () => {
                                 <Route element={<Articles />} path="/articles/:id" />
                                 <Route element={<ArticlesList />} path="/articles-list" />
                                 <Route element={<Gallery />} path="/gallery" />
-                                <Route element={<Video />} path="/videos" />
+                                <Route element={<Navigate to="/tai-chi-company" replace />} path="/videos" />
                                 <Route element={<Books />} path="/books" />
 
                                 {/* Tai Chi Company member app */}
@@ -84,6 +85,8 @@ const Layout = () => {
                                     <Route element={<TccArticles />} path="articles" />
                                     <Route element={<TccAccount />} path="account" />
                                     <Route element={<TccTerms />} path="terms" />
+                                    <Route element={<TccVincentsCorner />} path="vincents-corner" />
+                                    <Route element={<TccAddToPhone />} path="add-to-phone" />
                                 </Route>
 
                                 <Route element={<Single />} path="/single/:theid" />

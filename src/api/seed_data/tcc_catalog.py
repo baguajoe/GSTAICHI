@@ -22,7 +22,11 @@ DEFAULT_SITE_SETTINGS = {
         {"key": "intermediate", "label": "Intermediate", "tier_rank": 2},
         {"key": "advanced", "label": "Advanced", "tier_rank": 3},
         {"key": "qigong", "label": "Qigong", "tier_rank": 1},
+        {"key": "vincents-corner", "label": "Vincent's Corner", "tier_rank": 1},
     ],
+    "teacher_name": "Vincent",
+    "corner_name": "Vincent's Corner",
+    "corner_categories": ["Tip", "Correction", "Explanation", "Q&A", "Other"],
     "terms_of_service_text": """These videos and articles are for your personal use only.
 
 Your membership lets you watch the videos and read the articles yourself, on your own devices. You may not share your account, password or content with anyone else.
@@ -46,7 +50,7 @@ TIERS = [
      "monthly": "19.99", "yearly": "199.00"},
 ]
 
-SECTION_TIER_RANK = {"beginner": 1, "intermediate": 2, "advanced": 3, "qigong": 1}
+SECTION_TIER_RANK = {"beginner": 1, "intermediate": 2, "advanced": 3, "qigong": 1, "vincents-corner": 1}
 
 # slug = folder name in the R2 streams bucket
 VIDEOS = [

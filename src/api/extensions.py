@@ -6,7 +6,9 @@ from flask_limiter.util import get_remote_address
 
 limiter = Limiter(
     key_func=get_remote_address,
-    default_limits=["500 per day", "25 per minute"],
+    # Generous default: a page load makes several API calls and the video player sends heartbeats.
+    # Sensitive endpoints (login, keys, play, articles) set their own tighter limits.
+    default_limits=["3000 per day", "60 per minute"],
     storage_uri=os.getenv("REDIS_URL", "memory://"),
 )
 

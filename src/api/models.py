@@ -127,6 +127,7 @@ class Book(db.Model):
         }
 
 VIDEO_STATUSES = ("placeholder", "uploading", "processing", "ready", "failed")
+CORNER_SECTION = "vincents-corner"  # section key for the teacher's short videos (label comes from SiteSettings.corner_name)
 
 
 class Video(db.Model):
@@ -307,6 +308,9 @@ class SiteSettings(db.Model):
     terms_of_service_text = db.Column(db.Text, nullable=True)
     article_categories = db.Column(db.JSON, nullable=True)  # ["Application", "Forms", ...]
     video_sections = db.Column(db.JSON, nullable=True)  # [{"key": "beginner", "label": "Beginner", "tier_rank": 1}, ...]
+    teacher_name = db.Column(db.String(120), nullable=False, default="", server_default="")  # "Latest from ...", "Ask ..."
+    corner_name = db.Column(db.String(120), nullable=False, default="", server_default="")  # the teacher's short-video section
+    corner_categories = db.Column(db.JSON, nullable=True)  # ["Tip", "Correction", ...]
     founding_member_end_date = db.Column(db.DateTime, nullable=True)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -332,6 +336,10 @@ class SiteSettings(db.Model):
             "terms_of_service_text": self.terms_of_service_text,
             "article_categories": self.article_categories or [],
             "video_sections": self.video_sections or [],
+            "teacher_name": self.teacher_name,
+            "corner_name": self.corner_name,
+            "corner_section": CORNER_SECTION,
+            "corner_categories": self.corner_categories or [],
             "founding_member_end_date": self.founding_member_end_date.isoformat() if self.founding_member_end_date else None,
         }
 

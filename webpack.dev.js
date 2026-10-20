@@ -26,9 +26,11 @@ module.exports = merge(common, {
         hot: true,
         allowedHosts: "all",
         historyApiFallback: true,
-        static: {
-          directory: path.resolve(__dirname, "dist"),
-        },
+        static: [
+          { directory: path.resolve(__dirname, "dist") },
+          // home-screen app icons, service worker and offline page (served by Flask in production)
+          { directory: path.resolve(__dirname, "public"), watch: false },
+        ],
         client: {
           webSocketURL: publicUrl
         },

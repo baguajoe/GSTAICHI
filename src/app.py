@@ -58,6 +58,8 @@ CORS(app, resources={
     }
 })
 
+# Set RATELIMIT_ENABLED=false only for local automated testing
+app.config["RATELIMIT_ENABLED"] = os.getenv("RATELIMIT_ENABLED", "true").lower() != "false"
 limiter.init_app(app)
 
 # Add more detailed debug logging for CORS issues

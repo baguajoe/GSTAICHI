@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 from flask import Blueprint, jsonify, request
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import db, SiteSettings, Tier, Video
+from .models import db, SiteSettings, Tier, Video, CORNER_SECTION
 from .extensions import limiter
 from .tcc_auth import role_required, get_current_user
 
@@ -11,12 +11,37 @@ tcc = Blueprint('tcc', __name__)
 
 MIN_PASSWORD_LENGTH = 8
 NEW_THIS_MONTH_LIMIT = 8
+LATEST_FROM_TEACHER_LIMIT = 8
 
 
 @tcc.route('/settings', methods=['GET'])
 def get_settings():
     """Public branding and contact info. Every name, color, phone and address in the app comes from here."""
     return jsonify(SiteSettings.get().serialize_public())
+
+
+@tcc.route('/manifest.webmanifest', methods=['GET'])
+def get_manifest():
+    """Home-screen app manifest, named and colored from SiteSettings. Paths are relative to the site."""
+    settings = SiteSettings.get()
+    manifest = {
+        "name": settings.app_name,
+        "short_name": settings.app_name,
+        "description": f"Tai Chi Chuan video lessons{(' from ' + settings.school_name) if settings.school_name else ''}.",
+        "start_url": "/tai-chi-company/",
+        "scope": "/tai-chi-company/",
+        "display": "standalone",
+        "background_color": "#ffffff",
+        "theme_color": settings.primary_color,
+        "icons": [
+            {"src": "/tcc-icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+            {"src": "/tcc-icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
+            {"src": "/tcc-icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
+        ],
+    }
+    response = jsonify(manifest)
+    response.mimetype = "application/manifest+json"
+    return response
 
 
 @tcc.route('/tiers', methods=['GET'])
@@ -90,9 +115,12 @@ def get_videos():
     now = datetime.utcnow()
     newest = sorted((v for v in videos if _is_new_this_month(v, now)),
                     key=lambda v: (v.publish_at, v.id), reverse=True)[:NEW_THIS_MONTH_LIMIT]
+    from_teacher = sorted((v for v in videos if v.section == CORNER_SECTION),
+                          key=lambda v: (v.publish_at or v.created_at or now, v.id), reverse=True)[:LATEST_FROM_TEACHER_LIMIT]
     return jsonify({
         "videos": [_card(v, viewer) for v in videos],
         "new_this_month": [v.slug for v in newest],
+        "latest_from_teacher": [v.slug for v in from_teacher],
         "viewer_tier_rank": viewer.effective_tier_rank if viewer else 0,
     })
 

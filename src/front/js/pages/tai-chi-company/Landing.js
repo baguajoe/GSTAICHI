@@ -16,7 +16,10 @@ const Landing = () => {
             .catch(() => setSample(null));
     }, []);
 
-    const sectionLabels = (settings.video_sections || []).map(s => s.label);
+    // The levels; Qigong and the teacher's corner are listed separately below
+    const sectionLabels = (settings.video_sections || [])
+        .filter(s => s.key !== "qigong" && s.key !== settings.corner_section)
+        .map(s => s.label);
 
     return (
         <div className="tcc-page">
@@ -36,6 +39,9 @@ const Landing = () => {
                 <ul className="tcc-included">
                     <li><strong>Videos by level</strong>{sectionLabels.length > 0 && `: ${sectionLabels.join(", ")}`}</li>
                     <li><strong>A Qigong section</strong> for all members</li>
+                    {settings.corner_name && (
+                        <li><strong>{settings.corner_name}</strong>: short videos from {settings.teacher_name} with tips, corrections and answers to your questions</li>
+                    )}
                     <li><strong>Member articles</strong> on forms, history, health and more</li>
                     <li><strong>New content added every month</strong></li>
                 </ul>

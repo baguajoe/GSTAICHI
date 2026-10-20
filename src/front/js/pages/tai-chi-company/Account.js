@@ -91,6 +91,7 @@ const Account = () => {
             <section className="tcc-section">
                 <button type="button" className="tcc-btn tcc-btn-outline" onClick={signOut}>Log out</button>
             </section>
+            <p className="tcc-form-alt"><Link to="/tai-chi-company/add-to-phone">Add this app to your phone's home screen</Link></p>
             <p className="tcc-form-alt"><Link to="/tai-chi-company/terms">Terms of Use</Link></p>
         </div>
     );

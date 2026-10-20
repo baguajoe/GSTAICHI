@@ -75,10 +75,10 @@ export const Sidebar = () => {
                 </Link>
 
                 <Link
-                    className={`nav-link mt-2 ${location.pathname === "/videos" ? "active" : ""}`}
-                    to="/videos"
+                    className={`nav-link mt-2 ${location.pathname.startsWith("/tai-chi-company") ? "active" : ""}`}
+                    to="/tai-chi-company"
                 >
-                    Video
+                    Tai Chi Company
                 </Link>
 
                 <Link
@@ -88,12 +88,6 @@ export const Sidebar = () => {
                     Books & DVDs
                 </Link>
 
-                <Link
-                    className={`nav-link mt-2 ${location.pathname.startsWith("/tai-chi-company") ? "active" : ""}`}
-                    to="/tai-chi-company"
-                >
-                    Tai Chi Company
-                </Link>
             </nav>
         </div>
     );
