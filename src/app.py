@@ -14,6 +14,7 @@ from api.commands import setup_commands
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from functools import wraps
 from api.extensions import limiter
@@ -29,6 +30,9 @@ static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../public/')
 app = Flask(__name__)
 app.url_map.strict_slashes = False
+# Render puts one proxy in front of the app; trust its X-Forwarded-For/Proto so rate limits
+# apply per visitor (not to the proxy's IP) and redirects use https
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
 
 # Configure allowed origins
 allowed_origins = [

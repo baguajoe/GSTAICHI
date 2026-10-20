@@ -13,5 +13,9 @@ limiter = Limiter(
 
 @limiter.request_filter
 def _skip_static_files():
-    # Admin pages load many CSS/JS files; don't count those against the limit
-    return request.path.startswith("/admin/static") or request.path.startswith("/static")
+    # Only the API and /admin are rate limited. The React bundle, images and admin CSS/JS
+    # are served by the same app and a single page can load dozens of them.
+    path = request.path
+    if path.startswith("/admin/static"):
+        return True
+    return not (path.startswith("/api") or path.startswith("/admin"))
