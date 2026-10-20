@@ -136,3 +136,7 @@ def get_video(slug):
     others = _visible_videos().filter(Video.section == video.section, Video.id != video.id).all()
     data["up_next"] = [_card(v, viewer) for v in others]
     return jsonify(data)
+
+
+# Route modules register on the same blueprint
+from . import tcc_encoding  # noqa: E402,F401

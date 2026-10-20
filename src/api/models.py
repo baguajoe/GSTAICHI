@@ -163,6 +163,9 @@ class Video(db.Model):
     chapters_vtt_path = db.Column(db.String(500), nullable=True)
     encryption_key_enc = db.Column(db.Text, nullable=True)  # AES key encrypted with KEY_ENCRYPTION_SECRET
     duration_seconds = db.Column(db.Integer, nullable=True)
+    width = db.Column(db.Integer, nullable=True)  # as shown on screen; upright phone videos are taller than wide
+    height = db.Column(db.Integer, nullable=True)
+    renditions = db.Column(db.JSON, nullable=True)  # [{"name": "720p", "width": 1280, "height": 720, "video_kbps": 2800}]
     publish_at = db.Column(db.DateTime, nullable=True)
     is_free_sample = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
     sort_order = db.Column(db.Integer, nullable=False, default=0, server_default="0")
@@ -207,6 +210,8 @@ class Video(db.Model):
             "category": self.category,
             "short_description": self.short_description,
             "duration_seconds": self.duration_seconds,
+            "width": self.width,
+            "height": self.height,
             "thumbnail_path": self.custom_thumbnail_path or self.thumbnail_path,
             "is_free_sample": self.is_free_sample,
             "coming_soon": self.is_coming_soon,
