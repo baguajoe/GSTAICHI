@@ -288,6 +288,8 @@ class Article(db.Model):
     publish_at = db.Column(db.DateTime, nullable=True)
     created_by = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
     read_count = db.Column(db.Integer, nullable=False, default=0, server_default="0")
+    # The article's number on the old public Articles page (/articles/<id>), so old links still find it
+    legacy_id = db.Column(db.Integer, nullable=True, unique=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

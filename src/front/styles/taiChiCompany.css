@@ -592,6 +592,7 @@ select.tcc-input { background: #ffffff; }
 }
 .tcc-mag-flow h3 .tcc-num { background: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); text-transform: lowercase; }
 .tcc-mag-flow ul, .tcc-mag-flow ol { margin: 0 0 1.2em; padding-left: 1.4em; }
+.tcc-mag-flow ol { padding-left: 2.4em; } /* room for two-digit numbers, like the 42 movements of a form */
 .tcc-mag-flow li { margin-bottom: 0.5em; }
 .tcc-mag-flow blockquote {
     margin: 1.4em 0; padding: 0.4em 0 0.4em 1em; border-left: 5px solid var(--primary-color);

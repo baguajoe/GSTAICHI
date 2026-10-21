@@ -27,6 +27,9 @@ MAX_HEADING_WORDS = 12
 ENDS_LIKE_A_SENTENCE = re.compile(r"[.,;:!]$")
 NUMBERED = re.compile(r"^\d{1,2}[.)]\s+\S")
 LETTERED = re.compile(r"^[A-Za-z][.)]\s+\S")
+QUOTED = re.compile(r"^[\"“'‘][^\"“”]{8,}[\"”'’](?:\s*[—–-]+\s*[^\"“”]{1,60})?$")
+# "ii. Step", "iv. Body position": sub-points like the lettered ones
+ROMAN = re.compile(r"^(?:i{1,3}|iv|vi{0,3}|ix|xi{0,3})[.)]\s*[A-Za-z]", re.I)
 # A bullet character; PDFs sometimes only give its glyph number, like "(cid:127)"
 BULLET = re.compile(r"^(?:[•◦▪▫●○‣∙·\-–*]\s+|\(cid:\d+\)\s*)(?=\S)")
 
@@ -46,6 +49,39 @@ class DocumentError(Exception):
 def short_line(text):
     return (len(text) <= MAX_HEADING_LENGTH and len(text.split()) <= MAX_HEADING_WORDS
             and not ENDS_LIKE_A_SENTENCE.search(text))
+
+
+def classify_line(text):
+    """Auto-format for one line, as in autoFormat.js: "heading", "subheading", "quote" or None."""
+    text = (text or "").strip()
+    if not text:
+        return None
+    if NUMBERED.match(text) and short_line(text):
+        return "heading"
+    if LETTERED.match(text) and short_line(text):
+        return "subheading"
+    if QUOTED.match(text) and len(text) <= 400:
+        return "quote"
+    return None
+
+
+def auto_format(text):
+    """The editor's Auto-format on HTML: short numbered paragraphs become headings, lettered ones subheadings,
+    and paragraphs that are a whole quotation become quotes."""
+    tags = {"heading": "h2", "subheading": "h3", "quote": "blockquote"}
+
+    def change(match):
+        kind = classify_line(_text_of(match.group(1)))
+        return f"<{tags[kind]}>{match.group(1)}</{tags[kind]}>" if kind else match.group(0)
+    return re.sub(r"<p>((?:(?!</?p>).)*?)</p>", change, text, flags=re.S)
+
+
+def paragraphs_from_lines(lines, wrapped=None):
+    """Lines of one block of text. Hard-wrapped lines (all but the last shorter than about 130 characters)
+    are one paragraph; otherwise each line is its own paragraph. wrapped forces one or the other."""
+    if wrapped is None:
+        wrapped = len(lines) > 1 and all(len(l) <= 130 for l in lines[:-1])
+    return [" ".join(lines)] if wrapped else lines
 
 
 def _text_of(fragment):
@@ -302,10 +338,8 @@ def _text_html(text):
             out.append(f"<h1>{_esc(lines[0])}</h1>")  # a first line on its own is the title
         elif all(BULLET.match(l) for l in lines):
             out.append("<ul>" + "".join(f"<li>{_esc(BULLET.sub('', l))}</li>" for l in lines) + "</ul>")
-        elif len(lines) > 1 and all(len(l) >= 55 for l in lines[:-1]):
-            out.append(f"<p>{_esc(' '.join(lines))}</p>")
         else:
-            out.extend(f"<p>{_esc(l)}</p>" for l in lines)
+            out.extend(f"<p>{_esc(p)}</p>" for p in paragraphs_from_lines(lines))
     return "".join(out)
 
 
@@ -340,10 +374,13 @@ def _tidy(text):
     text = _lift_photos(text)
     text = re.sub(r'<a\s+href="#[^"]*"[^>]*>(.*?)</a>', r"\1", text, flags=re.S)  # links inside the document
     text = re.sub(r"<a\s+id=\"[^\"]*\"\s*>\s*</a>", "", text)  # Word bookmarks
-    # A short line that is all bold is a heading
+    # A short line that is all bold is a heading; "a. ..." or "ii. ..." a subheading
     def bold_heading(match):
         words = _text_of(match.group(1))
-        return f"<h2>{_esc(words)}</h2>" if words and short_line(words) else match.group(0)
+        if not words or not short_line(words):
+            return match.group(0)
+        tag = "h3" if LETTERED.match(words) or ROMAN.match(words) else "h2"
+        return f"<{tag}>{_esc(words)}</{tag}>"
     text = re.sub(r"<p>\s*<(?:strong|b)>((?:(?!</?p>).)*?)</(?:strong|b)>\s*</p>", bold_heading, text, flags=re.S)
     text = re.sub(r"[ \t ]{2,}", " ", text)
     text = re.sub(r"<(p|h[1-6]|li|blockquote)>\s+", r"<\1>", text)

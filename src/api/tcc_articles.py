@@ -108,6 +108,16 @@ def list_member_articles():
     return jsonify({"articles": [article_card(a, is_member or bool(a.is_free)) for a in articles], "can_read": is_member})
 
 
+@tcc.route('/articles/legacy/<int:legacy_id>', methods=['GET'])
+@limiter.limit("60 per minute")
+def find_legacy_article(legacy_id):
+    """The member article for a link to the old public Articles page (/articles/<legacy id>)."""
+    article = published_member_articles().filter(Article.legacy_id == legacy_id).first()
+    if article is None:
+        return jsonify({"msg": "We could not find that article."}), 404
+    return jsonify({"id": article.id})
+
+
 @tcc.route('/articles/<int:article_id>', methods=['GET'])
 @limiter.limit("30 per minute")
 def get_member_article(article_id):

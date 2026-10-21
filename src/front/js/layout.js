@@ -14,9 +14,8 @@ import { Curriculum } from "./pages/Curriculum";
 import { History } from "./pages/History";
 import { FederationMembers } from "./pages/FederationMembers";
 import { Instructors } from "./pages/Instructors";
-import { Articles } from "./pages/Articles";
 import { Lineage } from "./pages/Lineage";
-import { ArticlesList } from "./pages/ArticlesList";
+import LegacyArticleRedirect from "./pages/LegacyArticleRedirect";
 import Books from "./pages/Books";
 import { Single } from "./pages/single";
 import { Sidebar } from "./component/sidebar";
@@ -70,9 +69,10 @@ const Layout = () => {
                                 <Route element={<Instructors />} path="/instructors" />
                                 <Route element={<FederationMembers />} path="/federation-members" />
                                 <Route element={<Lineage />} path="/lineage" />
-                                <Route element={<Articles />} path="/articles" />
-                                <Route element={<Articles />} path="/articles/:id" />
-                                <Route element={<ArticlesList />} path="/articles-list" />
+                                {/* The articles moved into Tai Chi Company; old links still work */}
+                                <Route element={<Navigate to="/tai-chi-company/articles" replace />} path="/articles" />
+                                <Route element={<LegacyArticleRedirect />} path="/articles/:id" />
+                                <Route element={<Navigate to="/tai-chi-company/articles" replace />} path="/articles-list" />
                                 <Route element={<Gallery />} path="/gallery" />
                                 <Route element={<Navigate to="/tai-chi-company" replace />} path="/videos" />
                                 <Route element={<Books />} path="/books" />

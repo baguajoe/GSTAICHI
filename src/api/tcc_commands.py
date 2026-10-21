@@ -119,6 +119,56 @@ def setup_tcc_commands(app):
         db.session.commit()
         print(f"Member article '{title}' added.")
 
+    @app.cli.command("import-public-articles")
+    def import_public_articles():
+        """Bring the articles from the old public Articles page (seed_data/public_articles.json) into the member
+        articles, in the magazine style, members-only. An article already there (same title, or imported before)
+        is not copied again; it only learns its old page number, so old links find it. Safe to run again."""
+        from .legacy_articles import load_public_articles, to_magazine_html, RENAMED
+        from .article_import import _summary
+
+        for old, new in RENAMED.items():
+            for article in Article.query.filter_by(title=old).all():
+                article.title = new
+                print(f"Renamed '{old}' to '{new}'.")
+
+        created, linked, converted = [], [], []
+        for item in load_public_articles():
+            if Article.query.filter_by(legacy_id=item["legacy_id"]).first():
+                continue
+            title = RENAMED.get(item["title"], item["title"])
+            same = Article.query.filter(func.lower(Article.title) == title.lower())
+            member_copy = same.filter(Article.members_only.is_(True)).first()
+            if member_copy is not None:
+                member_copy.legacy_id = item["legacy_id"]
+                linked.append(title)
+                continue
+            content = to_magazine_html(item["content"])
+            article = same.filter(Article.members_only.is_(False)).first()
+            if article is not None:
+                converted.append(title)  # the old public copy becomes the member article
+            else:
+                article = Article(title=title)
+                db.session.add(article)
+                created.append(title)
+            article.author = item["author"]
+            article.category = article.section = item["category"]
+            article.content = content
+            article.summary = _summary(content) or None
+            article.members_only = True
+            article.is_free = False
+            article.status = "published"
+            article.publish_at = article.publish_at or datetime.utcnow()
+            article.legacy_id = item["legacy_id"]
+        db.session.commit()
+        for title in created:
+            print(f"Imported '{title}'.")
+        for title in converted:
+            print(f"Imported '{title}' (the old public copy was turned into the member article).")
+        for title in linked:
+            print(f"'{title}' is already a member article; old links now open it.")
+        print(f"{len(created) + len(converted)} articles imported, {len(linked)} already there.")
+
     @app.cli.command("set-role")
     @click.argument("email")
     @click.argument("role")

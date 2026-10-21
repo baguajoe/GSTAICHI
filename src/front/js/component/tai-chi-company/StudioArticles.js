@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useTcc } from "./TccContext";
 import { apiFetch } from "./api";
 import FormField, { FormMessage } from "./FormField";
@@ -195,8 +196,38 @@ const ArticleForm = ({ article, imported, onDone, onCancel }) => {
     );
 };
 
+// "View" for an article members cannot see yet (a draft, or scheduled): the saved version, as it will look
+const SavedPreview = ({ article, onClose }) => {
+    const { settings } = useTcc();
+    const size = useTextSize();
+    const [preview, setPreview] = useState(null);
+    const [error, setError] = useState(null);
+    useEffect(() => {
+        window.scrollTo(0, 0);
+        apiFetch("/api/tcc/studio/articles/preview", { method: "POST", body: { ...article, action: "draft" } })
+            .then(setPreview).catch(e => setError(e.message));
+    }, []);
+    return (
+        <section>
+            <div className="tcc-notice tcc-preview-banner">
+                <p><strong>{article.status === "Scheduled" ? "Scheduled." : "Draft."}</strong> Members cannot see this article yet. This is how it will look.</p>
+                <button type="button" className="custom-btn1 tcc-btn" onClick={onClose}>Back to the articles</button>
+            </div>
+            <FormMessage error={error} />
+            {!preview && !error && <p>Loading…</p>}
+            {preview && (
+                <div className="tcc-preview-page">
+                    <ArticleView article={preview} size={size} schoolName={settings.school_name || settings.app_name} />
+                </div>
+            )}
+            <button type="button" className="custom-btn1 tcc-btn" onClick={onClose}>Back to the articles</button>
+        </section>
+    );
+};
+
 const StudioArticles = () => {
     const [articles, setArticles] = useState(null);
+    const [viewing, setViewing] = useState(null); // a draft or scheduled article shown as members will see it
     const [editing, setEditing] = useState(null); // null | "new" | { imported } | article
     const [importing, setImporting] = useState(false);
     const [message, setMessage] = useState(null);
@@ -213,6 +244,8 @@ const StudioArticles = () => {
                 onDone={(msg) => { setEditing(null); setMessage(msg); load(); window.scrollTo(0, 0); }} />
         );
     }
+
+    if (viewing) return <SavedPreview article={viewing} onClose={() => { setViewing(null); window.scrollTo(0, 0); }} />;
 
     const uploadDocument = async (e) => {
         const file = e.target.files && e.target.files[0];
@@ -271,6 +304,9 @@ const StudioArticles = () => {
                         </p>
                         <p>{a.author} · {a.reading_minutes} min read · read {a.read_count} times</p>
                         <div className="tcc-button-row tcc-left">
+                            {a.status === "Published"
+                                ? <Link to={`/tai-chi-company/articles/${a.id}`} className="tcc-btn tcc-btn-outline">View</Link>
+                                : <button type="button" className="tcc-btn tcc-btn-outline" onClick={() => setViewing(a)}>View</button>}
                             <button type="button" className="tcc-btn tcc-btn-outline" onClick={() => setEditing(a)}>Edit</button>
                             {confirmId !== a.id
                                 ? <button type="button" className="tcc-btn tcc-btn-outline tcc-btn-danger" onClick={() => setConfirmId(a.id)}>Delete</button>
