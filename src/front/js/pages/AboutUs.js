@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import GSCYSC from "../../img/GSCYSC.jpg";
-import GinSoonBall from "../../img/GinSoonBall.jpg";
-import GinSoonSnakeCreep from "../../img/GinSoonSnakeCreep.jpg";
-import GinSoonPerryPunch from "../../img/GinSoonPerryPunch.jpg";
+import { school } from "../utils/schoolInfo";
 import "../../styles/aboutUs.css";
 
 export const AboutUs = () => {
@@ -130,7 +127,7 @@ export const AboutUs = () => {
                                 <div className="row g-0">
                                     <div className="col-md-4">
                                         <img
-                                            src={GSCYSC}
+                                            src={school.images.founded}
                                             alt="Placeholder"
                                             className="img-fluid"
                                             style={imageStyle}
@@ -139,9 +136,7 @@ export const AboutUs = () => {
                                     <div className="col-md-8">
                                         <div className="card-body d-flex align-items-center h-100">
                                             <p className="card-text text-center px-4 mb-0">
-                                                The Gin Soon Tai Chi Club was founded in 1969 with permission from Grandmaster
-                                                Yeung Sau Chung to propagate the Yang Style Tai Chi Chuan in North America. It is the
-                                                oldest school teaching Tai Chi Chuan in the Greater Boston Area today.
+                                                {school.founded}
                                             </p>
                                         </div>
                                     </div>
@@ -154,7 +149,7 @@ export const AboutUs = () => {
                                 <div className="row g-0">
                                     <div className="col-md-4">
                                         <img
-                                            src={GinSoonBall}
+                                            src={school.images.difference}
                                             alt="Placeholder"
                                             className="img-fluid"
                                             style={imageStyle}
@@ -163,10 +158,7 @@ export const AboutUs = () => {
                                     <div className="col-md-8">
                                         <div className="card-body d-flex align-items-center h-100">
                                             <p className="card-text text-center px-4 mb-0">
-                                                Although there are many schools of Tai Chi Chuan available in the United States,
-                                                the Gin Soon Tai Chi Club is different from others because its founder Master Gin Soon Chu,
-                                                is a disciple who studied with and was authorized to teach by Grandmaster Yang Sau-Chung,
-                                                firstborn and heir of the legendary Yang Cheng-Fu.
+                                                {school.difference}
                                             </p>
                                         </div>
                                     </div>
@@ -179,7 +171,7 @@ export const AboutUs = () => {
                                 <div className="row g-0">
                                     <div className="col-md-4">
                                         <img
-                                            src={GinSoonSnakeCreep}
+                                            src={school.images.federation}
                                             alt="Placeholder"
                                             className="img-fluid"
                                             style={imageStyle}
@@ -188,9 +180,7 @@ export const AboutUs = () => {
                                     <div className="col-md-8">
                                         <div className="card-body d-flex align-items-center h-100">
                                             <p className="card-text text-center px-4 mb-0">
-                                                Over the years, many students have graduated from the school and became instructors themselves.
-                                                In 1995, the Gin Soon Tai Chi Chuan Federation was established to better serve our members who
-                                                come from different countries.
+                                                {school.federation}
                                             </p>
                                         </div>
                                     </div>
@@ -203,7 +193,7 @@ export const AboutUs = () => {
                                 <div className="row g-0">
                                     <div className="col-md-4">
                                         <img
-                                            src={GinSoonPerryPunch}
+                                            src={school.images.contact}
                                             alt="Placeholder"
                                             className="img-fluid"
                                             style={imageStyle}
@@ -213,9 +203,9 @@ export const AboutUs = () => {
                                         <div className="card-body d-flex align-items-center justify-content-center h-100">
                                             <p className="card-text text-center px-4 mb-0">
                                                 The headquarters are located at<br />
-                                                33 Harrison Avenue, 5th floor, Boston, MA 02111.<br />
-                                                Contact Vincent Chu at (617) 542-4442<br />
-                                                or via email at chu.v@usa.com.
+                                                {school.address.join(", ")}.<br />
+                                                Contact Vincent Chu at {school.phone}<br />
+                                                or via email at {school.email}.
                                             </p>
                                         </div>
                                     </div>

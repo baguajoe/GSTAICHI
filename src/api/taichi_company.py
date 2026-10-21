@@ -23,21 +23,28 @@ def get_settings():
 
 @tcc.route('/manifest.webmanifest', methods=['GET'])
 def get_manifest():
-    """Home-screen app manifest, named and colored from SiteSettings. Paths are relative to the site."""
+    """
+    Home-screen app manifest, named and colored from SiteSettings; the icons are the Gin Soon logo.
+    The manifest is served from the API, and browsers read its addresses relative to the API, so they are
+    made full website addresses with FRONTEND_URL (a start page on another site would be ignored).
+    """
     settings = SiteSettings.get()
+    site = (os.getenv("FRONTEND_URL") or "").rstrip("/")
     manifest = {
+        # Fixed, so changing the start page later does not make browsers treat it as a different app
+        "id": "/tai-chi-company/",
         "name": settings.app_name,
         "short_name": settings.app_name,
         "description": f"Tai Chi Chuan video lessons{(' from ' + settings.school_name) if settings.school_name else ''}.",
-        "start_url": "/tai-chi-company/",
-        "scope": "/tai-chi-company/",
+        "start_url": f"{site}/tai-chi-company/library",
+        "scope": f"{site}/tai-chi-company/",
         "display": "standalone",
         "background_color": "#ffffff",
         "theme_color": settings.primary_color,
         "icons": [
-            {"src": "/tcc-icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
-            {"src": "/tcc-icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
-            {"src": "/tcc-icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
+            {"src": f"{site}/tcc-icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+            {"src": f"{site}/tcc-icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
+            {"src": f"{site}/tcc-icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
         ],
     }
     response = jsonify(manifest)

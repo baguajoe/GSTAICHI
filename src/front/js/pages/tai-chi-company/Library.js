@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useTcc } from "../../component/tai-chi-company/TccContext";
 import { apiFetch } from "../../component/tai-chi-company/api";
 import VideoCard from "../../component/tai-chi-company/VideoCard";
+import { InstallBanner } from "../../component/tai-chi-company/InstallApp";
 
 const Library = () => {
     const { settings, user, userLoaded } = useTcc();
@@ -40,6 +41,7 @@ const Library = () => {
     return (
         <div className="tcc-page">
             <h1>Library</h1>
+            <InstallBanner />
 
             {newThisMonth.length > 0 && (
                 <section className="tcc-section">

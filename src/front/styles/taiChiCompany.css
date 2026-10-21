@@ -710,3 +710,65 @@ select.tcc-input { background: #ffffff; }
 .tcc-dialog-backdrop { align-items: center; }
 .tcc-dialog { max-height: calc(100vh - 32px); overflow-y: auto; }
 .tcc-dialog-photo { max-height: 180px; }
+
+/* ----- Install the app ----- */
+.tcc-nav-install { background: #ffffff; border-color: var(--primary-color); color: var(--primary-color) !important; cursor: pointer; gap: 8px; }
+.tcc-nav-install:hover { background: #f6eeee; }
+.tcc-install-banner { background: #f6eeee; border: 2px solid var(--primary-color); border-radius: 10px; padding: 16px 20px; margin: 0 0 32px; }
+.tcc-install-banner p { margin-bottom: 12px; font-size: 1.15rem; }
+.tcc-install-banner .tcc-button-row { justify-content: flex-start; }
+.tcc-install-dialog { max-width: 680px; }
+.tcc-install-dialog-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.tcc-install-dialog-top h2 { margin: 0; }
+.tcc-install-dialog .tcc-step { grid-template-columns: minmax(0, 1fr) 150px; padding: 14px 0; }
+.tcc-install-dialog .tcc-phone-picture { max-width: 150px; }
+.tcc-install-warning { margin: 16px 0; }
+.tcc-install-warning p { margin-bottom: 10px; }
+.tcc-install-help { margin-top: 16px; }
+.tcc-step-finish { border-bottom: 0; }
+@media (max-width: 767px) {
+    .tcc-install-dialog .tcc-step { grid-template-columns: 1fr; }
+    .tcc-install-dialog .tcc-phone-picture { max-width: 130px; }
+}
+@media (max-width: 575px) {
+    .tcc-nav-install { grid-column: 1 / -1; }
+    .tcc-dialog.tcc-install-dialog { padding: 16px; }
+}
+
+/* ----- Teacher, lineage and school ----- */
+.tcc-teacher-intro { display: flex; gap: 24px; align-items: flex-start; margin-bottom: 24px; }
+.tcc-teacher-intro h3 { margin-top: 0; }
+.tcc-teacher-photo { width: 200px; flex: none; border-radius: 10px; object-fit: cover; aspect-ratio: 4 / 5; object-position: top; }
+.tcc-lineage-strip { list-style: none; padding: 0; margin: 24px 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+.tcc-lineage-person { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; font-size: 18px; }
+.tcc-lineage-person:not(:last-child)::after {
+    content: "\203A";
+    position: absolute; right: -12px; top: 30px;
+    font-size: 32px; line-height: 1; font-weight: 700; color: var(--primary-color);
+}
+.tcc-lineage-photo { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; object-position: top; border: 3px solid var(--primary-color); background: #f2f2f2; margin-bottom: 8px; }
+.tcc-lineage-name { font-weight: 700; line-height: 1.25; }
+.tcc-lineage-years { color: #444444; font-size: 16px; }
+.tcc-school-line { font-size: 1.15rem !important; font-weight: 600; }
+.tcc-about-person { display: flex; gap: 24px; align-items: flex-start; padding: 20px 0; border-bottom: 2px solid #e0e0e0; }
+.tcc-about-person h3 { margin-top: 0; }
+.tcc-about-person p { line-height: 1.7; }
+.tcc-about-photo { width: 220px; flex: none; border-radius: 10px; object-fit: contain; background: #f8f9fa; }
+.tcc-about-years { color: #444444; margin-bottom: 8px; }
+@media (max-width: 767px) {
+    .tcc-lineage-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 20px; }
+    .tcc-lineage-person:nth-child(3n)::after { display: none; }
+    .tcc-teacher-intro, .tcc-about-person { flex-direction: column; }
+    .tcc-teacher-photo, .tcc-about-photo { width: 100%; max-width: 320px; }
+}
+/* Narrow phones: one person per row, oldest at the top, with an arrow down to the next */
+@media (max-width: 575px) {
+    .tcc-lineage-strip { grid-template-columns: 1fr; row-gap: 22px; }
+    .tcc-lineage-person { display: grid; grid-template-columns: 64px minmax(0, 1fr); column-gap: 14px; align-items: center; text-align: left; }
+    .tcc-lineage-photo { width: 64px; height: 64px; margin: 0; grid-row: span 2; }
+    .tcc-lineage-person:not(:last-child)::after,
+    .tcc-lineage-person:nth-child(3n):not(:last-child)::after { display: block; content: "\2193"; right: auto; left: 22px; top: auto; bottom: -24px; font-size: 22px; }
+    .tcc-lineage-name, .tcc-lineage-years { grid-column: 2; }
+    .tcc-lineage-name:last-child { grid-row: span 2; }
+    .tcc-install-dialog .tcc-phone-picture { max-width: 110px; }
+}

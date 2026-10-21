@@ -4,6 +4,8 @@ import { useTcc } from "../../component/tai-chi-company/TccContext";
 import { apiFetch } from "../../component/tai-chi-company/api";
 import FormField, { FormMessage } from "../../component/tai-chi-company/FormField";
 import MyPlan from "../../component/tai-chi-company/MyPlan";
+import { InstallButton } from "../../component/tai-chi-company/InstallApp";
+import { useInstallPrompt } from "../../component/tai-chi-company/homeScreenApp";
 
 const ChangePassword = () => {
     const empty = { current_password: "", new_password: "", confirm: "" };
@@ -55,8 +57,9 @@ const ChangePassword = () => {
 };
 
 const Account = () => {
-    const { user, userLoaded, logout } = useTcc();
+    const { settings, user, userLoaded, logout } = useTcc();
     const navigate = useNavigate();
+    const { installed } = useInstallPrompt();
 
     if (!userLoaded) return <p className="tcc-page tcc-center">Loading…</p>;
     if (!user) return <Navigate to="/tai-chi-company/login" replace state={{ from: "/tai-chi-company/account" }} />;
@@ -78,12 +81,20 @@ const Account = () => {
 
             <MyPlan />
 
+            {!installed && (
+                <section className="tcc-section">
+                    <h2>Install the app</h2>
+                    <p>Put {settings.app_name} on your phone or computer, so you can open it with one tap.</p>
+                    <InstallButton />
+                </section>
+            )}
+
             <ChangePassword />
 
             <section className="tcc-section">
                 <button type="button" className="tcc-btn tcc-btn-outline" onClick={signOut}>Log out</button>
             </section>
-            <p className="tcc-form-alt"><Link to="/tai-chi-company/add-to-phone">Add this app to your phone's home screen</Link></p>
+            <p className="tcc-form-alt"><Link to="/tai-chi-company/add-to-phone">Help installing the app</Link></p>
             <p className="tcc-form-alt"><Link to="/tai-chi-company/terms">Terms of Use</Link></p>
         </div>
     );

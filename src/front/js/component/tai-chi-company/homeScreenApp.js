@@ -23,18 +23,21 @@ const meta = (name, content) => {
     el.content = content;
 };
 
-// Android/Chrome fires this once, possibly before the help page is open, so keep it here.
+// Android/Chrome/Edge fire this once, possibly before any install button is on screen, so keep it here.
 let deferredPrompt = null;
-const promptListeners = new Set();
+let installedThisVisit = false;
+const installListeners = new Set();
+const notifyInstall = () => installListeners.forEach(fn => fn(n => n + 1));
 if (typeof window !== "undefined") {
     window.addEventListener("beforeinstallprompt", (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        promptListeners.forEach(fn => fn(e));
+        notifyInstall();
     });
     window.addEventListener("appinstalled", () => {
         deferredPrompt = null;
-        promptListeners.forEach(fn => fn(null));
+        installedThisVisit = true;
+        notifyInstall();
     });
 }
 
@@ -55,22 +58,25 @@ export const useHomeScreenApp = (settings) => {
     }, [settings]);
 };
 
-// For the help page: the Android install prompt, if the browser offered one.
+// canInstall: the browser offered its own one-click install prompt (Android, Chrome, Edge).
+// installed: running as the installed app, or installed during this visit; install buttons hide then.
 export const useInstallPrompt = () => {
-    const [promptEvent, setPromptEvent] = useState(deferredPrompt);
+    const [, rerender] = useState(0);
     useEffect(() => {
-        promptListeners.add(setPromptEvent);
-        return () => promptListeners.delete(setPromptEvent);
+        installListeners.add(rerender);
+        return () => installListeners.delete(rerender);
     }, []);
     const install = async () => {
+        const promptEvent = deferredPrompt;
         if (!promptEvent) return false;
+        deferredPrompt = null;  // the browser allows each prompt to be shown only once
         promptEvent.prompt();
         const choice = await promptEvent.userChoice;
-        deferredPrompt = null;
-        setPromptEvent(null);
+        if (choice.outcome === "accepted") installedThisVisit = true;
+        notifyInstall();
         return choice.outcome === "accepted";
     };
-    return { canInstall: !!promptEvent, install };
+    return { canInstall: !!deferredPrompt, installed: installedThisVisit || isRunningAsApp(), install };
 };
 
 export const isRunningAsApp = () =>
@@ -83,4 +89,29 @@ export const detectDevice = () => {
     if (/iPad/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) return "ipad";
     if (/Android/.test(ua)) return "android";
     return "computer";
+};
+
+// iPhone and iPad: whether this browser can add the site to the home screen.
+// "safari"; "other" (Chrome, Edge or Firefox, which can from iOS 16.4); or "open-safari" for older iOS
+// and for browsers built into other apps (Facebook, Instagram, Google...), which cannot.
+export const iosBrowser = () => {
+    const ua = navigator.userAgent || "";
+    if (/FBAN|FBAV|Instagram|LinkedInApp|Snapchat|Pinterest|Line\/|GSA\//.test(ua)) return "open-safari";
+    if (/CriOS|EdgiOS|FxiOS/.test(ua)) {
+        const version = ua.match(/OS (\d+)_(\d+)/);
+        const major = version ? Number(version[1]) : 0;
+        const minor = version ? Number(version[2]) : 0;
+        return major > 16 || (major === 16 && minor >= 4) ? "other" : "open-safari";
+    }
+    return /Safari\//.test(ua) && /Version\//.test(ua) ? "safari" : "open-safari";
+};
+
+// Computers: which install instructions apply when the browser did not offer its own prompt
+export const computerBrowser = () => {
+    const ua = navigator.userAgent || "";
+    if (/Firefox\//.test(ua)) return "firefox";
+    if (/Edg\//.test(ua)) return "edge";
+    if (/Chrome\//.test(ua)) return "chrome";
+    if (/Safari\//.test(ua) && /Macintosh/.test(ua)) return "mac-safari";
+    return "other";
 };

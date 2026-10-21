@@ -36,6 +36,7 @@ import TccAccount from "./pages/tai-chi-company/Account";
 import TccTerms from "./pages/tai-chi-company/Terms";
 import TccVincentsCorner from "./pages/tai-chi-company/VincentsCorner";
 import TccAddToPhone from "./pages/tai-chi-company/AddToPhone";
+import TccAbout from "./pages/tai-chi-company/About";
 import TccArticleReader from "./pages/tai-chi-company/ArticleReader";
 import TccStudio from "./pages/tai-chi-company/Studio";
 
@@ -91,6 +92,7 @@ const Layout = () => {
                                     <Route element={<TccTerms />} path="terms" />
                                     <Route element={<TccVincentsCorner />} path="vincents-corner" />
                                     <Route element={<TccAddToPhone />} path="add-to-phone" />
+                                    <Route element={<TccAbout />} path="about" />
                                 </Route>
 
                                 <Route element={<Single />} path="/single/:theid" />

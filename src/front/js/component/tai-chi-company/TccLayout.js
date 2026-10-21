@@ -2,10 +2,12 @@ import React from "react";
 import { NavLink, Outlet, Link } from "react-router-dom";
 import { TccProvider, useTcc } from "./TccContext";
 import { useHomeScreenApp } from "./homeScreenApp";
+import { InstallButton } from "./InstallApp";
 import "../../../styles/taiChiCompany.css";
 
 const navItems = (settings, user) => [
     { to: "/tai-chi-company", label: "Home", end: true },
+    { to: "/tai-chi-company/about", label: "About" },
     { to: "/tai-chi-company/library", label: "Library" },
     { to: "/tai-chi-company/vincents-corner", label: settings.corner_name || "Corner" },
     { to: "/tai-chi-company/articles", label: "Articles" },
@@ -39,6 +41,7 @@ const TccNav = () => {
                         </NavLink>
                     </>
                 )}
+                <InstallButton variant="nav" />
             </nav>
         </header>
     );
@@ -58,7 +61,7 @@ const TccFooter = () => {
                 &copy; {new Date().getFullYear()} {settings.copyright_line || settings.school_name}
             </p>
             <p className="tcc-footer-links">
-                <Link to="/tai-chi-company/add-to-phone">Add this app to your phone</Link>
+                <Link to="/tai-chi-company/add-to-phone">Install the app on your phone or computer</Link>
                 <span aria-hidden="true"> · </span>
                 <Link to="/tai-chi-company/terms">Terms of Use</Link>
             </p>

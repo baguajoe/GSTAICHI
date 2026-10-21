@@ -5,6 +5,7 @@ import { apiFetch } from "../../component/tai-chi-company/api";
 import TierCards, { IntervalToggle, FoundingBanner } from "../../component/tai-chi-company/TierCards";
 import PlaceholderPlayer from "../../component/tai-chi-company/PlaceholderPlayer";
 import { VideoThumbnail } from "../../component/tai-chi-company/VideoCard";
+import LivingLineage from "../../component/tai-chi-company/LivingLineage";
 
 const Landing = () => {
     const { settings } = useTcc();
@@ -47,6 +48,8 @@ const Landing = () => {
                     <li><strong>New content added every month</strong></li>
                 </ul>
             </section>
+
+            <LivingLineage />
 
             <section className="tcc-section">
                 <h2>Choose your level</h2>

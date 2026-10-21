@@ -34,6 +34,23 @@ const ShareIcon = ({ x, y, color = "#1a5fb4" }) => (
     </g>
 );
 
+// The Safari app icon: a blue compass
+export const SafariStep = () => (
+    <Phone label="An iPhone home screen. The Safari app, a blue compass, is highlighted.">
+        <g fill="#c9c9c9">
+            {[0, 1, 2].map(row => [0, 1, 2, 3].map(col => (
+                <rect key={`${row}-${col}`} x={30 + col * 38} y={48 + row * 58} width="28" height="28" rx="7" />
+            )))}
+        </g>
+        <rect x="16" y="282" width="168" height="56" fill="#e4e4e4" />
+        <rect x="68" y="292" width="36" height="36" rx="9" fill="#ffffff" stroke="#c9c9c9" />
+        <circle cx="86" cy="310" r="14" fill="#1a8cff" />
+        <path d="M86 300 l4 10 l-4 10 l-4 -10 z" fill="#ffffff" transform="rotate(45 86 310)" />
+        <Ring cx={86} cy={310} r={25} />
+        <text x="86" y="270" fontSize="13" textAnchor="middle" fontWeight="700" fill={HIGHLIGHT}>Open Safari</text>
+    </Phone>
+);
+
 export const IphoneShareStep = () => (
     <Phone label="Safari on iPhone. The Share button, a square with an arrow pointing up, is at the bottom of the screen.">
         <rect x="30" y="30" width="140" height="18" rx="9" fill="#dddddd" />
