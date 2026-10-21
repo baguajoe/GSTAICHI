@@ -62,7 +62,7 @@ def plan_options_for(user):
 
 def sync_subscription(user, sub):
     """Updates the member from PayPal's subscription record. Returns the new status."""
-    plan = Plan.query.filter_by(paypal_plan_id=sub.get("plan_id")).first()
+    plan = Plan.by_paypal_id(sub.get("plan_id"))
     status = STATUS_MAP.get(sub.get("status"))
     if plan is None or status is None:
         return None  # not ours, or still waiting for the member's approval
@@ -194,14 +194,14 @@ def change_subscription():
         return jsonify({"msg": "You need an active plan to change it. Choose a plan below instead."}), 400
     plan_id = (request.get_json(silent=True) or {}).get("plan_id")
     plan = next((p for p in plan_options_for(user) if p.id == plan_id), None)
-    if plan is None or not plan.paypal_plan_id:
+    if plan is None or not plan.paypal_id:
         return jsonify({"msg": "That plan is not available."}), 400
     if plan.id == user.current_plan_id:
         return jsonify({"msg": "You are already on this plan."}), 400
     frontend = (os.getenv("FRONTEND_URL") or request.host_url).rstrip("/")
     try:
         approve_url = paypal.revise_subscription(
-            user.paypal_subscription_id, plan.paypal_plan_id,
+            user.paypal_subscription_id, plan.paypal_id,
             return_url=f"{frontend}/tai-chi-company/account?plan_changed=1",
             cancel_url=f"{frontend}/tai-chi-company/account",
             brand_name=SiteSettings.get().app_name)

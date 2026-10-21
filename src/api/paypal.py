@@ -1,7 +1,8 @@
 """Small PayPal REST client for subscriptions (sandbox or live, chosen by PAYPAL_MODE).
 
-Uses the same PayPal account as the book and DVD shop. Needs PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET;
-webhook checks also need PAYPAL_WEBHOOK_ID.
+Uses the same PayPal account as the book and DVD shop. Live: PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET;
+webhook checks also need PAYPAL_WEBHOOK_ID. While PAYPAL_MODE=sandbox the PAYPAL_SANDBOX_* versions are used
+when set, so the shop can keep its live PAYPAL_CLIENT_ID during subscription testing.
 """
 import os
 import time
@@ -17,29 +18,41 @@ class PayPalError(Exception):
         self.details = details
 
 
+def is_live():
+    return os.getenv("PAYPAL_MODE", "sandbox").lower() == "live"
+
+
+def setting(name):
+    """PAYPAL_<name>, or PAYPAL_SANDBOX_<name> while testing in sandbox mode (if it is set)."""
+    if not is_live() and os.getenv(f"PAYPAL_SANDBOX_{name}"):
+        return os.getenv(f"PAYPAL_SANDBOX_{name}")
+    return os.getenv(f"PAYPAL_{name}")
+
+
 def api_base():
     override = os.getenv("PAYPAL_API_BASE")  # only for automated tests
     if override:
         return override.rstrip("/")
-    live = os.getenv("PAYPAL_MODE", "sandbox").lower() == "live"
-    return "https://api-m.paypal.com" if live else "https://api-m.sandbox.paypal.com"
+    return "https://api-m.paypal.com" if is_live() else "https://api-m.sandbox.paypal.com"
 
 
 def is_configured():
-    return bool(os.getenv("PAYPAL_CLIENT_ID") and os.getenv("PAYPAL_CLIENT_SECRET"))
+    return bool(setting("CLIENT_ID") and setting("CLIENT_SECRET"))
 
 
 def _access_token():
-    client_id, secret = os.getenv("PAYPAL_CLIENT_ID"), os.getenv("PAYPAL_CLIENT_SECRET")
+    client_id, secret = setting("CLIENT_ID"), setting("CLIENT_SECRET")
     if not client_id or not secret:
-        raise PayPalError("PayPal is not set up yet (PAYPAL_CLIENT_ID / PAYPAL_CLIENT_SECRET are missing).")
+        raise PayPalError("PayPal is not set up yet (PAYPAL_CLIENT_ID / PAYPAL_CLIENT_SECRET are missing, "
+                          "or PAYPAL_SANDBOX_CLIENT_ID / PAYPAL_SANDBOX_CLIENT_SECRET while testing).")
     cache_key = (api_base(), client_id)
     if _token_cache["token"] and _token_cache["key"] == cache_key and _token_cache["expires"] > time.time() + 60:
         return _token_cache["token"]
     resp = requests.post(f"{api_base()}/v1/oauth2/token", auth=(client_id, secret),
                          data={"grant_type": "client_credentials"}, timeout=20)
     if resp.status_code != 200:
-        raise PayPalError("Could not sign in to PayPal. Check PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET and PAYPAL_MODE.",
+        raise PayPalError("Could not sign in to PayPal. Check the client ID, secret and PAYPAL_MODE "
+                          "(sandbox mode uses the PAYPAL_SANDBOX_* keys when they are set).",
                           resp.status_code, resp.text[:500])
     data = resp.json()
     _token_cache.update(token=data["access_token"], expires=time.time() + int(data.get("expires_in", 300)), key=cache_key)
@@ -103,9 +116,10 @@ def cancel_subscription(subscription_id, reason):
 
 
 def verify_webhook(headers, event):
-    webhook_id = os.getenv("PAYPAL_WEBHOOK_ID")
+    webhook_id = setting("WEBHOOK_ID")
     if not webhook_id:
-        raise PayPalError("PAYPAL_WEBHOOK_ID is not set, so PayPal notifications cannot be checked.")
+        raise PayPalError("PAYPAL_WEBHOOK_ID (or PAYPAL_SANDBOX_WEBHOOK_ID while testing) is not set, "
+                          "so PayPal notifications cannot be checked.")
     result = _request("POST", "/v1/notifications/verify-webhook-signature", {
         "auth_algo": headers.get("PAYPAL-AUTH-ALGO"),
         "cert_url": headers.get("PAYPAL-CERT-URL"),

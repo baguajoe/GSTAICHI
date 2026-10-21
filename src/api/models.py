@@ -470,7 +470,8 @@ class Plan(db.Model):
     tier_id = db.Column(db.Integer, db.ForeignKey("tier.id"), nullable=False)
     interval = db.Column(db.String(10), nullable=False)  # month / year
     price = db.Column(db.Numeric(10, 2), nullable=False)
-    paypal_plan_id = db.Column(db.String(64), unique=True, nullable=True)
+    paypal_plan_id = db.Column(db.String(64), unique=True, nullable=True)  # live PayPal plan
+    paypal_sandbox_plan_id = db.Column(db.String(64), unique=True, nullable=True)  # the same plan in PayPal sandbox
     is_active = db.Column(db.Boolean, nullable=False, default=True, server_default=db.true())  # offered to new subscribers
     is_founding = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
     created_at = db.Column(db.DateTime, default=datetime.utcnow, server_default=db.func.now())
@@ -481,6 +482,24 @@ class Plan(db.Model):
         tier_name = self.tier.name if self.tier else "?"
         return f"<Plan {tier_name} {self.interval} ${self.price}>"
 
+    @staticmethod
+    def paypal_id_field():
+        """Name of the plan ID column for the current PAYPAL_MODE."""
+        from .paypal import is_live
+        return "paypal_plan_id" if is_live() else "paypal_sandbox_plan_id"
+
+    @property
+    def paypal_id(self):
+        return getattr(self, Plan.paypal_id_field())
+
+    @paypal_id.setter
+    def paypal_id(self, value):
+        setattr(self, Plan.paypal_id_field(), value)
+
+    @classmethod
+    def by_paypal_id(cls, paypal_id):
+        return cls.query.filter(getattr(cls, cls.paypal_id_field()) == paypal_id).first() if paypal_id else None
+
     def serialize(self):
         return {
             "id": self.id,
@@ -489,7 +508,7 @@ class Plan(db.Model):
             "tier_rank": self.tier.rank if self.tier else None,
             "interval": self.interval,
             "price": str(self.price),
-            "paypal_plan_id": self.paypal_plan_id,
+            "paypal_plan_id": self.paypal_id,  # for the current PAYPAL_MODE
             "is_active": self.is_active,
             "is_founding": self.is_founding,
         }

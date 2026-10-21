@@ -112,13 +112,15 @@ Use the same `MEDIA_TOKEN_SECRET` as on Render.
 
 1. https://developer.paypal.com → sign in with the school's PayPal account → **Apps & Credentials**,
    switch at the top to **Sandbox** → **Create App** (name `Tai Chi Company`, type Merchant).
-   Copy **Client ID** → `PAYPAL_CLIENT_ID` and **Secret** → `PAYPAL_CLIENT_SECRET`.
+   Copy **Client ID** → `PAYPAL_SANDBOX_CLIENT_ID` and **Secret** → `PAYPAL_SANDBOX_CLIENT_SECRET`.
+   (The `PAYPAL_SANDBOX_*` names keep the shop's live `PAYPAL_CLIENT_ID` working while you test.)
 2. In that app → **Add Webhook**: URL `https://api.gstaichi.org/api/tcc/paypal/webhook`, events:
    `Billing subscription activated`, `cancelled`, `expired`, `re-activated`, `suspended`, `updated`, and
-   `Payment sale completed`. **Save**, then copy the **Webhook ID** → `PAYPAL_WEBHOOK_ID`.
-3. Render → API → **Environment**: set `PAYPAL_MODE=sandbox`, `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`,
-   `PAYPAL_WEBHOOK_ID`. Save (the API restarts).
-4. Render → API → **Shell**: create the PayPal product and 6 plans from the prices in /admin:
+   `Payment sale completed`. **Save**, then copy the **Webhook ID** → `PAYPAL_SANDBOX_WEBHOOK_ID`.
+3. Render → API → **Environment**: set `PAYPAL_MODE=sandbox`, `PAYPAL_SANDBOX_CLIENT_ID`,
+   `PAYPAL_SANDBOX_CLIENT_SECRET`, `PAYPAL_SANDBOX_WEBHOOK_ID`. Save (the API restarts).
+4. Render → API → **Shell**: create the PayPal product and 6 sandbox plans from the prices in /admin
+   (saved as the sandbox plan IDs):
 
    ```bash
    pipenv run python scripts/create_paypal_plans.py
@@ -129,8 +131,8 @@ Use the same `MEDIA_TOKEN_SECRET` as on Render.
 
 ## 7. Build and upload the website to HostGator (15 minutes)
 
-1. In Codespaces, set these in `.env`: `BACKEND_URL=https://api.gstaichi.org`, `PAYPAL_CLIENT_ID=` the
-   sandbox Client ID. Then:
+1. In Codespaces, set these in `.env`: `BACKEND_URL=https://api.gstaichi.org`, `PAYPAL_MODE=sandbox`,
+   `PAYPAL_SANDBOX_CLIENT_ID=` the sandbox Client ID (keep the shop's live `PAYPAL_CLIENT_ID`). Then:
 
    ```bash
    npm run build
@@ -187,16 +189,16 @@ At minimum:
 2. In the live app → **Add Webhook** with the same URL and events as step 6.2 → copy the **Live Webhook ID**.
 3. Render → API → **Environment**: `PAYPAL_MODE=live`, and the live `PAYPAL_CLIENT_ID`,
    `PAYPAL_CLIENT_SECRET`, `PAYPAL_WEBHOOK_ID`. Save.
-4. Render → API → **Shell**: make live PayPal plans (sandbox plan IDs do not work in live mode):
+4. Render → API → **Shell**: make live PayPal plans (saved next to the sandbox ones, which are kept):
 
    ```bash
    pipenv run python scripts/create_paypal_plans.py --dry-run   # check: 6 plans, right prices
-   pipenv run python scripts/create_paypal_plans.py --replace
+   pipenv run python scripts/create_paypal_plans.py
    ```
 
 5. In `/admin` → **Users**, remove the plan from test accounts that "paid" in sandbox (set Paid level 0,
    status none) or delete those accounts, so nobody keeps access from a test payment.
-6. Rebuild the website with the **live** `PAYPAL_CLIENT_ID` in `.env` (`npm run build`) and upload
+6. Rebuild the website with `PAYPAL_MODE=live` in `.env` (`npm run build`) and upload
    `public/` to HostGator again (step 7). **The website and Render must use the same mode.**
 7. Make one real subscription with your own card at the lowest price, check it in /admin, then cancel it.
 

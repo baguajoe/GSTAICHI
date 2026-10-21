@@ -4,7 +4,10 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { apiFetch } from "./api";
 import { FormMessage } from "./FormField";
 
-const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
+// While subscriptions are tested in sandbox mode they use the sandbox app; the shop keeps the live PAYPAL_CLIENT_ID
+const PAYPAL_CLIENT_ID = (process.env.PAYPAL_MODE || "sandbox").toLowerCase() !== "live" && process.env.PAYPAL_SANDBOX_CLIENT_ID
+    ? process.env.PAYPAL_SANDBOX_CLIENT_ID
+    : process.env.PAYPAL_CLIENT_ID;
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // After PayPal approval the server checks the subscription with PayPal itself before giving access.

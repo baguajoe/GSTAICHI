@@ -9,7 +9,7 @@ require('dotenv').config();
 // whatever is listed is inlined into public/bundle.js and readable by anyone.
 const FRONTEND_ENV = {
   required: ['BACKEND_URL'],
-  optional: ['BASENAME', 'PAYPAL_CLIENT_ID']
+  optional: ['BASENAME', 'PAYPAL_CLIENT_ID', 'PAYPAL_MODE', 'PAYPAL_SANDBOX_CLIENT_ID']
 };
 const SECRET_LOOKING = /SECRET|PASSWORD|PRIVATE|TOKEN|DATABASE|ENCRYPTION|_KEY(_ID)?$/;
 

@@ -284,7 +284,8 @@ class TierAdmin(SecureModelView):
 
 
 class PlanAdmin(SecureModelView):
-    column_list = ("tier", "interval", "price", "paypal_plan_id", "is_active", "is_founding", "created_at")
+    column_list = ("tier", "interval", "price", "paypal_plan_id", "paypal_sandbox_plan_id", "is_active", "is_founding",
+                   "created_at")
     column_default_sort = ("created_at", True)
     column_filters = ("is_active", "is_founding", "interval")
     form_choices = {"interval": [("month", "Monthly"), ("year", "Yearly")]}
@@ -294,11 +295,13 @@ class PlanAdmin(SecureModelView):
                                  "scripts/create_paypal_plans.py. Members on the old plan keep their price."},
         "is_active": {"description": "Offered to new members. Old plans stay for members already on them."},
         "is_founding": {"description": "The plan new members get while the founding offer is open."},
-        "paypal_plan_id": {"description": "Filled in by scripts/create_paypal_plans.py (starts with P-)."},
+        "paypal_plan_id": {"description": "Live PayPal plan. Filled in by scripts/create_paypal_plans.py (starts with P-)."},
+        "paypal_sandbox_plan_id": {"description": "PayPal sandbox (test) plan. Filled in by scripts/create_paypal_plans.py "
+                                                  "while PAYPAL_MODE=sandbox."},
     }
 
     def on_model_change(self, form, model, is_created):
-        if not is_created and model.paypal_plan_id and form.price.object_data is not None \
+        if not is_created and (model.paypal_plan_id or model.paypal_sandbox_plan_id) and form.price.object_data is not None \
                 and form.price.object_data != form.price.data:
             raise ValidationError("This price is already set up in PayPal and cannot change. Untick 'Is Active' on "
                                   "this plan and add a new plan with the new price instead.")

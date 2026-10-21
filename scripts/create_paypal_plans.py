@@ -1,10 +1,11 @@
 """
 Creates the PayPal product and the subscription plans (3 tiers x monthly/annual) and saves the PayPal
-plan IDs in the Plan table. Uses PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET and PAYPAL_MODE from the environment,
-so run it once with PAYPAL_MODE=sandbox for testing and again with PAYPAL_MODE=live at launch.
+plan IDs in the Plan table. Uses PAYPAL_MODE from the environment, so run it once with PAYPAL_MODE=sandbox for
+testing (sandbox keys, saved as the sandbox plan IDs) and again with PAYPAL_MODE=live at launch (live keys, saved
+as the live plan IDs). The two sets are kept apart, so switching modes never loses either.
 
     pipenv run python scripts/create_paypal_plans.py            # plans that have no PayPal ID yet
-    pipenv run python scripts/create_paypal_plans.py --replace  # all active plans, e.g. after switching to live
+    pipenv run python scripts/create_paypal_plans.py --replace  # make new PayPal plans for all active plans
     pipenv run python scripts/create_paypal_plans.py --dry-run  # only show what would happen
 
 Prices come from the Plan table (edit them in /admin first). PayPal plans cannot change price later: to change a
@@ -31,7 +32,7 @@ def main():
         mode = os.getenv("PAYPAL_MODE", "sandbox")
         settings = SiteSettings.get()
         plans = Plan.query.filter(Plan.is_active.is_(True)).all()
-        todo = [p for p in plans if args.replace or not p.paypal_plan_id]
+        todo = [p for p in plans if args.replace or not p.paypal_id]
         print(f"PayPal mode: {mode}. {len(todo)} of {len(plans)} active plans need a PayPal plan.")
         if not todo:
             return
@@ -40,7 +41,8 @@ def main():
         if args.dry_run:
             return
         if not paypal.is_configured():
-            sys.exit("Set PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET first (see .env.example).")
+            sys.exit("Set the PayPal keys first: PAYPAL_SANDBOX_CLIENT_ID and PAYPAL_SANDBOX_CLIENT_SECRET for sandbox, "
+                     "PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET for live (see .env.example).")
 
         product_id = args.product_id or paypal.create_product(
             settings.app_name, f"{settings.app_name} video lessons from {settings.school_name}".strip())
@@ -48,10 +50,10 @@ def main():
         for p in todo:
             label = "Monthly" if p.interval == "month" else "Annual"
             founding = " (Founding member)" if p.is_founding else ""
-            p.paypal_plan_id = paypal.create_plan(product_id, f"{settings.app_name} {p.tier.name} {label}{founding}",
+            p.paypal_id = paypal.create_plan(product_id, f"{settings.app_name} {p.tier.name} {label}{founding}",
                                                   float(p.price), p.interval)
             db.session.commit()  # save each one as it is made, so a failure part-way loses nothing
-            print(f"  {p.tier.name} {label}: {p.paypal_plan_id}")
+            print(f"  {p.tier.name} {label}: {p.paypal_id}")
         print("Done. The plan IDs are saved; members can subscribe now.")
 
 
