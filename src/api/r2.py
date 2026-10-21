@@ -98,6 +98,10 @@ def put_text(bucket, key, text, content_type):
     client().put_object(Bucket=bucket, Key=key, Body=text.encode("utf-8"), ContentType=content_type)
 
 
+def put_bytes(bucket, key, body, content_type):
+    client().put_object(Bucket=bucket, Key=key, Body=body, ContentType=content_type)
+
+
 def delete_prefix(bucket, prefix):
     """Deletes every object under prefix/ (a video's folder)."""
     s3 = client()

@@ -35,14 +35,20 @@ const CoverPosition = ({ url, position, onChange }) => {
     );
 };
 
-const ArticleForm = ({ article, onDone, onCancel }) => {
+// Files the "Upload an article" button accepts (Google Docs: File, Download, Microsoft Word)
+const DOCUMENT_TYPES = ".docx,.pdf,.txt,.md,.markdown,application/pdf,text/plain,text/markdown,"
+    + "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
+// article: an existing article to edit, or null for a new one. imported: a new article made from an
+// uploaded document ({ title, summary, content, notes }); it opens in the editor and nothing is saved yet.
+const ArticleForm = ({ article, imported, onDone, onCancel }) => {
     const { settings, user } = useTcc();
     const size = useTextSize();
     const [form, setForm] = useState(() => ({
-        title: article ? article.title : "",
+        title: article ? article.title : imported ? imported.title : "",
         author: article ? article.author : (user.name || ""),
         category: article ? article.category || "" : "",
-        summary: article ? article.summary : "",
+        summary: article ? article.summary : imported ? imported.summary : "",
         is_free: article ? !!article.is_free : false,
         cover_image_path: article ? article.cover_image_path : null,
         cover_image_url: article ? article.cover_image_url : null,
@@ -58,6 +64,8 @@ const ArticleForm = ({ article, onDone, onCancel }) => {
     const body = (action) => ({ ...form, action, content: editor.current.getHTML(), publish_at: fromLocalInput(form.publish_at) });
 
     useEffect(() => { if (preview) window.scrollTo(0, 0); }, [!!preview]);
+    // An uploaded document: make the numbered sections, sub-points and quotes, as Auto-format does
+    useEffect(() => { if (imported) editor.current.autoFormat(); }, []);
 
     const save = async (action) => {
         setError(null);
@@ -121,7 +129,17 @@ const ArticleForm = ({ article, onDone, onCancel }) => {
             </div>
 
             <div hidden={!!preview}>
-                <h2>{article ? `Edit "${article.title}"` : "Write a new article"}</h2>
+                <h2>{article ? `Edit "${article.title}"` : imported ? "Check your uploaded article" : "Write a new article"}</h2>
+                {imported && (
+                    <div className="tcc-notice tcc-import-notice">
+                        <p>
+                            <strong>Your document is ready to check.</strong> Read it through and fix anything that looks wrong,
+                            add a cover photo, choose the category, then press Preview. Nothing is saved or published
+                            until you press Save draft or Publish.
+                        </p>
+                        {imported.notes.length > 0 && <ul>{imported.notes.map(n => <li key={n}>{n}</li>)}</ul>}
+                    </div>
+                )}
                 <FormField id="a-title" label="Title" value={form.title} onChange={set("title")} />
                 <FormField id="a-author" label="Author" value={form.author} onChange={set("author")} />
                 <div className="tcc-field">
@@ -159,7 +177,7 @@ const ArticleForm = ({ article, onDone, onCancel }) => {
                 <div className="tcc-field">
                     <span className="tcc-label" id="a-content-label">The article</span>
                     <p className="tcc-field-hint">Type, or paste from Word or Google Docs. Pasted plain text? Press Auto-format to make the headings.</p>
-                    <RichEditor ref={editor} initialHtml={article ? article.content : ""} kind="article" labelledBy="a-content-label" />
+                    <RichEditor ref={editor} initialHtml={article ? article.content : imported ? imported.content : ""} kind="article" labelledBy="a-content-label" />
                 </div>
                 <FormField id="a-publish" label="Publish date" type="datetime-local" value={form.publish_at} onChange={set("publish_at")}
                     hint="Leave as it is to publish straight away, or pick a later date." />
@@ -179,7 +197,8 @@ const ArticleForm = ({ article, onDone, onCancel }) => {
 
 const StudioArticles = () => {
     const [articles, setArticles] = useState(null);
-    const [editing, setEditing] = useState(null); // null | "new" | article
+    const [editing, setEditing] = useState(null); // null | "new" | { imported } | article
+    const [importing, setImporting] = useState(false);
     const [message, setMessage] = useState(null);
     const [error, setError] = useState(null);
     const [confirmId, setConfirmId] = useState(null);
@@ -189,10 +208,30 @@ const StudioArticles = () => {
 
     if (editing) {
         return (
-            <ArticleForm article={editing === "new" ? null : editing} onCancel={() => setEditing(null)}
+            <ArticleForm article={editing === "new" || editing.imported ? null : editing} imported={editing.imported}
+                onCancel={() => setEditing(null)}
                 onDone={(msg) => { setEditing(null); setMessage(msg); load(); window.scrollTo(0, 0); }} />
         );
     }
+
+    const uploadDocument = async (e) => {
+        const file = e.target.files && e.target.files[0];
+        e.target.value = "";
+        if (!file) return;
+        setError(null);
+        setMessage(null);
+        setImporting(true);
+        try {
+            const form = new FormData();
+            form.append("file", file);
+            const imported = await apiFetch("/api/tcc/studio/articles/import", { method: "POST", body: form });
+            setEditing({ imported });
+            window.scrollTo(0, 0);
+        } catch (err) {
+            setError(err.message);
+        }
+        setImporting(false);
+    };
 
     const remove = async (a) => {
         try {
@@ -207,7 +246,17 @@ const StudioArticles = () => {
     return (
         <section>
             <FormMessage error={error} success={message} />
-            <button type="button" className="custom-btn1 tcc-btn tcc-btn-big" onClick={() => setEditing("new")}>Write a new article</button>
+            <div className="tcc-button-row tcc-left">
+                <button type="button" className="custom-btn1 tcc-btn tcc-btn-big" disabled={importing} onClick={() => setEditing("new")}>
+                    Write a new article
+                </button>
+                <label className={`custom-btn1 tcc-btn tcc-btn-big tcc-file-label${importing ? " disabled" : ""}`}>
+                    <span><i className="fas fa-file-upload" aria-hidden="true"></i> Upload an article</span>
+                    <input type="file" accept={DOCUMENT_TYPES} hidden onChange={uploadDocument} disabled={importing} />
+                </label>
+            </div>
+            <p className="tcc-field-hint">Upload a Word document (.docx), a PDF, or a text file. Google Docs: choose File, Download, Microsoft Word.</p>
+            {importing && <p className="tcc-notice tcc-importing" role="status">Formatting your article… This can take up to a minute for long documents with photos.</p>}
             <h2 className="tcc-section">Member articles</h2>
             {!articles && !error && <p>Loading…</p>}
             {articles && articles.length === 0 && <p className="tcc-notice">No member articles yet.</p>}

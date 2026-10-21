@@ -23,9 +23,11 @@ export const setToken = (token) => {
 const FRIENDLY_ERROR = "Something went wrong. Please check your internet connection and try again.";
 
 // Returns the parsed JSON. Throws an Error with a plain-language message and a .status.
+// body is sent as JSON, or as it is when it is FormData (file uploads).
 export const apiFetch = async (path, { method = "GET", body, auth = true } = {}) => {
     const headers = {};
-    if (body !== undefined) headers["Content-Type"] = "application/json";
+    const isForm = typeof FormData !== "undefined" && body instanceof FormData;
+    if (body !== undefined && !isForm) headers["Content-Type"] = "application/json";
     const token = auth ? getToken() : null;
     if (token) headers["Authorization"] = `Bearer ${token}`;
 
@@ -34,7 +36,7 @@ export const apiFetch = async (path, { method = "GET", body, auth = true } = {})
         response = await fetch(`${process.env.BACKEND_URL}${path}`, {
             method,
             headers,
-            body: body !== undefined ? JSON.stringify(body) : undefined
+            body: body === undefined || isForm ? body : JSON.stringify(body)
         });
     } catch (e) {
         throw Object.assign(new Error(FRIENDLY_ERROR), { status: 0 });

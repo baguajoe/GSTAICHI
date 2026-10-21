@@ -5,10 +5,12 @@ Uploads go straight from the browser (often a phone) to the private taichi-maste
 multipart URLs; the server never handles the video bytes. When an upload completes an EncodingJob is queued
 and src/worker.py turns it into protected streaming files.
 """
+import io
 import re
 import secrets
 import time
 from datetime import datetime
+from botocore.exceptions import BotoCoreError, ClientError
 from flask import jsonify, request
 from sqlalchemy import func
 from .models import db, Video, EncodingJob, Article, SiteSettings, Question, PlaybackSession, CORNER_SECTION
@@ -20,6 +22,7 @@ from .taichi_company import tcc
 from .tcc_articles import media_url, reading_minutes, article_card, article_body
 from .rich_text import clean_html, editor_html, plain_text, image_url, DESCRIPTION_BLOCKS
 from .video_pipeline import chapters_to_vtt
+from .article_import import import_document, DocumentError, MAX_DOCUMENT_BYTES
 
 STAFF = ("teacher", "admin")
 MAX_PARTS_PER_REQUEST = 50
@@ -489,3 +492,46 @@ def studio_image_upload():
     except Exception as e:
         return _storage_error(e)
     return jsonify({"upload_url": url, "path": path, "url": image_url(path, "studio")})
+
+
+def _store_document_photo(raw):
+    """A photo from an uploaded document: at most 1600 pixels on the longest side, saved as WebP in the
+    private article folder. Returns the stored path, or None if it is not a picture we can read."""
+    from PIL import Image, ImageOps
+    try:
+        with Image.open(io.BytesIO(raw)) as img:
+            img = ImageOps.exif_transpose(img)
+            if min(img.size) < 48:
+                return None  # icons and dividers
+            img = img.convert("RGBA" if img.mode in ("RGBA", "LA", "P") else "RGB")
+            img.thumbnail((1600, 1600), Image.LANCZOS)
+            out = io.BytesIO()
+            img.save(out, format="WEBP", quality=82, method=4)
+    except Exception as e:
+        print(f"Document photo skipped: {e}")
+        return None
+    path = f"article-private/{secrets.token_hex(12)}.webp"
+    r2.put_bytes(r2.streams_bucket(), path, out.getvalue(), "image/webp")
+    return path
+
+
+@tcc.route('/studio/articles/import', methods=['POST'])
+@limiter.limit("30 per hour")
+@role_required(*STAFF)
+def studio_import_article():
+    """Turns an uploaded Word, PDF, text or Markdown file into an unsaved article for the editor."""
+    upload = request.files.get("file")
+    if upload is None or not upload.filename:
+        return _bad("Please choose a file to upload.")
+    data = upload.read(MAX_DOCUMENT_BYTES + 1)
+    try:
+        result = import_document(upload.filename, data, _store_document_photo)
+    except DocumentError as e:
+        return _bad(str(e))
+    except (R2NotConfigured, BotoCoreError, ClientError) as e:
+        return _storage_error(e)
+    except Exception as e:
+        print(f"Article import failed for {upload.filename}: {type(e).__name__}: {e}")
+        return _bad("This document could not be read. Please try saving it again as .docx or PDF, "
+                    "or copy and paste the text into a new article.")
+    return jsonify({**result, "content": editor_html(result["content"])})

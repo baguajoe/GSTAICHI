@@ -381,7 +381,8 @@ const AddVideoDialog = ({ videos, onUpload, onPick, onClose }) => {
 };
 
 // kind: "article" (all buttons) or "description" (no gallery or video). The parent reads the result with
-// ref.current.getHTML() and should check ref.current.isBusy() before saving.
+// ref.current.getHTML() and should check ref.current.isBusy() before saving. ref.current.autoFormat()
+// runs Auto-format after uploading a document, saying nothing if there was nothing to change.
 const RichEditor = forwardRef(({ initialHtml, kind = "article", labelledBy }, ref) => {
     const holder = useRef(null);
     const quillRef = useRef(null);
@@ -404,7 +405,8 @@ const RichEditor = forwardRef(({ initialHtml, kind = "article", labelledBy }, re
             const q = quillRef.current;
             return q && q.getLength() > 1 ? q.getSemanticHTML() : "";
         },
-        isBusy: () => !!busy || !!upload
+        isBusy: () => !!busy || !!upload,
+        autoFormat: () => autoFormat({ quiet: true })
     }));
 
     const q = () => quillRef.current;
@@ -598,7 +600,7 @@ const RichEditor = forwardRef(({ initialHtml, kind = "article", labelledBy }, re
         }
     };
 
-    const autoFormat = () => {
+    const autoFormat = ({ quiet = false } = {}) => {
         const quill = q();
         const lines = quill.getLines().map(line => {
             const embed = line instanceof BlockEmbed;
@@ -617,7 +619,7 @@ const RichEditor = forwardRef(({ initialHtml, kind = "article", labelledBy }, re
             });
             quill.history.cutoff();
         }
-        setAutoResult({ ...counts, total: plan.length });
+        if (plan.length || !quiet) setAutoResult({ ...counts, total: plan.length });
     };
 
     const startVideoUpload = async (form, file) => {
@@ -669,7 +671,7 @@ const RichEditor = forwardRef(({ initialHtml, kind = "article", labelledBy }, re
                 {isArticle && <ToolButton icon="fa-video" label="Video" disabled={!!upload}
                     onClick={() => { setDialog({ type: "addVideo" }); if (!videos) refreshVideos(); }} />}
                 <ToolButton icon="fa-minus" label="Divider" onClick={() => insertBlock("divider", true)} />
-                <ToolButton icon="fa-magic" label="Auto-format" onClick={autoFormat} />
+                <ToolButton icon="fa-magic" label="Auto-format" onClick={() => autoFormat()} />
                 <ToolButton icon="fa-undo" label="Undo" onClick={() => q().history.undo()} />
                 <ToolButton icon="fa-redo" label="Redo" onClick={() => q().history.redo()} />
             </div>

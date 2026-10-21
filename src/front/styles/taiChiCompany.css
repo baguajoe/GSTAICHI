@@ -772,3 +772,11 @@ select.tcc-input { background: #ffffff; }
     .tcc-lineage-name:last-child { grid-row: span 2; }
     .tcc-install-dialog .tcc-phone-picture { max-width: 110px; }
 }
+
+/* ----- Upload an article ----- */
+.tcc-file-label.disabled { opacity: 0.6; pointer-events: none; }
+.tcc-app label.tcc-btn-big { font-size: 1.3rem; }
+.tcc-file-label .fa-file-upload { margin-right: 8px; }
+.tcc-importing { font-weight: 700; }
+.tcc-import-notice { margin-bottom: 20px; }
+.tcc-import-notice ul { margin: 8px 0 0; }

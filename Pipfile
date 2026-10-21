@@ -5,7 +5,6 @@ verify_ssl = true
 
 [dev-packages]
 moto = {extras = ["s3", "server"], version = "*"}
-pillow = "*"
 
 [packages]
 boto3 = "*"
@@ -28,6 +27,10 @@ wtforms = "==3.1.2"
 flask-httpauth = "==4.8.0"
 flask-limiter = "==3.10.1"
 nh3 = "==0.2.21"
+mammoth = "==1.8.0"
+pdfplumber = "==0.11.4"
+markdown = "==3.7"
+pillow = "==12.3.0"
 
 [requires]
 python_version = "3.10"
