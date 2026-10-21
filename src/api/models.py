@@ -192,6 +192,8 @@ class Video(db.Model):
     is_free_sample = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
     sort_order = db.Column(db.Integer, nullable=False, default=0, server_default="0")
     is_published = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
+    # False for videos made inside an article: they play there but are not listed in the Video Library
+    show_in_library = db.Column(db.Boolean, nullable=False, default=True, server_default=db.true())
     uploaded_by = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
     # Studio uploads (browser -> taichi-masters, multipart)
     upload_id = db.Column(db.String(1024), nullable=True)
@@ -277,8 +279,10 @@ class Article(db.Model):
 
     # Tai Chi Company member article fields
     members_only = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
+    is_free = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())  # anyone can read it in full
     summary = db.Column(db.Text, nullable=True)
     cover_image_path = db.Column(db.String(500), nullable=True)
+    cover_position = db.Column(db.String(20), nullable=True)  # CSS object-position for the cover, e.g. "50% 30%"
     category = db.Column(db.String(100), nullable=True)
     status = db.Column(db.String(20), nullable=False, default="published", server_default="published")  # draft / scheduled / published
     publish_at = db.Column(db.DateTime, nullable=True)

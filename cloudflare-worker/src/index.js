@@ -10,7 +10,9 @@
  *   from the backend for an active, paid-up playback session.
  * - Requests whose Origin or Referer is another website are refused. Requests with neither header are
  *   allowed because Apple TV (AirPlay), Chromecast and iPhone's player do not send them; they still need the token.
- * - Thumbnails (<slug>/thumbs/*.jpg) and article images (article-images/*) are not secret and need no token.
+ * - Thumbnails (<slug>/thumbs/*.jpg) and cover pictures (article-images/*) are not secret and need no token.
+ * - Photos inside articles and video descriptions (article-private/*) need a token signed for that one
+ *   photo: the signature covers the photo's whole path instead of a video slug.
  * - Each piece served is reported to the backend in the background (BACKEND_URL), so downloading much
  *   faster than real-time playback can be flagged.
  */
@@ -28,6 +30,7 @@ const TYPES = {
 
 const PUBLIC_PATH = /^(?:[a-z0-9][a-z0-9-]*\/thumbs\/[\w.-]+\.(?:jpg|jpeg|png|webp)|article-images\/[\w.-]+\.(?:jpg|jpeg|png|webp|gif))$/;
 const PROTECTED_PATH = /^[a-z0-9][a-z0-9-]*\/[\w./-]+\.(?:m3u8|ts|vtt)$/;
+const PRIVATE_PHOTO_PATH = /^article-private\/[a-f0-9]{24}\.(?:jpg|png|webp|gif)$/;
 
 const encoder = new TextEncoder();
 
@@ -167,7 +170,11 @@ export default {
     let token = null;
     const slug = path.split("/")[0];
     if (PUBLIC_PATH.test(path)) {
-      // thumbnails and article images: no token needed
+      // thumbnails and cover pictures: no token needed
+    } else if (PRIVATE_PHOTO_PATH.test(path)) {
+      token = url.searchParams.get("t");
+      sessionId = await verifyToken(token, path, env.MEDIA_TOKEN_SECRET);
+      if (!sessionId) return deny(403, "This link has expired. Please reload the page.", corsOrigin);
     } else if (PROTECTED_PATH.test(path)) {
       token = url.searchParams.get("t");
       sessionId = await verifyToken(token, slug, env.MEDIA_TOKEN_SECRET);

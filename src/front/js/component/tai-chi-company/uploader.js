@@ -125,10 +125,11 @@ export const uploadVideoFile = async ({ videoId, file, onProgress, control = {} 
     }
 };
 
-// One picture (article picture, cover or video thumbnail) straight to storage. Returns { path, url }.
-export const uploadPicture = async (file, endpoint = "/api/tcc/studio/images") => {
+// One picture (article photo, cover or video thumbnail) straight to storage. Returns { path, url }.
+// extra: more fields for the endpoint, e.g. { private: true } for a members-only photo inside an article.
+export const uploadPicture = async (file, endpoint = "/api/tcc/studio/images", extra = {}) => {
     if (!/^image\/(jpeg|png|webp|gif)$/.test(file.type)) throw new Error("Please choose a JPG or PNG picture.");
-    const target = await apiFetch(endpoint, { method: "POST", body: { content_type: file.type, size: file.size } });
+    const target = await apiFetch(endpoint, { method: "POST", body: { content_type: file.type, size: file.size, ...extra } });
     const response = await fetch(target.upload_url, { method: "PUT", body: file, headers: { "Content-Type": file.type } });
     if (!response.ok) throw new Error("The picture could not be uploaded. Please try again.");
     return { path: target.path, url: target.url };

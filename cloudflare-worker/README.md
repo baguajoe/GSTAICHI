@@ -6,7 +6,9 @@ This small Cloudflare Worker is the only way into the private `taichi-streams` b
 - adds that link's token to every piece of the video and to the key address, so iPhone, iPad, Mac Safari,
   AirPlay and Chromecast work too,
 - refuses requests coming from other websites,
-- serves thumbnails and article pictures without a token (they are not secret),
+- serves thumbnails and article cover pictures without a token (they are not secret),
+- serves photos inside articles and video descriptions (`article-private/`) only with a link signed for
+  that one photo, which the site gives to readers who may see it,
 - tells the site about each piece it serves, so downloading faster than anyone could watch is flagged
   in **/admin → Security Events**.
 

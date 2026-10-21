@@ -3,6 +3,7 @@ import { useTcc } from "./TccContext";
 import { apiFetch } from "./api";
 import FormField, { FormMessage } from "./FormField";
 import { uploadVideoFile, uploadPicture, formatBytes, MAX_BYTES } from "./uploader";
+import RichEditor from "./RichEditor";
 
 const CATEGORY_SUGGESTIONS = ["Fundamentals", "Forms", "Weapons", "Push Hands", "Qigong", "Standing Exercises"];
 
@@ -45,7 +46,6 @@ const StudioVideoForm = ({ mode, video, defaults = {}, questionId, onDone, onCan
     const [form, setForm] = useState(() => ({
         title: video ? video.title : defaults.title || "",
         short_description: video ? video.short_description : "",
-        long_description: video ? video.long_description : "",
         section: video ? video.section : defaults.section || "",
         category: video ? video.category || "" : defaults.category || "",
         publish_at: toLocalInput(video ? video.publish_at : null),
@@ -60,6 +60,7 @@ const StudioVideoForm = ({ mode, video, defaults = {}, questionId, onDone, onCan
     const [customThumb, setCustomThumb] = useState(video ? video.custom_thumbnail_path : null);
     const control = useRef({});
     const recordInput = useRef(null);
+    const descriptionEditor = useRef(null);
     const chooseInput = useRef(null);
 
     // Warn before leaving the page while a file is uploading
@@ -94,7 +95,7 @@ const StudioVideoForm = ({ mode, video, defaults = {}, questionId, onDone, onCan
     const details = () => ({
         title: form.title,
         short_description: form.short_description,
-        long_description: form.long_description,
+        long_description: descriptionEditor.current ? descriptionEditor.current.getHTML() : undefined,
         section: form.section,
         category: form.category,
         publish_at: fromLocalInput(form.publish_at),
@@ -107,6 +108,10 @@ const StudioVideoForm = ({ mode, video, defaults = {}, questionId, onDone, onCan
         setError(null);
         if (mode !== "file" && (!form.title.trim() || !form.section)) {
             setError("Please fill in the title and choose a section.");
+            return;
+        }
+        if (descriptionEditor.current && descriptionEditor.current.isBusy()) {
+            setError("Please wait until the photo in the description has finished uploading.");
             return;
         }
         if (mode !== "edit" && !file) {
@@ -216,8 +221,8 @@ const StudioVideoForm = ({ mode, video, defaults = {}, questionId, onDone, onCan
                         <textarea id="v-short" className="tcc-input tcc-textarea" rows={3} value={form.short_description} onChange={set("short_description")} />
                     </div>
                     <div className="tcc-field">
-                        <label htmlFor="v-long">About this form (longer text; leave a blank line between paragraphs)</label>
-                        <textarea id="v-long" className="tcc-input tcc-textarea" rows={8} value={form.long_description} onChange={set("long_description")} />
+                        <span className="tcc-label" id="v-long-label">About this form (longer text with headings, lists and photos)</span>
+                        <RichEditor ref={descriptionEditor} initialHtml={video ? video.long_description : ""} kind="description" labelledBy="v-long-label" />
                     </div>
                     <FormField id="v-publish" label="Show to members from" type="datetime-local" value={form.publish_at}
                         onChange={set("publish_at")} hint="Leave as it is to show it as soon as it is ready." />

@@ -23,6 +23,8 @@ const files = {
     '#EXTM3U\n#EXT-X-KEY:METHOD=AES-128,URI="https://gstaichi.org/api/tcc/key/fundamentals",IV=0x01\n#EXTINF:6.0,\nseg_0000.ts\n#EXT-X-ENDLIST\n',
   "fundamentals/720p/seg_0000.ts": "0123456789",
   "fundamentals/thumbs/thumb_30_480.jpg": "jpg",
+  "article-private/0123456789abcdef01234567.webp": "photo",
+  "article-private/fedcba9876543210fedcba98.webp": "other photo",
 };
 const bucket = {
   async get(key, opts = {}) {
@@ -96,4 +98,18 @@ test("helpers", async () => {
   assert.equal(await verifyToken(sign("a", "s1", future), "a", SECRET), "s1");
   assert.equal(rewritePlaylist("#EXTM3U\nx.ts", "T"), "#EXTM3U\nx.ts?t=T");
   assert.equal(checkOrigin(new Request("https://m/x", { headers: { Origin: "https://gstaichi.org/" } }), env).ok, false);
+});
+
+test("article photos need a token for that exact photo", async () => {
+  const photo = "article-private/0123456789abcdef01234567.webp";
+  const other = "article-private/fedcba9876543210fedcba98.webp";
+  const t = sign(photo, "article-1", future);
+  const ok = await get(`${photo}?t=${t}`, { Origin: "https://gstaichi.org" });
+  assert.equal(ok.status, 200);
+  assert.equal(ok.headers.get("Content-Type"), "image/webp");
+  assert.equal(ok.headers.get("Cache-Control"), "private, max-age=3600");
+  assert.equal((await get(photo)).status, 403);
+  assert.equal((await get(`${other}?t=${t}`)).status, 403);
+  assert.equal((await get(`${photo}?t=${sign(photo, "article-1", 1000)}`)).status, 403);
+  assert.equal((await get(`fundamentals/master.m3u8?t=${t}`)).status, 403);
 });

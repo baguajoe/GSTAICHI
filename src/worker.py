@@ -90,19 +90,24 @@ def process(job):
         job.status, job.error, job.finished_at = "failed", "Video or uploaded file missing.", datetime.utcnow()
         db.session.commit()
         return
-    log(f"Job {job.id}: encoding {video.slug} (try {job.attempts} of {MAX_ATTEMPTS})")
-    work = tempfile.mkdtemp(prefix=f"tcc-{video.slug}-")
+    slug, master_key, chapters = video.slug, video.master_r2_key, video.chapters
+    log(f"Job {job.id}: encoding {slug} (try {job.attempts} of {MAX_ATTEMPTS})")
+    # End the read transaction before the long download and encode, and touch no database objects until
+    # it is done. An open transaction holds locks on the video table for the whole encode, which blocks
+    # migrations (every Render deploy runs one).
+    db.session.commit()
+    work = tempfile.mkdtemp(prefix=f"tcc-{slug}-")
     try:
-        ext = os.path.splitext(video.master_r2_key)[1] or ".mp4"
+        ext = os.path.splitext(master_key)[1] or ".mp4"
         src = os.path.join(work, f"master{ext}")
-        r2.download(r2.masters_bucket(), video.master_r2_key, src)
+        r2.download(r2.masters_bucket(), master_key, src)
         base = (os.getenv("BACKEND_URL") or "").rstrip("/")
         if not base:
             raise PipelineError("BACKEND_URL is not set on the worker, so the video key address cannot be made.")
-        result = encode_video(src, os.path.join(work, "out"), video.slug, f"{base}/api/tcc/key/{video.slug}",
-                              chapters=video.chapters, preset=os.getenv("ENCODE_PRESET", "veryfast"), log=log)
-        r2.delete_prefix(r2.streams_bucket(), video.slug)  # remove files from an earlier encode
-        r2.upload_folder(os.path.join(work, "out"), r2.streams_bucket(), video.slug)
+        result = encode_video(src, os.path.join(work, "out"), slug, f"{base}/api/tcc/key/{slug}",
+                              chapters=chapters, preset=os.getenv("ENCODE_PRESET", "veryfast"), log=log)
+        r2.delete_prefix(r2.streams_bucket(), slug)  # remove files from an earlier encode
+        r2.upload_folder(os.path.join(work, "out"), r2.streams_bucket(), slug)
         apply_encode_result(video, result)
         result = None
         job.status, job.finished_at = "done", datetime.utcnow()

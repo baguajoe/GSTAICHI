@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTcc } from "../../component/tai-chi-company/TccContext";
-import { apiFetch, formatDuration, toParagraphs } from "../../component/tai-chi-company/api";
+import { apiFetch, formatDuration } from "../../component/tai-chi-company/api";
 import PlaceholderPlayer from "../../component/tai-chi-company/PlaceholderPlayer";
 import ProtectedPlayer from "../../component/tai-chi-company/ProtectedPlayer";
 import { VideoBadges } from "../../component/tai-chi-company/VideoCard";
-import { useTextSize, TextSizeButtons, RichText } from "../../component/tai-chi-company/TextSize";
+import { useTextSize, TextSizeButtons } from "../../component/tai-chi-company/TextSize";
+import { ArticleContent } from "../../component/tai-chi-company/ArticleView";
 
-const AboutThisForm = ({ text }) => {
+const AboutThisForm = ({ html }) => {
     const size = useTextSize();
-    if (!toParagraphs(text).length) return null;
+    if (!html) return null;
     return (
         <section className="tcc-section tcc-about">
             <div className="tcc-about-header">
@@ -17,7 +18,7 @@ const AboutThisForm = ({ text }) => {
                 <TextSizeButtons size={size} />
             </div>
             <div className="tcc-about-text" style={{ fontSize: `${size.fontSize}px` }}>
-                <RichText text={text} />
+                <ArticleContent html={html} />
             </div>
         </section>
     );
@@ -99,7 +100,7 @@ const Watch = () => {
             {duration && <p className="tcc-video-duration">Length: {duration}</p>}
             {video.short_description && <p className="tcc-lead">{video.short_description}</p>}
 
-            <AboutThisForm text={video.long_description} />
+            <AboutThisForm html={video.long_description_html} />
 
             {video.up_next.length > 0 && (
                 <section className="tcc-section">

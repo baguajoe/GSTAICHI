@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from .models import db, SiteSettings, Tier, Video, CORNER_SECTION
 from .extensions import limiter
 from .tcc_auth import role_required, get_current_user
+from .rich_text import reader_html, DESCRIPTION_BLOCKS
 
 tcc = Blueprint('tcc', __name__)
 
@@ -94,6 +95,12 @@ def visible_videos():
             .order_by(Video.sort_order, Video.id))
 
 
+def library_videos():
+    """Videos listed in the Video Library. Videos made inside an article are left out unless the teacher
+    chose to list them; they still play in their article (playback uses visible_videos)."""
+    return visible_videos().filter(Video.show_in_library.is_(True))
+
+
 def _card(video, viewer):
     data = video.serialize_card()
     rank = viewer.effective_tier_rank if viewer else 0
@@ -113,7 +120,7 @@ def _is_new_this_month(video, now):
 @limiter.limit("60 per minute")
 def get_videos():
     viewer = _viewer()
-    videos = visible_videos().all()
+    videos = library_videos().all()
     now = datetime.utcnow()
     newest = sorted((v for v in videos if _is_new_this_month(v, now)),
                     key=lambda v: (v.publish_at, v.id), reverse=True)[:NEW_THIS_MONTH_LIMIT]
@@ -132,7 +139,7 @@ def get_videos():
 def get_new_this_month():
     viewer = _viewer()
     now = datetime.utcnow()
-    newest = sorted((v for v in visible_videos().all() if _is_new_this_month(v, now)),
+    newest = sorted((v for v in library_videos().all() if _is_new_this_month(v, now)),
                     key=lambda v: (v.publish_at, v.id), reverse=True)[:NEW_THIS_MONTH_LIMIT]
     return jsonify([_card(v, viewer) for v in newest])
 
@@ -145,9 +152,9 @@ def get_video(slug):
     if video is None:
         return jsonify({"msg": "We could not find that video."}), 404
     data = _card(video, viewer)
-    data["long_description"] = video.long_description or ""
+    data["long_description_html"] = reader_html(video.long_description, f"video-{video.id}", DESCRIPTION_BLOCKS)
     data["chapters"] = video.chapters or []
-    others = visible_videos().filter(Video.section == video.section, Video.id != video.id).all()
+    others = library_videos().filter(Video.section == video.section, Video.id != video.id).all()
     data["up_next"] = [_card(v, viewer) for v in others]
     return jsonify(data)
 

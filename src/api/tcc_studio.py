@@ -17,7 +17,8 @@ from . import r2
 from .r2 import R2NotConfigured
 from .tcc_auth import role_required, get_current_user
 from .taichi_company import tcc
-from .tcc_articles import media_url, reading_minutes
+from .tcc_articles import media_url, reading_minutes, article_card, article_body
+from .rich_text import clean_html, editor_html, plain_text, image_url, DESCRIPTION_BLOCKS
 from .video_pipeline import chapters_to_vtt
 
 STAFF = ("teacher", "admin")
@@ -75,7 +76,9 @@ def studio_video(v):
     job = EncodingJob.query.filter_by(video_id=v.id).order_by(EncodingJob.id.desc()).first()
     return {
         "id": v.id, "slug": v.slug, "title": v.title, "section": v.section, "category": v.category,
-        "short_description": v.short_description or "", "long_description": v.long_description or "",
+        "short_description": v.short_description or "",
+        "long_description": editor_html(v.long_description, blocks=DESCRIPTION_BLOCKS) if v.long_description else "",
+        "show_in_library": v.show_in_library,
         "publish_at": v.publish_at.isoformat() if v.publish_at else None,
         "is_published": v.is_published, "is_free_sample": v.is_free_sample, "tier_rank": v.tier_rank,
         "chapters": v.chapters or [], "status": v.status, "studio_status": v.studio_status,
@@ -103,9 +106,13 @@ def _apply_video_fields(video, data, sections):
             return "Please choose a section."
         video.section = data["section"]
         video.tier_rank = sections[data["section"]].get("tier_rank", 1)
-    for field in ("short_description", "long_description", "category"):
+    for field in ("short_description", "category"):
         if field in data:
             video.__setattr__(field, (data.get(field) or "").strip() or None)
+    if "long_description" in data:
+        video.long_description = clean_html(data.get("long_description"), DESCRIPTION_BLOCKS) or None
+    if "show_in_library" in data:
+        video.show_in_library = bool(data["show_in_library"])
     if "publish_at" in data:
         video.publish_at = _parse_date(data["publish_at"]) or datetime.utcnow()
     if "is_free_sample" in data:
@@ -355,24 +362,37 @@ def studio_article(a):
         label = "Published"
     return {
         "id": a.id, "title": a.title, "author": a.author, "category": a.category, "summary": a.summary or "",
-        "content": a.content, "cover_image_path": a.cover_image_path, "cover_image_url": media_url(a.cover_image_path),
+        "content": editor_html(a.content), "is_free": bool(a.is_free),
+        "cover_image_path": a.cover_image_path, "cover_image_url": media_url(a.cover_image_path),
+        "cover_position": a.cover_position or "50% 50%",
         "publish_at": a.publish_at.isoformat() if a.publish_at else None, "status": label,
         "reading_minutes": reading_minutes(a.content), "read_count": a.read_count or 0,
         "updated_at": a.updated_at.isoformat() if a.updated_at else None,
     }
 
 
-def _apply_article(article, data):
+def _article_fields(data):
+    """Checks the form. Returns (error, cleaned fields)."""
     title = (data.get("title") or "").strip()
     if not title:
-        return "Please give the article a title."
-    content = (data.get("content") or "").strip()
-    action = data.get("action", "draft")
-    if action == "publish" and not content:
-        return "Please write the article before publishing it."
+        return "Please give the article a title.", None
+    content = clean_html(data.get("content"))
+    if data.get("action", "draft") == "publish" and not plain_text(content) and "<figure" not in content:
+        return "Please write the article before publishing it.", None
     cover = data.get("cover_image_path") or None
     if cover and not re.match(r"^article-images/[a-z0-9]+\.(jpg|png|webp|gif)$", cover):
-        return "The cover picture is not valid."
+        return "The cover picture is not valid.", None
+    position = str(data.get("cover_position") or "")
+    position = position if re.match(r"^\d{1,3}% \d{1,3}%$", position) else None
+    return None, {"title": title[:200], "content": content, "cover": cover, "position": position}
+
+
+def _apply_article(article, data):
+    error, fields = _article_fields(data)
+    if error:
+        return error
+    title, content, cover = fields["title"], fields["content"], fields["cover"]
+    action = data.get("action", "draft")
     article.title = title[:200]
     article.author = ((data.get("author") or "").strip() or get_current_user().name or "")[:100]
     article.category = (data.get("category") or "").strip() or None
@@ -380,6 +400,8 @@ def _apply_article(article, data):
     article.summary = (data.get("summary") or "").strip() or None
     article.content = content
     article.cover_image_path = cover
+    article.cover_position = fields["position"]
+    article.is_free = bool(data.get("is_free"))
     article.members_only = True
     article.publish_at = _parse_date(data.get("publish_at")) or datetime.utcnow()
     if action == "publish":
@@ -421,6 +443,22 @@ def studio_update_article(article_id):
     return jsonify(studio_article(article))
 
 
+@tcc.route('/studio/articles/preview', methods=['POST'])
+@role_required(*STAFF)
+def studio_preview_article():
+    """The article exactly as the reader page shows it, from the unsaved form (nothing is saved)."""
+    data = request.get_json(silent=True) or {}
+    error, fields = _article_fields({**data, "action": "draft", "title": data.get("title") or "Untitled"})
+    if error:
+        return _bad(error)
+    article = Article(id=int(data["id"]) if str(data.get("id") or "").isdigit() else None,
+                      title=fields["title"], author=(data.get("author") or "").strip(), content=fields["content"],
+                      category=(data.get("category") or "").strip() or None, summary=(data.get("summary") or "").strip(),
+                      cover_image_path=fields["cover"], cover_position=fields["position"], is_free=bool(data.get("is_free")),
+                      publish_at=_parse_date(data.get("publish_at")) or datetime.utcnow())
+    return jsonify({**article_card(article, True), **article_body(article, fields["content"], get_current_user())})
+
+
 @tcc.route('/studio/articles/<int:article_id>', methods=['DELETE'])
 @role_required(*STAFF)
 def studio_delete_article(article_id):
@@ -436,16 +474,18 @@ def studio_delete_article(article_id):
 @limiter.limit("120 per hour")
 @role_required(*STAFF)
 def studio_image_upload():
-    """A presigned address for one article picture (cover or inside the text)."""
+    """A presigned address for one picture: a cover (public), or with "private" a photo inside an article or
+    a video description (members only; shown with a signed link)."""
     data = request.get_json(silent=True) or {}
     content_type = data.get("content_type")
     if content_type not in IMAGE_TYPES:
         return _bad("Please choose a JPG, PNG, WEBP or GIF picture.")
     if int(data.get("size") or 0) > MAX_IMAGE_BYTES:
         return _bad("This picture is bigger than 10 MB. Please use a smaller one.")
-    path = f"article-images/{secrets.token_hex(12)}.{IMAGE_TYPES[content_type]}"
+    folder = "article-private" if data.get("private") else "article-images"
+    path = f"{folder}/{secrets.token_hex(12)}.{IMAGE_TYPES[content_type]}"
     try:
         url = r2.presign_put(r2.streams_bucket(), path, content_type)
     except Exception as e:
         return _storage_error(e)
-    return jsonify({"upload_url": url, "path": path, "url": media_url(path)})
+    return jsonify({"upload_url": url, "path": path, "url": image_url(path, "studio")})

@@ -2,17 +2,19 @@
 Member articles (Article.members_only = True), separate from the public articles on the main site.
 
 Every paying member (any tier) can read every member article. Others see the title, summary and cover
-picture only: the full text is sent only from an authenticated request by a paying member.
-Article text is plain text: a blank line between paragraphs; a line like ![caption](address) is a picture.
+picture only: the full text is sent only from an authenticated request by a paying member. Articles marked
+"Free for everyone" (Article.is_free) are sent in full to anyone, signed in or not.
+The text is sanitized HTML (see rich_text.py). Videos placed in an article still need the viewer's plan.
 """
 import math
 import os
 from datetime import datetime, timedelta
 from flask import jsonify, request
 from sqlalchemy import or_
-from .models import db, Article
+from .models import db, Article, Video, SiteSettings
 from .extensions import limiter
-from .taichi_company import tcc, _viewer
+from .taichi_company import tcc, _viewer, _card, visible_videos
+from .rich_text import plain_text, reader_html, video_slugs
 
 NEW_DAYS = 14
 WORDS_PER_MINUTE = 200
@@ -35,7 +37,7 @@ def published_member_articles():
 
 
 def reading_minutes(text):
-    return max(1, math.ceil(len((text or "").split()) / WORDS_PER_MINUTE))
+    return max(1, math.ceil(len(plain_text(text).split()) / WORDS_PER_MINUTE))
 
 
 def article_card(article, can_read):
@@ -47,6 +49,8 @@ def article_card(article, can_read):
         "category": article.category,
         "summary": article.summary or "",
         "cover_image_url": media_url(article.cover_image_path),
+        "cover_position": article.cover_position or "50% 50%",
+        "is_free": bool(article.is_free),
         "published_at": published.isoformat() if published else None,
         "reading_minutes": reading_minutes(article.content),
         "is_new": bool(published) and published >= datetime.utcnow() - timedelta(days=NEW_DAYS),
@@ -54,8 +58,36 @@ def article_card(article, can_read):
     }
 
 
-def _can_read(viewer):
+def _is_member(viewer):
     return viewer is not None and viewer.is_paying_member
+
+
+def _can_read(viewer, article):
+    return bool(article.is_free) or _is_member(viewer)
+
+
+def article_videos(content, viewer):
+    """What the reader needs for each video placed in the article, by slug. The player checks the plan again."""
+    slugs = video_slugs(content)
+    if not slugs:
+        return {}
+    videos = {}
+    for video in visible_videos().filter(Video.slug.in_(slugs)).all():
+        data = _card(video, viewer)
+        data["chapters"] = video.chapters or []
+        data["processing"] = video.status in ("uploading", "processing")
+        videos[video.slug] = data
+    return videos
+
+
+def article_body(article, content, viewer):
+    """The full text and what goes with it, for a reader (or the Studio preview)."""
+    return {
+        "content_html": reader_html(content, f"article-{article.id or 0}"),
+        "videos": article_videos(content, viewer),
+        "watermark_text": f"{viewer.email} · Member {viewer.id}" if viewer else (SiteSettings.get().app_name or ""),
+        "licensed_to": viewer.email if viewer else None,
+    }
 
 
 @tcc.route('/articles', methods=['GET'])
@@ -72,8 +104,8 @@ def list_member_articles():
         query = query.filter(or_(Article.title.ilike(like), Article.summary.ilike(like),
                                  Article.author.ilike(like), Article.content.ilike(like)))
     articles = query.order_by(Article.publish_at.desc().nullslast(), Article.id.desc()).all()
-    can_read = _can_read(viewer)
-    return jsonify({"articles": [article_card(a, can_read) for a in articles], "can_read": can_read})
+    is_member = _is_member(viewer)
+    return jsonify({"articles": [article_card(a, is_member or bool(a.is_free)) for a in articles], "can_read": is_member})
 
 
 @tcc.route('/articles/<int:article_id>', methods=['GET'])
@@ -83,12 +115,10 @@ def get_member_article(article_id):
     article = published_member_articles().filter(Article.id == article_id).first()
     if article is None:
         return jsonify({"msg": "We could not find that article."}), 404
-    can_read = _can_read(viewer)
+    can_read = _can_read(viewer, article)
     data = article_card(article, can_read)
     if can_read:
-        data["content"] = article.content
-        data["watermark_text"] = f"{viewer.email} · Member {viewer.id}"
-        data["licensed_to"] = viewer.email
+        data.update(article_body(article, article.content, viewer))
         article.read_count = (article.read_count or 0) + 1
         db.session.commit()
     return jsonify(data)

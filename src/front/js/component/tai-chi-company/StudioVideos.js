@@ -39,6 +39,7 @@ const VideoRow = ({ video, sectionLabel, onAction, busy }) => {
                         <StatusBadge status={video.studio_status} />
                         <span className="tcc-badge tcc-badge-soon">{sectionLabel(video.section)}</span>
                         {video.is_free_sample && <span className="tcc-badge tcc-badge-free">Free sample</span>}
+                        {video.show_in_library === false && <span className="tcc-badge tcc-badge-soon">In an article only</span>}
                     </p>
                     <p className="tcc-field-hint">{STATUS_HELP[video.studio_status]}</p>
                     {video.studio_status === "Scheduled" && <p>Appears on {shortDate(video.publish_at)}</p>}

@@ -565,3 +565,148 @@ select.tcc-input { background: #ffffff; }
     .tcc-chapter-row .tcc-btn { grid-column: 1 / -1; }
     .tcc-studio-panel { padding: 12px; }
 }
+
+/* ----- Magazine-style articles (ArticleView.js); also the Studio preview and video descriptions ----- */
+.tcc-mag { max-width: 700px; margin: 0 auto; }
+.tcc-mag-back { max-width: 700px; margin-left: auto; margin-right: auto; }
+.tcc-mag-header { margin: 8px 0 24px; }
+.tcc-app .tcc-mag-title { font-size: clamp(2rem, 6vw, 2.9rem); line-height: 1.15; color: #1a1a1a; margin: 8px 0 12px; letter-spacing: -0.01em; }
+.tcc-app .tcc-mag-dek { font-size: 1.3rem; line-height: 1.5; color: #333333; margin: 0 0 16px; }
+.tcc-mag-meta { display: flex; flex-wrap: wrap; gap: 4px 18px; color: #444444; border-top: 1px solid #d0d0d0; border-bottom: 1px solid #d0d0d0; padding: 10px 0; }
+.tcc-app .tcc-mag-meta span { font-size: 17px; }
+.tcc-mag-cover { margin: 0 0 20px; border-radius: 10px; }
+.tcc-mag-tools { display: flex; justify-content: flex-end; margin-bottom: 8px; }
+.tcc-mag-body { font-family: Georgia, "Times New Roman", serif; line-height: 1.75; color: #1a1a1a; }
+.tcc-mag-body::after { content: ""; display: block; clear: both; }
+.tcc-mag-flow p, .tcc-app .tcc-mag-flow li { font-size: inherit; line-height: inherit; }
+.tcc-mag-flow p { margin: 0 0 1.1em; }
+.tcc-mag-content > .tcc-mag-flow:first-child > p:first-child { font-size: 1.15em; }
+.tcc-app .tcc-mag-flow h2 {
+    font-family: inherit; font-size: 1.45em; line-height: 1.25; color: var(--primary-color);
+    margin: 1.8em 0 0.6em; padding-top: 0.6em; border-top: 2px solid #e2d5d5; display: flex; gap: 0.5em; align-items: baseline;
+}
+.tcc-app .tcc-mag-flow h3 { font-family: inherit; font-size: 1.15em; line-height: 1.3; margin: 1.5em 0 0.4em; display: flex; gap: 0.45em; align-items: baseline; }
+.tcc-num {
+    flex: none; display: inline-flex; align-items: center; justify-content: center; min-width: 1.7em; height: 1.7em;
+    border-radius: 50%; background: var(--primary-color); color: #ffffff; font-size: 0.75em; font-family: Arial, sans-serif;
+}
+.tcc-mag-flow h3 .tcc-num { background: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); text-transform: lowercase; }
+.tcc-mag-flow ul, .tcc-mag-flow ol { margin: 0 0 1.2em; padding-left: 1.4em; }
+.tcc-mag-flow li { margin-bottom: 0.5em; }
+.tcc-mag-flow blockquote {
+    margin: 1.4em 0; padding: 0.4em 0 0.4em 1em; border-left: 5px solid var(--primary-color);
+    font-size: 1.3em; line-height: 1.45; font-style: italic; color: #333333;
+}
+.tcc-mag-flow hr { border: 0; border-top: 2px solid #d0d0d0; margin: 2em auto; width: 40%; }
+.tcc-mag-flow a { text-decoration: underline; }
+.tcc-mag-flow figcaption, .tcc-article-video figcaption { font-family: Arial, sans-serif; font-size: 16px; color: #444444; margin-top: 8px; line-height: 1.4; }
+.tcc-mag-flow img { -webkit-user-drag: none; }
+.tcc-mag-flow .tcc-photo, .tcc-mag-flow .tcc-gallery { margin: 1.6em 0; }
+.tcc-mag-flow .tcc-photo img { display: block; width: 100%; height: auto; border-radius: 8px; cursor: zoom-in; }
+.tcc-mag-flow .tcc-photo[data-size="medium"] { max-width: 70%; margin-left: auto; margin-right: auto; }
+.tcc-mag-flow .tcc-photo[data-size="small-left"] { float: left; width: 42%; margin: 0.3em 1.2em 0.8em 0; }
+.tcc-mag-flow .tcc-photo[data-size="small-right"] { float: right; width: 42%; margin: 0.3em 0 0.8em 1.2em; }
+.tcc-mag-flow h2, .tcc-mag-flow .tcc-gallery, .tcc-mag-flow hr { clear: both; }
+.tcc-mag-flow .tcc-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.tcc-mag-flow .tcc-gallery img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 6px; cursor: zoom-in; display: block; }
+.tcc-mag-flow .tcc-gallery figcaption { grid-column: 1 / -1; }
+.tcc-mag-flow img[role="button"]:focus-visible { outline: 3px solid #1a5fb4; outline-offset: 3px; }
+.tcc-article-video { clear: both; margin: 1.8em 0; font-family: Arial, sans-serif; }
+.tcc-video-locked { position: relative; border-radius: 10px; overflow: hidden; background: #1a1a1a; }
+.tcc-video-locked > img, .tcc-video-locked > .tcc-thumb-placeholder { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; opacity: 0.45; }
+.tcc-video-locked-message {
+    position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 16px; color: #ffffff;
+}
+.tcc-app .tcc-video-locked-message p { color: #ffffff; font-size: 18px; margin-bottom: 10px; }
+.tcc-video-note { border: 2px dashed #c9c9c9; border-radius: 10px; padding: 16px; }
+.tcc-lightbox {
+    position: fixed; inset: 0; z-index: 2000; background: rgba(0, 0, 0, 0.92); display: flex; flex-direction: column;
+    align-items: center; justify-content: center; padding: 16px; overflow: hidden; user-select: none; -webkit-user-select: none;
+}
+.tcc-lightbox .tcc-article-watermark { color: #ffffff; opacity: 0.08; }
+.tcc-lightbox figure { position: relative; z-index: 1; margin: 0; max-width: 100%; text-align: center; }
+.tcc-lightbox img { max-width: 100%; max-height: calc(100vh - 160px); object-fit: contain; border-radius: 6px; -webkit-user-drag: none; }
+.tcc-app .tcc-lightbox figcaption { color: #ffffff; font-size: 18px; margin-top: 10px; }
+.tcc-lightbox-buttons { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 14px; }
+.tcc-lightbox-buttons .tcc-btn-outline { background: #ffffff; }
+.tcc-about-text .tcc-mag-content { font-family: Georgia, "Times New Roman", serif; line-height: 1.75; }
+.tcc-about-text .tcc-mag-content::after { content: ""; display: block; clear: both; }
+@media (max-width: 600px) {
+    .tcc-mag-flow .tcc-photo[data-size="medium"] { max-width: 100%; }
+    .tcc-mag-flow .tcc-photo[data-size="small-left"], .tcc-mag-flow .tcc-photo[data-size="small-right"] { width: 46%; }
+    .tcc-mag-flow blockquote { font-size: 1.15em; }
+}
+@media print {
+    .tcc-mag-content, .tcc-mag-cover, .tcc-lightbox { display: none !important; }
+}
+
+/* ----- Rich text editor (RichEditor.js) ----- */
+.tcc-rich-editor { border: 2px solid #c9c9c9; border-radius: 10px; background: #ffffff; }
+.tcc-toolbar {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 6px; padding: 8px;
+    border-bottom: 2px solid #e2d5d5; background: #fbf8f8; border-radius: 8px 8px 0 0;
+}
+@media (min-width: 700px) {
+    .tcc-toolbar { position: sticky; top: 0; z-index: 5; }
+}
+.tcc-tool {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 58px;
+    padding: 6px 4px; border: 2px solid #c9c9c9; border-radius: 8px; background: #ffffff; color: #1a1a1a; cursor: pointer;
+}
+.tcc-tool i { font-size: 18px; }
+.tcc-tool .tcc-small-icon { font-size: 13px; }
+.tcc-tool span { font-size: 15px; font-weight: 600; line-height: 1.2; text-align: center; }
+.tcc-tool:hover { border-color: var(--primary-color); }
+.tcc-tool.active { background: var(--primary-color); border-color: var(--primary-color); color: #ffffff; }
+.tcc-tool:disabled { opacity: 0.5; cursor: default; }
+.tcc-tool:focus-visible { outline: 3px solid #1a5fb4; outline-offset: 2px; }
+.tcc-editor-status { padding: 0 12px; }
+.tcc-editor-status:empty { display: none; }
+.tcc-editor-status > * { margin: 10px 0; }
+.tcc-editor-area { font-family: Georgia, "Times New Roman", serif; font-size: 20px; line-height: 1.7; }
+.tcc-editor-area .ql-editor { min-height: 420px; padding: 16px; font-size: inherit; line-height: inherit; }
+.tcc-editor-short .ql-editor { min-height: 220px; }
+.tcc-editor-area .ql-editor.ql-blank::before { color: #6b6b6b; font-style: normal; left: 16px; right: 16px; }
+.tcc-editor-area figure { cursor: pointer; outline: 2px dashed transparent; outline-offset: 4px; border-radius: 8px; }
+.tcc-editor-area figure:hover { outline-color: var(--primary-color); }
+.tcc-editor-area .tcc-photo img { pointer-events: none; }
+.tcc-editor-area .tcc-gallery img { pointer-events: none; }
+.tcc-editor-video { display: flex; gap: 12px; align-items: center; padding: 12px; border: 2px solid #c9c9c9; border-radius: 8px; background: #f4f4f4; font-family: Arial, sans-serif; }
+.tcc-editor-video img { width: 140px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 4px; }
+.tcc-editor-video div { display: flex; flex-direction: column; }
+.tcc-editor-video span { font-size: 16px; color: #444444; }
+.tcc-rich-editor > .tcc-field-hint { padding: 0 12px 10px; margin: 0; }
+.tcc-dialog-backdrop { position: fixed; inset: 0; z-index: 1500; background: rgba(0, 0, 0, 0.55); display: flex; align-items: flex-start; justify-content: center; padding: 24px 12px; overflow-y: auto; }
+.tcc-dialog { background: #ffffff; border-radius: 12px; padding: 20px; width: 100%; max-width: 620px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); }
+.tcc-dialog h3 { margin-top: 0; }
+.tcc-dialog .tcc-button-row { margin-top: 12px; }
+.tcc-dialog-photo { max-width: 100%; max-height: 260px; border-radius: 8px; display: block; margin-bottom: 14px; }
+.tcc-gallery-editor { list-style: none; padding: 0; margin: 0 0 12px; }
+.tcc-gallery-editor li { display: flex; gap: 10px; align-items: flex-start; padding: 10px; border: 2px solid #d0d0d0; border-radius: 8px; margin-bottom: 8px; background: #ffffff; }
+.tcc-gallery-editor li.dragging { opacity: 0.5; }
+.tcc-gallery-editor img { width: 96px; height: 96px; object-fit: cover; border-radius: 6px; flex: none; }
+.tcc-gallery-editor-fields { flex: 1; min-width: 0; }
+.tcc-gallery-editor-fields label { font-weight: 600; font-size: 16px; }
+.tcc-drag-handle { cursor: grab; padding: 8px 2px; color: #6b6b6b; font-size: 20px; }
+.tcc-video-picker { list-style: none; padding: 0; margin: 0; max-height: 50vh; overflow-y: auto; }
+.tcc-video-picker li { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid #e2e2e2; }
+.tcc-video-picker img, .tcc-video-picker-thumb { width: 110px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 4px; background: #e6e6e6; flex: none; }
+.tcc-video-picker li > span { flex: 1; min-width: 0; }
+.tcc-cover-position { margin-bottom: 10px; }
+.tcc-cover-frame { position: relative; max-width: 480px; aspect-ratio: 16 / 9; border-radius: 8px; overflow: hidden; cursor: crosshair; border: 2px solid #c9c9c9; }
+.tcc-cover-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tcc-cover-dot { position: absolute; width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%; border: 4px solid #ffffff; box-shadow: 0 0 0 2px #1a1a1a; pointer-events: none; }
+.tcc-preview-banner { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.tcc-preview-banner p { margin: 0; }
+.tcc-preview-page { background: #ffffff; border-radius: 10px; padding: 16px; margin-bottom: 20px; }
+.tcc-auto-result p { margin-bottom: 8px; }
+/* In the editor small photos keep their side but do not float, so every block stays easy to tap */
+.tcc-editor-area .tcc-photo[data-size="small-left"], .tcc-editor-area .tcc-photo[data-size="small-right"] { float: none; width: 42%; margin: 1em 0; }
+.tcc-editor-area .tcc-photo[data-size="small-right"] { margin-left: auto; }
+/* Dialogs and the photo viewer (Overlay.js) sit above everything, including the site's menu bar */
+.tcc-overlay-root { max-width: none; margin: 0; background: transparent; }
+.tcc-dialog-backdrop, .tcc-lightbox { z-index: 10000; }
+.tcc-dialog-backdrop { align-items: center; }
+.tcc-dialog { max-height: calc(100vh - 32px); overflow-y: auto; }
+.tcc-dialog-photo { max-height: 180px; }

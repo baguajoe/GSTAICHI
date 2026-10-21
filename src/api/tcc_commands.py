@@ -1,4 +1,6 @@
 """Flask CLI commands for Tai Chi Company. All are safe to run more than once."""
+import os
+import re
 from datetime import datetime
 from decimal import Decimal
 import click
@@ -95,19 +97,24 @@ def setup_tcc_commands(app):
 
     @app.cli.command("seed-tcc-articles")
     def seed_tcc_articles():
-        """Add the first member article, "Combat Tai Chi Chuan" by Vincent Chu. Safe to run again."""
-        from .commands import COMBAT_PART_ONE, COMBAT_PART_TWO
+        """Add the first member article, "Combat Tai Chi Chuan" by Vincent Chu, formatted with headings for its
+        numbered sections. An existing copy still in the old plain-text format is upgraded. Safe to run again."""
         title = "Combat Tai Chi Chuan"
-        if Article.query.filter_by(title=title, members_only=True).first():
-            print(f"Member article '{title}' already exists.")
+        with open(os.path.join(os.path.dirname(__file__), "seed_data", "combat_tai_chi_chuan.html")) as f:
+            content = f.read().strip()
+        summary = re.sub(r"<[^>]+>", "", content.split("</p>", 1)[0]).strip()
+        article = Article.query.filter_by(title=title, members_only=True).first()
+        if article is not None:
+            if article.content.lstrip().startswith("<"):
+                print(f"Member article '{title}' already exists.")
+                return
+            article.content = content
+            db.session.commit()
+            print(f"Member article '{title}' upgraded to the new format.")
             return
-        text = COMBAT_PART_ONE.strip() + "\n\n" + COMBAT_PART_TWO.strip()
-        if text.startswith(title):
-            text = text[len(title):].strip()  # the title is shown separately
-        first_paragraph = text.split("\n\n")[0].strip()
         db.session.add(Article(
-            title=title, author="Vincent Chu", content=text, members_only=True, category="Application",
-            section="Application", summary=first_paragraph, status="published", publish_at=datetime.utcnow(),
+            title=title, author="Vincent Chu", content=content, members_only=True, category="Application",
+            section="Application", summary=summary, status="published", publish_at=datetime.utcnow(),
         ))
         db.session.commit()
         print(f"Member article '{title}' added.")
