@@ -5,10 +5,12 @@ taichi-streams: encoded HLS files, thumbnails and article pictures (served only 
 """
 import mimetypes
 import os
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import boto3
 from botocore.config import Config
 
 MAX_UPLOAD_BYTES = 10 * 1024 ** 3  # 10 GB
+UPLOAD_THREADS = 16  # finished video pieces sent to R2 at the same time
 PART_SIZE = 16 * 1024 ** 2  # 16 MB parts: a 10 GB file is 640 parts (S3 allows 10,000)
 PRESIGN_SECONDS = 6 * 60 * 60
 
@@ -28,14 +30,15 @@ def streams_bucket():
     return os.getenv("R2_STREAMS_BUCKET", "taichi-streams")
 
 
-def client():
+def client(max_pool_connections=10):
     account = os.getenv("R2_ACCOUNT_ID")
     endpoint = os.getenv("R2_ENDPOINT_URL") or (f"https://{account}.r2.cloudflarestorage.com" if account else None)
     key_id, secret = os.getenv("R2_ACCESS_KEY_ID"), os.getenv("R2_SECRET_ACCESS_KEY")
     if not endpoint or not key_id or not secret:
         raise R2NotConfigured("Video storage is not set up yet (R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY).")
     return boto3.client("s3", endpoint_url=endpoint, aws_access_key_id=key_id, aws_secret_access_key=secret,
-                        region_name="auto", config=Config(signature_version="s3v4", retries={"max_attempts": 5}))
+                        region_name="auto", config=Config(signature_version="s3v4", retries={"max_attempts": 5},
+                                                          max_pool_connections=max_pool_connections))
 
 
 # ----- browser multipart uploads -----
@@ -84,14 +87,21 @@ def download(bucket, key, path):
 
 
 def upload_folder(local_dir, bucket, prefix):
-    s3 = client()
+    """Uploads UPLOAD_THREADS files at a time; a 77-minute video is about 2,300 files."""
+    s3 = client(max_pool_connections=UPLOAD_THREADS)
+    jobs = []
     for root, _dirs, files in os.walk(local_dir):
         for name in files:
             path = os.path.join(root, name)
             rel = os.path.relpath(path, local_dir).replace(os.sep, "/")
             ext = os.path.splitext(name)[1].lower()
             content_type = CONTENT_TYPES.get(ext) or mimetypes.guess_type(name)[0] or "application/octet-stream"
-            s3.upload_file(path, bucket, f"{prefix}/{rel}", ExtraArgs={"ContentType": content_type})
+            jobs.append((path, f"{prefix}/{rel}", content_type))
+    with ThreadPoolExecutor(max_workers=UPLOAD_THREADS) as pool:
+        futures = [pool.submit(s3.upload_file, path, bucket, key, ExtraArgs={"ContentType": content_type})
+                   for path, key, content_type in jobs]
+        for future in as_completed(futures):
+            future.result()  # re-raises the first failed upload, so the job is retried
 
 
 def put_text(bucket, key, text, content_type):
