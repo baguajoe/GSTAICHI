@@ -53,6 +53,7 @@ services:
       region: ohio
       plan: starter
       buildCommand: "./render_build.sh"
+      preDeployCommand: "flask setup-database" # runs flask db upgrade (or creates the tables on an empty database)
       startCommand: "gunicorn wsgi --chdir ./src/ --workers 2 --threads 4 --timeout 60"
       healthCheckPath: /api/tcc/settings
       envVars:
