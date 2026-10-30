@@ -5,7 +5,7 @@ import Watermark from "./watermark";
 import { loadCastSdk, watchCastDevices, castVideo, stopCasting } from "./castToTv";
 
 // Protected video player: AES-128 HLS through hls.js, or Safari's own player on Apple devices,
-// with a moving watermark, the 2-device limit, heartbeats, and casting to TVs.
+// with a moving watermark (when switched on in admin settings), the 2-device limit, heartbeats, and casting to TVs.
 
 const isAppleDevice = () => {
     const ua = navigator.userAgent;
@@ -174,7 +174,7 @@ const ProtectedPlayer = ({ video }) => {
         sessionRef.current = info.session_id;
         setChapters(info.chapters || []);
         setPhase("playing");
-        startWatermark(info.watermark_text);
+        if (info.watermark_text) startWatermark(info.watermark_text); // no text: the watermark is switched off in admin
         startHeartbeat(info.heartbeat_seconds || 20);
         if (!(await attachSource(info))) return;
         try {

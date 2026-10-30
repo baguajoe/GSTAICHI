@@ -273,6 +273,7 @@ class SiteSettingsAdmin(SecureModelView):
                                                     "keep their price for life. Empty = the founding offer is open with no end date yet."},
         "notification_email": {"description": "Gets emails about new subscribers, cancellations and member questions. "
                                               "Never shown on the website."},
+        "video_watermark": {"description": "Show the member's email and number moving over videos while they play."},
         "video_sections": {"description": 'List of {"key", "label", "tier_rank"}. Keys must not change once videos use them.'},
     }
 

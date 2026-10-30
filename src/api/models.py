@@ -406,6 +406,8 @@ class SiteSettings(db.Model):
     corner_name = db.Column(db.String(120), nullable=False, default="", server_default="")  # the teacher's short-video section
     corner_categories = db.Column(db.JSON, nullable=True)  # ["Tip", "Correction", ...]
     founding_member_end_date = db.Column(db.DateTime, nullable=True)
+    # The moving member email/number over playing videos. Off for now; the code stays so it can be switched back on.
+    video_watermark = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     @classmethod

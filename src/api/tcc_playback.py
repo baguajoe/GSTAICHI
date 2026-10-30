@@ -16,7 +16,7 @@ import json
 import os
 from datetime import datetime, timedelta
 from flask import jsonify, request, Response
-from .models import db, Video, PlaybackSession
+from .models import db, Video, PlaybackSession, SiteSettings
 from .extensions import limiter
 from .key_vault import decrypt_key, KeyVaultError
 from .media_tokens import sign_media_token, verify_media_token, sign_report, MediaTokenError
@@ -124,7 +124,8 @@ def play(slug):
     return jsonify({
         "session_id": session.id,
         "url": f"{media_base}/{video.hls_master_path}?t={token}",
-        "watermark_text": f"{user.email}  ·  Member {user.id}",
+        # None turns the watermark off (Admin > Site Settings > Video watermark)
+        "watermark_text": f"{user.email}  ·  Member {user.id}" if SiteSettings.get().video_watermark else None,
         "licensed_to": user.name or user.email,
         "heartbeat_seconds": HEARTBEAT_SECONDS,
         "chapters": video.chapters or [],
