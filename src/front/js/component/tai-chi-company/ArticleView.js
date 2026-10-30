@@ -178,12 +178,22 @@ export const ArticleHeader = ({ article }) => (
 
 // The readable article: header, cover, text size buttons and the protected text
 const ArticleView = ({ article, size, schoolName }) => {
-    const onCopy = (e) => {
-        const selected = window.getSelection ? String(window.getSelection()) : "";
-        e.preventDefault();
-        const licence = article.licensed_to ? `, licensed to ${article.licensed_to}` : "";
-        e.clipboardData.setData("text/plain", `${selected}\n\n(c) ${schoolName}${licence}`.trim());
-    };
+    const protectedRef = useRef(null);
+    // Listen on the whole page, so a selection that starts in the title or ends below the article
+    // still gets the copyright line whenever it includes any of the article text
+    useEffect(() => {
+        const onCopy = (e) => {
+            const selection = window.getSelection ? window.getSelection() : null;
+            const area = protectedRef.current;
+            if (!selection || !selection.rangeCount || !area || !e.clipboardData) return;
+            if (!selection.getRangeAt(0).intersectsNode(area)) return;
+            e.preventDefault();
+            const licence = article.licensed_to ? `, licensed to ${article.licensed_to}` : "";
+            e.clipboardData.setData("text/plain", `${String(selection)}\n\n(c) ${schoolName}${licence}`.trim());
+        };
+        document.addEventListener("copy", onCopy);
+        return () => document.removeEventListener("copy", onCopy);
+    }, [article.licensed_to, schoolName]);
     return (
         <article className="tcc-mag">
             <ArticleHeader article={article} />
@@ -191,7 +201,7 @@ const ArticleView = ({ article, size, schoolName }) => {
             <div className="tcc-mag-tools">
                 <TextSizeButtons size={size} />
             </div>
-            <div className="tcc-article-protected" onCopy={onCopy} onContextMenu={(e) => e.preventDefault()}>
+            <div className="tcc-article-protected" ref={protectedRef} onContextMenu={(e) => e.preventDefault()}>
                 <ArticleWatermark text={article.watermark_text} />
                 <div className="tcc-article-body tcc-mag-body" style={{ fontSize: `${size.fontSize}px` }}>
                     <ArticleContent html={article.content_html} videos={article.videos} watermark={article.watermark_text} />
