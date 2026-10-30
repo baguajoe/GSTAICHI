@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTcc } from "../../component/tai-chi-company/TccContext";
 import { apiFetch } from "../../component/tai-chi-company/api";
 import TierCards, { IntervalToggle, FoundingBanner } from "../../component/tai-chi-company/TierCards";
@@ -8,7 +8,8 @@ import { VideoThumbnail } from "../../component/tai-chi-company/VideoCard";
 import LivingLineage from "../../component/tai-chi-company/LivingLineage";
 
 const Landing = () => {
-    const { settings } = useTcc();
+    const { settings, user } = useTcc();
+    const navigate = useNavigate();
     const [billing, setBilling] = useState("month");
     const [sample, setSample] = useState(null);
 
@@ -31,7 +32,10 @@ const Landing = () => {
                     Learn and practice Tai Chi Chuan at home, at your own pace, with video lessons
                     {settings.school_name ? ` from ${settings.school_name}` : ""}.
                 </p>
-                <Link to="/tai-chi-company/join" className="custom-btn1 tcc-btn tcc-btn-big">Start your free account</Link>
+                <div className="tcc-button-row">
+                    <Link to="/tai-chi-company/join" className="custom-btn1 tcc-btn tcc-btn-big">Join {settings.app_name}</Link>
+                    <a href="#tcc-plans" className="tcc-btn tcc-btn-big tcc-btn-outline">See plans</a>
+                </div>
             </section>
 
             <FoundingBanner />
@@ -51,31 +55,32 @@ const Landing = () => {
 
             <LivingLineage />
 
-            <section className="tcc-section">
+            <section className="tcc-section" id="tcc-plans">
                 <h2>Choose your level</h2>
                 <IntervalToggle interval={billing} onChange={setBilling} />
-                <TierCards interval={billing} />
+                <TierCards interval={billing} onChoose={(tier, plan) => navigate(`/tai-chi-company/join?plan=${plan.id}`)} />
             </section>
 
             {sample && (
                 <section className="tcc-section">
-                    <h2>Watch a free sample</h2>
+                    <h2>Watch a free lesson</h2>
                     <h3>{sample.title}</h3>
                     {sample.coming_soon ? <PlaceholderPlayer /> : (
                         <Link to={`/tai-chi-company/watch/${sample.slug}`} className="tcc-sample-preview">
                             <VideoThumbnail video={sample} />
-                            <span className="custom-btn1 tcc-btn tcc-btn-big">Watch the free sample</span>
+                            <span className="custom-btn1 tcc-btn tcc-btn-big">Watch a free lesson</span>
                         </Link>
                     )}
                     {sample.short_description && <p className="tcc-sample-desc">{sample.short_description}</p>}
+                    {!user && <p className="tcc-sample-note">Create an account to watch the free lessons.</p>}
                     <Link to={`/tai-chi-company/watch/${sample.slug}`} className="tcc-text-link">
-                        Go to the free sample page
+                        Go to the free lesson page
                     </Link>
                 </section>
             )}
 
             <section className="tcc-section tcc-center">
-                <Link to="/tai-chi-company/join" className="custom-btn1 tcc-btn tcc-btn-big">Start your free account</Link>
+                <Link to="/tai-chi-company/join" className="custom-btn1 tcc-btn tcc-btn-big">Join {settings.app_name}</Link>
             </section>
         </div>
     );

@@ -55,7 +55,7 @@ const Login = () => {
                     {busy ? "Logging in…" : "Log in"}
                 </button>
                 <p className="tcc-form-alt"><Link to="/tai-chi-company/reset-password">Forgot your password?</Link></p>
-                <p className="tcc-form-alt">New here? <Link to="/tai-chi-company/join">Start your free account</Link></p>
+                <p className="tcc-form-alt">New here? <Link to="/tai-chi-company/join">See plans</Link></p>
             </form>
         </div>
     );

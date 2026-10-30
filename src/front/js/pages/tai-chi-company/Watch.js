@@ -37,7 +37,7 @@ const UpgradeMessage = ({ video }) => {
                 </>
             ) : (
                 <>
-                    <p>Log in, or start a free account and choose a plan, to watch it.</p>
+                    <p>Log in, or join and choose a plan, to watch it.</p>
                     <div className="tcc-button-row">
                         <Link to="/tai-chi-company/join" className="custom-btn1 tcc-btn">See the plans</Link>
                         <Link to="/tai-chi-company/login" className="tcc-btn tcc-btn-outline">Log in</Link>
@@ -48,16 +48,19 @@ const UpgradeMessage = ({ video }) => {
     );
 };
 
-const SignInToWatch = () => (
+const SignInToWatch = () => {
+    const { settings } = useTcc();
+    return (
     <div className="tcc-upgrade" role="note">
         <p className="tcc-player-title">Please log in to watch</p>
-        <p>This video is free to watch with a free account.</p>
+        <p>This is a free lesson. Create an account to watch the free lessons.</p>
         <div className="tcc-button-row">
-            <Link to="/tai-chi-company/join" className="custom-btn1 tcc-btn">Start your free account</Link>
+            <Link to="/tai-chi-company/join" className="custom-btn1 tcc-btn">Join {settings.app_name}</Link>
             <Link to="/tai-chi-company/login" className="tcc-btn tcc-btn-outline">Log in</Link>
         </div>
     </div>
-);
+    );
+};
 
 const Watch = () => {
     const { slug } = useParams();

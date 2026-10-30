@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { useTcc } from "../../component/tai-chi-company/TccContext";
 import { apiFetch } from "../../component/tai-chi-company/api";
 import TierCards, { IntervalToggle, FoundingBanner } from "../../component/tai-chi-company/TierCards";
@@ -7,7 +7,8 @@ import FormField, { FormMessage } from "../../component/tai-chi-company/FormFiel
 import SubscribeButton from "../../component/tai-chi-company/SubscribeButton";
 
 const Join = () => {
-    const { user, login, setUser } = useTcc();
+    const { user, login, setUser, tiers } = useTcc();
+    const [searchParams] = useSearchParams();
     const [billing, setBilling] = useState("month");
     const [chosen, setChosen] = useState(null);
     const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -21,6 +22,20 @@ const Join = () => {
         setChosen({ tier, plan });
         if (formRef.current) formRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     };
+
+    // A plan chosen on the home page arrives as ?plan=<id>; select it (and its Monthly/Annual) once the tiers load
+    const planParam = searchParams.get("plan");
+    useEffect(() => {
+        if (!planParam || chosen) return;
+        for (const tier of tiers) {
+            const plan = (tier.plans || []).find(p => String(p.id) === planParam);
+            if (plan) {
+                setBilling(plan.interval);
+                choose(tier, plan);
+                return;
+            }
+        }
+    }, [planParam, tiers]);
 
     const update = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -61,7 +76,7 @@ const Join = () => {
             <section className="tcc-section tcc-form-section" ref={formRef}>
                 {user ? (
                     <div className="tcc-notice">
-                        {justJoined && <p className="tcc-success" role="status">Welcome{user.name ? `, ${user.name}` : ""}! Your free account is ready.</p>}
+                        {justJoined && <p className="tcc-success" role="status">Welcome{user.name ? `, ${user.name}` : ""}! Your account is ready.</p>}
                         {subscribed ? (
                             <>
                                 <p className="tcc-success" role="status">{subscribed}</p>
@@ -85,15 +100,15 @@ const Join = () => {
                         ) : (
                             <>
                                 <p><strong>Next, choose a plan above</strong> by pressing "Choose this plan".</p>
-                                <p>Or start with the free sample video in the <Link to="/tai-chi-company/library">Library</Link>.</p>
+                                <p>Or watch a free lesson in the <Link to="/tai-chi-company/library">Library</Link>.</p>
                             </>
                         )}
                     </div>
                 ) : (
                     <form onSubmit={submit} className="tcc-form" noValidate>
-                        <h2>Create your free account</h2>
+                        <h2>Create your account</h2>
+                        <p>Next, choose your plan and pay securely with PayPal or a card.</p>
                         {choice}
-                        <p>First create your account. Then you can pay for your plan with PayPal or a card.</p>
                         <FormField id="join-name" label="Your name" name="name" autoComplete="name"
                             value={form.name} onChange={update} required />
                         <FormField id="join-email" label="Email" name="email" type="email" autoComplete="email"
@@ -103,7 +118,7 @@ const Join = () => {
                             value={form.password} onChange={update} required minLength={8} />
                         <FormMessage error={error} />
                         <button type="submit" className="custom-btn1 tcc-btn tcc-btn-block" disabled={busy}>
-                            {busy ? "Creating your account…" : "Create my free account"}
+                            {busy ? "Creating your account…" : "Create my account"}
                         </button>
                         <p className="tcc-form-alt">
                             Already have an account? <Link to="/tai-chi-company/login">Log in</Link>

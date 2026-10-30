@@ -123,7 +123,7 @@ const MyPlan = () => {
                     {!sub.managed_by_paypal && <p>Your plan was set up by the school. Please call us to make changes.</p>}
                 </>
             ) : sub.granted ? null : (
-                <p>You have a <strong>free account</strong>. You can watch the free sample video.</p>
+                <p>You don't have a plan yet. Choose a plan below to watch all the videos. You can already watch the free lessons.</p>
             )}
 
             {!staff && sub.granted && (

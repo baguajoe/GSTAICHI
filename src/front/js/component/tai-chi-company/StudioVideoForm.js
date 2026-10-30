@@ -228,7 +228,7 @@ const StudioVideoForm = ({ mode, video, defaults = {}, questionId, onDone, onCan
                         onChange={set("publish_at")} hint="Leave as it is to show it as soon as it is ready." />
                     <label className="tcc-checkbox">
                         <input type="checkbox" checked={form.is_free_sample} onChange={set("is_free_sample")} />
-                        Free sample (anyone with a free account can watch it)
+                        Free lesson (anyone with an account can watch it, without a plan)
                     </label>
 
                     <fieldset className="tcc-field tcc-chapters-edit">

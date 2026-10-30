@@ -117,6 +117,7 @@
 .tcc-included { padding-left: 1.25rem; }
 .tcc-included li { margin-bottom: 8px; }
 .tcc-sample-desc { margin-top: 16px; }
+.tcc-sample-note { font-size: 0.95rem; opacity: 0.85; }
 .tcc-sample-preview { position: relative; display: block; border-radius: 10px; overflow: hidden; max-width: 900px; }
 .tcc-sample-preview .tcc-btn { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
 

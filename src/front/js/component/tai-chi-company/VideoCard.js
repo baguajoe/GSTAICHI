@@ -18,7 +18,7 @@ export const VideoThumbnail = ({ video }) => {
 
 export const VideoBadges = ({ video }) => (
     <div className="tcc-badges">
-        {video.is_free_sample && <span className="tcc-badge tcc-badge-free">Free sample</span>}
+        {video.is_free_sample && <span className="tcc-badge tcc-badge-free">Free lesson</span>}
         {video.coming_soon && <span className="tcc-badge tcc-badge-soon">Coming Soon</span>}
         {video.locked && (
             <span className="tcc-badge tcc-badge-locked">
