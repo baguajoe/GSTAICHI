@@ -76,7 +76,9 @@ def _check_many_ips(user):
 @role_required()
 def play(slug):
     user = get_current_user()
-    video = visible_videos().filter(Video.slug == slug).first()
+    # Teachers can also play videos members cannot see yet (to check chapters in the Studio)
+    videos = Video.query.filter(Video.slug.isnot(None)) if user and user.is_staff else visible_videos()
+    video = videos.filter(Video.slug == slug).first()
     if video is None:
         return jsonify({"msg": "We could not find that video."}), 404
     if not can_watch(user, video):

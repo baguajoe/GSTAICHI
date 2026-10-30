@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useTcc } from "./TccContext";
 import { apiFetch, getToken } from "./api";
 import Watermark from "./watermark";
@@ -36,7 +36,9 @@ const stopSessionInBackground = (sessionId) => {
     }
 };
 
-const ProtectedPlayer = ({ video }) => {
+// showChapters: false when the page shows its own chapter list (the Studio's Review chapters).
+// The ref gives seek(seconds) and currentTime(); a seek before the video has started waits for it to start.
+const ProtectedPlayer = forwardRef(({ video, showChapters = true }, ref) => {
     const { user } = useTcc();
     const stageRef = useRef(null);
     const videoRef = useRef(null);
@@ -46,6 +48,7 @@ const ProtectedPlayer = ({ video }) => {
     const heartbeatRef = useRef(null);
     const watermarkRef = useRef(null);
     const castingRef = useRef(null);
+    const pendingSeekRef = useRef(null);
 
     const [phase, setPhase] = useState("notice"); // notice | starting | playing | limit | stopped
     const [message, setMessage] = useState(null);
@@ -153,6 +156,15 @@ const ProtectedPlayer = ({ video }) => {
         return true;
     }, [showStopped]);
 
+    const applyPendingSeek = useCallback(() => {
+        const v = videoRef.current;
+        const t = pendingSeekRef.current;
+        if (!v || t === null) return;
+        pendingSeekRef.current = null;
+        if (v.readyState >= 1) v.currentTime = t;
+        else v.addEventListener("loadedmetadata", () => { v.currentTime = t; }, { once: true });
+    }, []);
+
     const start = useCallback(async (extra = {}) => {
         setMessage(null);
         setPhase("starting");
@@ -177,12 +189,13 @@ const ProtectedPlayer = ({ video }) => {
         if (info.watermark_text) startWatermark(info.watermark_text); // no text: the watermark is switched off in admin
         startHeartbeat(info.heartbeat_seconds || 20);
         if (!(await attachSource(info))) return;
+        applyPendingSeek();
         try {
             await videoRef.current.play();
         } catch (e) {
             // Some phones need a second tap on the video's own play button; the controls are showing
         }
-    }, [video.slug, attachSource, startWatermark, startHeartbeat]);
+    }, [video.slug, attachSource, startWatermark, startHeartbeat, applyPendingSeek]);
 
     // Pause when the member switches to another tab or app (unless the video is playing on a TV)
     useEffect(() => {
@@ -298,12 +311,21 @@ const ProtectedPlayer = ({ video }) => {
         }
     };
 
-    const seek = (seconds) => {
+    const seek = useCallback((seconds) => {
         const v = videoRef.current;
-        if (!v || phase !== "playing") return;
+        if (!v || phase !== "playing") {
+            pendingSeekRef.current = seconds; // used when the video starts
+            return;
+        }
         v.currentTime = seconds;
         v.play().catch(() => {});
-    };
+    }, [phase]);
+
+    useImperativeHandle(ref, () => ({
+        seek,
+        currentTime: () => (videoRef.current ? videoRef.current.currentTime : 0),
+        isPlaying: () => phase === "playing"
+    }), [seek, phase]);
 
     const licensedTo = user.name || user.email;
     return (
@@ -386,7 +408,7 @@ const ProtectedPlayer = ({ video }) => {
                 </div>
             )}
 
-            {chapters.length > 0 && (
+            {showChapters && chapters.length > 0 && (
                 <section className="tcc-chapters" aria-label="Chapters">
                     <h2>Chapters</h2>
                     <ol>
@@ -402,6 +424,6 @@ const ProtectedPlayer = ({ video }) => {
             )}
         </div>
     );
-};
+});
 
 export default ProtectedPlayer;

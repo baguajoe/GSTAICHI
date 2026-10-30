@@ -183,6 +183,9 @@ class Video(db.Model):
     custom_thumbnail_path = db.Column(db.String(500), nullable=True)
     chapters = db.Column(db.JSON, nullable=True)  # [{"start": seconds, "label": "..."}]
     chapters_vtt_path = db.Column(db.String(500), nullable=True)
+    # Chapters found automatically (tools/draft_chapters.py), waiting for the teacher to review in the Studio.
+    # Members never see these: {"chapters": [{"start", "label", "source", "detail"}], "created_at", "notes"}
+    chapters_draft = db.Column(db.JSON, nullable=True)
     encryption_key_enc = db.Column(db.Text, nullable=True)  # AES key encrypted with KEY_ENCRYPTION_SECRET
     duration_seconds = db.Column(db.Integer, nullable=True)
     width = db.Column(db.Integer, nullable=True)  # as shown on screen; upright phone videos are taller than wide

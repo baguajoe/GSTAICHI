@@ -40,6 +40,7 @@ const VideoRow = ({ video, sectionLabel, onAction, busy }) => {
                         <span className="tcc-badge tcc-badge-soon">{sectionLabel(video.section)}</span>
                         {video.is_free_sample && <span className="tcc-badge tcc-badge-free">Free lesson</span>}
                         {video.show_in_library === false && <span className="tcc-badge tcc-badge-soon">In an article only</span>}
+                        {video.chapters_draft && <span className="tcc-badge tcc-badge-founding">Chapters to review</span>}
                     </p>
                     <p className="tcc-field-hint">{STATUS_HELP[video.studio_status]}</p>
                     {video.studio_status === "Scheduled" && <p>Appears on {shortDate(video.publish_at)}</p>}

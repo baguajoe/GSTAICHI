@@ -128,3 +128,39 @@ You can leave it running overnight. At the end it prints a summary of what was d
   if it plays, export it again as MP4 (H.264) from your editing program.
 
 Just run the same command again: finished videos are skipped and it continues with the rest.
+
+---
+
+# Draft chapters for the videos (`draft_chapters.py`)
+
+`draft_chapters.py` makes **draft** chapters for the videos already in R2. Members do not see a draft:
+the teacher checks it in the Studio (**Edit** the video, then **Review chapters**), changes times and
+names, and presses **Publish chapters**.
+
+For each video, one at a time (only one master file is on the computer at once), it:
+
+1. Downloads the master from `taichi-masters` and checks for chapter markers already in the file.
+   If there are some, they become the draft as they are.
+2. Looks at every keyframe (about one picture every 3 seconds) for title cards, words on a plain
+   background such as `2) HEAVEN POSTURE` or `SECTION FOUR Movements 55-78`, and reads them with OCR.
+3. Transcribes the narration with Whisper and finds where sections, numbered movements
+   ("the third posture") and technique names ("Single Whip") are spoken.
+4. Puts these together: a chapter at every title card, then more where a stretch is longer than
+   5 minutes (a technique name being said, otherwise a change of scene, otherwise half way). Chapters
+   that nothing names are left without a name for the teacher to fill in or delete.
+5. Saves the draft on the site and deletes the master from the computer. What it found (OCR text,
+   transcript, timings) stays in `<work>/results/<slug>.json`.
+
+Setup, once: `pip install faster-whisper rapidocr-onnxruntime wordninja numpy pillow` (ffmpeg as above).
+It reads R2 with a Cloudflare API token that can read R2: set `CLOUDFLARE_API_TOKEN` and
+`CLOUDFLARE_ACCOUNT_ID` (or put them in the project's `.env`).
+
+```
+python tools/draft_chapters.py --site https://gstaichi.org --email you@example.com --only eight-zhan-zhuang
+python tools/draft_chapters.py --site https://gstaichi.org --email you@example.com
+```
+
+- Videos that already have chapters or a draft are skipped; `--force` makes a new draft anyway.
+- `--model base.en` transcribes about 3 times faster than the default `small.en`, but gets more
+  technique names wrong. `--no-narration` skips transcribing.
+- `--work D:\tcc-chapters` chooses where the master is downloaded (it needs room for the largest video, 4 GB).

@@ -535,6 +535,24 @@ select.tcc-input { background: #ffffff; }
 .tcc-checkbox input { width: 28px; height: 28px; flex: none; }
 .tcc-chapter-row { display: grid; grid-template-columns: 100px minmax(0, 1fr) auto; gap: 8px; margin-bottom: 8px; }
 .tcc-time-input { text-align: center; }
+.tcc-chapter-review { border: 3px solid #e2d5d5; border-radius: 10px; padding: 16px; background: #fffdfb; }
+.tcc-chapter-review h3 { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0 0 8px; }
+.tcc-chapter-review-player { margin: 12px 0 16px; }
+.tcc-chapter-review-list { list-style: none; padding: 0; margin: 0 0 12px; }
+.tcc-chapter-review-row {
+    display: grid; grid-template-columns: 110px minmax(0, 1fr) auto; gap: 10px; align-items: start;
+    padding: 10px; border-bottom: 1px solid #d0d0d0; border-left: 6px solid transparent;
+}
+.tcc-chapter-review-row.current { background: #f6eeee; border-left-color: var(--primary-color); }
+.tcc-chapter-review-row.needs-name .tcc-input:not(.tcc-time-input) { border-color: #b26b00; background: #fff8ec; }
+.tcc-chapter-review-row .tcc-chapter-row { grid-template-columns: 100px minmax(0, 1fr); margin-bottom: 4px; }
+.tcc-chapter-review-buttons { display: flex; flex-direction: column; gap: 6px; }
+.tcc-chapter-jump {
+    min-height: 48px; font-size: 18px; font-weight: 700; color: var(--primary-color); background: #ffffff;
+    border: 2px solid var(--primary-color); border-radius: 8px; cursor: pointer;
+}
+.tcc-chapter-jump:hover:not(:disabled) { background: #f6eeee; }
+.tcc-chapter-source { margin: 0; font-size: 16px; color: #444444; overflow-wrap: anywhere; }
 .tcc-file-label { margin: 0; }
 .tcc-btn-danger { color: #8a1111; border-color: #8a1111; }
 .tcc-confirm { width: 100%; }
@@ -564,6 +582,8 @@ select.tcc-input { background: #ffffff; }
     .tcc-studio-thumb { width: 100%; }
     .tcc-chapter-row { grid-template-columns: 80px minmax(0, 1fr); }
     .tcc-chapter-row .tcc-btn { grid-column: 1 / -1; }
+    .tcc-chapter-review-row { grid-template-columns: 1fr; }
+    .tcc-chapter-review-buttons { flex-direction: row; }
     .tcc-studio-panel { padding: 12px; }
 }
 

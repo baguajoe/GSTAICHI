@@ -75,6 +75,38 @@ def _chapters(value):
     return sorted(chapters, key=lambda c: c["start"])
 
 
+DRAFT_SOURCES = ("marker", "title", "speech", "scene", "even", "teacher")
+
+
+def _draft_chapters(value):
+    """Like _chapters, but keeps where each chapter came from so the teacher can judge it."""
+    chapters = []
+    for c in value or []:
+        label = str(c.get("label", "")).strip()[:120]
+        try:
+            start = max(0, round(float(c.get("start", 0)), 1))
+        except (TypeError, ValueError):
+            continue
+        source = c.get("source") if c.get("source") in DRAFT_SOURCES else "teacher"
+        chapters.append({"start": start, "label": label, "source": source, "detail": str(c.get("detail") or "")[:300]})
+    return sorted(chapters, key=lambda c: c["start"])
+
+
+def _sync_chapters_vtt(video):
+    """Keeps the chapters file in storage in step with the list (the player itself uses the list)."""
+    if video.status != "ready" or not video.duration_seconds:
+        return
+    try:
+        if video.chapters:
+            r2.put_text(r2.streams_bucket(), f"{video.slug}/chapters.vtt",
+                        chapters_to_vtt(video.chapters, video.duration_seconds), "text/vtt")
+            video.chapters_vtt_path = f"{video.slug}/chapters.vtt"
+        else:
+            video.chapters_vtt_path = None
+    except Exception as e:
+        print(f"Could not update chapters.vtt for {video.slug}: {e}")
+
+
 def studio_video(v):
     job = EncodingJob.query.filter_by(video_id=v.id).order_by(EncodingJob.id.desc()).first()
     return {
@@ -84,8 +116,8 @@ def studio_video(v):
         "show_in_library": v.show_in_library,
         "publish_at": v.publish_at.isoformat() if v.publish_at else None,
         "is_published": v.is_published, "is_free_sample": v.is_free_sample, "tier_rank": v.tier_rank,
-        "chapters": v.chapters or [], "status": v.status, "studio_status": v.studio_status,
-        "failure_reason": v.failure_reason, "duration_seconds": v.duration_seconds,
+        "chapters": v.chapters or [], "chapters_draft": v.chapters_draft, "status": v.status, "studio_status": v.studio_status,
+        "failure_reason": v.failure_reason, "duration_seconds": v.duration_seconds, "width": v.width, "height": v.height,
         "thumbnail_path": v.custom_thumbnail_path or v.thumbnail_path,
         "thumbnail_url": media_url(v.custom_thumbnail_path or v.thumbnail_path),
         "thumbnail_options": [{"percent": o.get("percent"), "path": o.get("large"), "url": media_url(o.get("small") or o.get("large"))}
@@ -183,17 +215,59 @@ def studio_update_video(video_id):
         if path and not re.match(rf"^{re.escape(video.slug)}/thumbs/custom-[a-z0-9]+\.(jpg|png|webp)$", path):
             return _bad("That picture is not valid.")
         video.custom_thumbnail_path = path
-    if "chapters" in data and video.status == "ready" and video.duration_seconds:
-        # keep the chapters file in storage in step with the list (the player itself uses the list)
-        try:
-            if video.chapters:
-                r2.put_text(r2.streams_bucket(), f"{video.slug}/chapters.vtt",
-                            chapters_to_vtt(video.chapters, video.duration_seconds), "text/vtt")
-                video.chapters_vtt_path = f"{video.slug}/chapters.vtt"
-            else:
-                video.chapters_vtt_path = None
-        except Exception as e:
-            print(f"Could not update chapters.vtt for {video.slug}: {e}")
+    if "chapters" in data:
+        _sync_chapters_vtt(video)
+    db.session.commit()
+    return jsonify(studio_video(video))
+
+
+# ----- draft chapters (made by tools/draft_chapters.py, reviewed and published by the teacher) -----
+
+@tcc.route('/studio/videos/<int:video_id>/chapters-draft', methods=['PUT'])
+@role_required(*STAFF)
+def studio_save_chapters_draft(video_id):
+    video = db.session.get(Video, video_id)
+    if video is None:
+        return _bad("Video not found.", 404)
+    data = request.get_json(silent=True) or {}
+    draft = dict(video.chapters_draft or {})
+    draft["chapters"] = _draft_chapters(data.get("chapters"))
+    if "notes" in data:
+        draft["notes"] = str(data.get("notes") or "")[:2000]
+    draft.setdefault("created_at", datetime.utcnow().isoformat())
+    draft["updated_at"] = datetime.utcnow().isoformat()
+    video.chapters_draft = draft
+    db.session.commit()
+    return jsonify(studio_video(video))
+
+
+@tcc.route('/studio/videos/<int:video_id>/chapters-draft/publish', methods=['POST'])
+@role_required(*STAFF)
+def studio_publish_chapters_draft(video_id):
+    """Members see the chapters from now on. The body holds the chapters as the teacher left them."""
+    video = db.session.get(Video, video_id)
+    if video is None:
+        return _bad("Video not found.", 404)
+    data = request.get_json(silent=True) or {}
+    chapters = data["chapters"] if "chapters" in data else (video.chapters_draft or {}).get("chapters")
+    if any(not str(c.get("label", "")).strip() for c in chapters or []):
+        return _bad("Every chapter needs a name. Give it one or delete it.")
+    video.chapters = _chapters(chapters)
+    if not video.chapters:
+        return _bad("There are no chapters to publish.")
+    video.chapters_draft = None
+    _sync_chapters_vtt(video)
+    db.session.commit()
+    return jsonify(studio_video(video))
+
+
+@tcc.route('/studio/videos/<int:video_id>/chapters-draft', methods=['DELETE'])
+@role_required(*STAFF)
+def studio_discard_chapters_draft(video_id):
+    video = db.session.get(Video, video_id)
+    if video is None:
+        return _bad("Video not found.", 404)
+    video.chapters_draft = None
     db.session.commit()
     return jsonify(studio_video(video))
 

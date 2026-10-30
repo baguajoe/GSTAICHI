@@ -4,6 +4,7 @@ import { apiFetch } from "./api";
 import FormField, { FormMessage } from "./FormField";
 import { uploadVideoFile, uploadPicture, formatBytes, MAX_BYTES } from "./uploader";
 import RichEditor from "./RichEditor";
+import StudioChapterReview, { toSeconds, toClock } from "./StudioChapterReview";
 
 const CATEGORY_SUGGESTIONS = ["Fundamentals", "Forms", "Weapons", "Push Hands", "Qigong", "Standing Exercises"];
 
@@ -14,19 +15,6 @@ export const toLocalInput = (iso) => {
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 };
 export const fromLocalInput = (value) => (value ? new Date(value).toISOString() : null);
-
-const toSeconds = (text) => {
-    const parts = String(text).trim().split(":").map(Number);
-    if (parts.some(isNaN)) return null;
-    return parts.reduce((total, n) => total * 60 + n, 0);
-};
-const toClock = (seconds) => {
-    const s = Math.max(0, Math.floor(seconds));
-    const h = Math.floor(s / 3600);
-    const m = Math.floor((s % 3600) / 60);
-    const sec = String(s % 60).padStart(2, "0");
-    return h ? `${h}:${String(m).padStart(2, "0")}:${sec}` : `${m}:${sec}`;
-};
 
 const ProgressBar = ({ progress }) => {
     const percent = progress.total ? Math.floor((progress.sent / progress.total) * 100) : 0;
@@ -58,6 +46,10 @@ const StudioVideoForm = ({ mode, video, defaults = {}, questionId, onDone, onCan
     const [progress, setProgress] = useState(null);
     const [thumbnail, setThumbnail] = useState(video ? video.thumbnail_path : null);
     const [customThumb, setCustomThumb] = useState(video ? video.custom_thumbnail_path : null);
+    // the video as the chapter review last saved it (draft and published chapters)
+    const [reviewed, setReviewed] = useState(video);
+    const [reviewDone, setReviewDone] = useState(null);
+    const hasDraft = mode === "edit" && reviewed && reviewed.chapters_draft;
     const control = useRef({});
     const recordInput = useRef(null);
     const descriptionEditor = useRef(null);
@@ -231,7 +223,21 @@ const StudioVideoForm = ({ mode, video, defaults = {}, questionId, onDone, onCan
                         Free lesson (anyone with an account can watch it, without a plan)
                     </label>
 
-                    <fieldset className="tcc-field tcc-chapters-edit">
+                    {hasDraft && (
+                        <StudioChapterReview video={reviewed} onChange={(saved, action) => {
+                            setReviewed(saved);
+                            setReviewDone(action);
+                            // keep "Save changes" from putting back the chapters from before
+                            setForm(f => ({ ...f, chapters: saved.chapters.map(c => ({ time: toClock(c.start), label: c.label })) }));
+                        }} />
+                    )}
+                    {!hasDraft && reviewDone === "published" && (
+                        <p className="tcc-success" role="status">The chapters are published. Members can use them now.</p>
+                    )}
+                    {!hasDraft && reviewDone === "discarded" && (
+                        <p className="tcc-success" role="status">The draft chapters were thrown away.</p>
+                    )}
+                    {!hasDraft && <fieldset className="tcc-field tcc-chapters-edit">
                         <legend>Chapters (optional)</legend>
                         <p className="tcc-field-hint">For example 0:00 Opening, 2:30 Single Whip. Members can tap a chapter to jump to it.</p>
                         {form.chapters.map((c, i) => (
@@ -246,7 +252,7 @@ const StudioVideoForm = ({ mode, video, defaults = {}, questionId, onDone, onCan
                         ))}
                         <button type="button" className="tcc-btn tcc-btn-outline"
                             onClick={() => setForm({ ...form, chapters: [...form.chapters, { time: "", label: "" }] })}>Add a chapter</button>
-                    </fieldset>
+                    </fieldset>}
                 </>
             )}
 
