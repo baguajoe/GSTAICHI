@@ -1,26 +1,34 @@
 # Render Blueprint for the gstaichi.org API and the Tai Chi Company video worker.
 # Schema: https://render.com/docs/blueprint-spec
 #
-# The website itself (public/ after `npm run build`) is hosted on HostGator; Render runs only the Flask API
+# The website itself (public/ after `npm run build`) is hosted on HostGator; Render runs the Flask API, its Postgres database
 # (which also serves /admin) and the background worker that prepares uploaded videos.
 # Values marked "sync: false" are secrets: Render asks for them when you create the Blueprint, and they are
 # never stored in this file. See .env.example for what each one is and where to get it.
 # Step-by-step instructions: docs/LAUNCH_CHECKLIST.md
 
+databases:
+    # One database for the Books & DVDs store and The Tai Chi Company
+    - name: gstaichi-db
+      region: ohio
+      plan: basic-256mb
+      postgresMajorVersion: "17"
+      databaseName: gstaichi
+      user: gstaichi
+
 envVarGroups:
     # Shared by the API and the worker, so both always use the same keys
+    # (DATABASE_URL is set on each service below: a group cannot point at the database)
     - name: tai-chi-company-shared
       envVars:
-          - key: DATABASE_URL
-            sync: false
           - key: BACKEND_URL # the API's public address, e.g. https://api.gstaichi.org (baked into every video)
             sync: false
           - key: FRONTEND_URL # the website, e.g. https://gstaichi.org (www. is allowed automatically)
             sync: false
           - key: KEY_ENCRYPTION_SECRET # never change after videos are uploaded, or they stop playing
             sync: false
-          - key: MEDIA_BASE_URL
-            value: https://media.gstaichi.org
+          - key: MEDIA_BASE_URL # the video Worker; becomes https://media.gstaichi.org once DNS moves to Cloudflare
+            value: https://tai-chi-company-media-test.tai-chi-company-media-worker.workers.dev
           - key: R2_ACCOUNT_ID
             sync: false
           - key: R2_ACCESS_KEY_ID
@@ -49,6 +57,12 @@ services:
       healthCheckPath: /api/tcc/settings
       envVars:
           - fromGroup: tai-chi-company-shared
+          - key: DATABASE_URL
+            fromDatabase:
+                name: gstaichi-db
+                property: connectionString
+          - key: NOTIFICATION_EMAIL # where store order emails go (Vincent)
+            sync: false
           - key: FLASK_APP
             value: src/app.py
           - key: FLASK_DEBUG
@@ -81,5 +95,9 @@ services:
       dockerContext: .
       envVars:
           - fromGroup: tai-chi-company-shared
+          - key: DATABASE_URL
+            fromDatabase:
+                name: gstaichi-db
+                property: connectionString
           - key: ENCODE_PRESET
             value: veryfast
