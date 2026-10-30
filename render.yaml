@@ -27,7 +27,7 @@ envVarGroups:
             sync: false
           - key: KEY_ENCRYPTION_SECRET # never change after videos are uploaded, or they stop playing
             sync: false
-          - key: MEDIA_BASE_URL # the video Worker; becomes https://media.gstaichi.org once DNS moves to Cloudflare
+          - key: MEDIA_BASE_URL # the video Worker (workers.dev until DNS moves to Cloudflare)
             value: https://tai-chi-company-media-test.tai-chi-company-media-worker.workers.dev
           - key: R2_ACCOUNT_ID
             sync: false
