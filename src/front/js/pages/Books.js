@@ -67,7 +67,8 @@ export const BooksAndVideos = () => {
       image: taiChiCirclesImg,
       cost: 41.01,
       type: 'book',
-      externalLink: "https://www.lulu.com/shop/vincent-chu/tai-chi-chuan-circle/paperback/product-kv88y9r.html?q=vincent+chu&page=1&pageSize=4"
+      // Print-on-demand: sold and shipped by Lulu, never through our cart
+      luluLink: "https://www.lulu.com/shop/vincent-chu/tai-chi-chuan-circle/paperback/product-kv88y9r.html"
     },
     {
       id: 3,
@@ -127,6 +128,7 @@ export const BooksAndVideos = () => {
   // Used both by direct clicks (when a region is already set) and after
   // the user picks a region in the modal for a pending product.
   const addProductToCart = (product) => {
+    if (product.luluLink) return; // bought on Lulu only
     setCart(prevCart => {
       const existingItem = prevCart.find(item => item.id === product.id);
       if (existingItem) {
@@ -142,6 +144,7 @@ export const BooksAndVideos = () => {
   };
 
   const handleAddToCart = (product) => {
+    if (product.luluLink) return; // bought on Lulu only
     // If no shipping region is selected, remember which product the user
     // wanted, prompt for region, and stop. The product will be added to
     // the cart automatically once they pick a region.
@@ -379,21 +382,25 @@ export const BooksAndVideos = () => {
                       Cost: ${book.cost.toFixed(2)}
                     </p>
                     <div className="d-flex flex-column gap-2">
-                      <button
-                        onClick={() => handleAddToCart(book)}
-                        className="btn btn-warning w-100"
-                      >
-                        Add To Cart
-                      </button>
-                      {book.externalLink && (
-                        <a
-                          href={book.externalLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn btn-outline-primary w-100"
+                      {book.luluLink ? (
+                        <>
+                          <a
+                            href={book.luluLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-warning w-100"
+                          >
+                            Buy on Lulu
+                          </a>
+                          <small className="text-muted text-center">Printed and shipped by Lulu.</small>
+                        </>
+                      ) : (
+                        <button
+                          onClick={() => handleAddToCart(book)}
+                          className="btn btn-warning w-100"
                         >
-                          Buy Direct
-                        </a>
+                          Add To Cart
+                        </button>
                       )}
                     </div>
                   </div>
