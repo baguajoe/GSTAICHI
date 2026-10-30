@@ -397,7 +397,7 @@ def setup_admin(app):
         index_view=SecureIndexView(name="Dashboard"),
     )
 
-    tcc = "Tai Chi Company"
+    tcc = "The Tai Chi Company"
     admin.add_view(SiteSettingsAdmin(SiteSettings, db.session, name="Site Settings", category=tcc))
     admin.add_view(UserAdmin(User, db.session, name="Users", category=tcc))
     admin.add_view(TierAdmin(Tier, db.session, name="Tiers", category=tcc))

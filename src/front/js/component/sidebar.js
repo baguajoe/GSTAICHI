@@ -78,7 +78,7 @@ export const Sidebar = () => {
                     className={`nav-link mt-2 ${location.pathname.startsWith("/tai-chi-company") && !location.pathname.startsWith("/tai-chi-company/articles") ? "active" : ""}`}
                     to="/tai-chi-company"
                 >
-                    Tai Chi Company
+                    The Tai Chi Company
                 </Link>
 
                 <Link

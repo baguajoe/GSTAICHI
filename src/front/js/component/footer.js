@@ -64,7 +64,7 @@ const Footer = () => {
 							</li>
 							<li className="mb-2 text-end">
 								<Link to="/tai-chi-company" className="text-white text-decoration-none hover-opacity">
-									<i className="fas fa-chevron-right me-2"></i>Tai Chi Company
+									<i className="fas fa-chevron-right me-2"></i>The Tai Chi Company
 								</Link>
 							</li>
 						</ul>

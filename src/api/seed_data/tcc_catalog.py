@@ -4,7 +4,7 @@ Loaded by `flask seed-tcc`. Everything here can be changed later in /admin.
 """
 
 DEFAULT_SITE_SETTINGS = {
-    "app_name": "Tai Chi Company",
+    "app_name": "The Tai Chi Company",
     "school_name": "Gin Soon Tai Chi Chuan Federation",
     "logo_url": None,
     "primary_color": "#590d0d",

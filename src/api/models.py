@@ -390,7 +390,7 @@ class SiteSettings(db.Model):
     """Single row holding all branding and contact info, so the app can be reused by other teachers."""
     __tablename__ = "site_settings"
     id = db.Column(db.Integer, primary_key=True)
-    app_name = db.Column(db.String(120), nullable=False, default="Tai Chi Company")
+    app_name = db.Column(db.String(120), nullable=False, default="The Tai Chi Company")
     school_name = db.Column(db.String(200), nullable=False, default="")
     logo_url = db.Column(db.String(500), nullable=True)
     primary_color = db.Column(db.String(20), nullable=False, default="#590d0d")
@@ -412,7 +412,7 @@ class SiteSettings(db.Model):
     def get(cls):
         settings = cls.query.order_by(cls.id).first()
         if settings is None:
-            settings = cls(app_name="Tai Chi Company", school_name="")
+            settings = cls(app_name="The Tai Chi Company", school_name="")
             db.session.add(settings)
             db.session.commit()
         return settings
