@@ -70,8 +70,8 @@ services:
             generateValue: true
           - key: MEDIA_TOKEN_SECRET # must match the Cloudflare Worker's MEDIA_TOKEN_SECRET
             sync: false
-          - key: PAYPAL_MODE # sandbox while testing, live at launch
-            value: sandbox
+          - key: PAYPAL_MODE # live since launch; set "sandbox" (and the PAYPAL_SANDBOX_* keys) to test again
+            value: live
           - key: PAYPAL_CLIENT_ID
             sync: false
           - key: PAYPAL_CLIENT_SECRET
