@@ -1,0 +1,24 @@
+# The live media Worker on its free workers.dev address, used while gstaichi.org's DNS is at HostGator
+# (a custom domain like media.gstaichi.org needs the domain on Cloudflare; then use wrangler.toml instead).
+# Deploy with: npx wrangler deploy --config wrangler.workersdev.toml
+# Its address is MEDIA_BASE_URL in render.yaml. Keep the name, or that address changes.
+name = "tai-chi-company-media-test"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+
+workers_dev = true
+
+# The private bucket with the encoded videos (never turn on public access for it)
+[[r2_buckets]]
+binding = "STREAMS"
+bucket_name = "taichi-streams"
+
+[vars]
+# Websites allowed to play the videos (comma separated, no trailing slash)
+ALLOWED_ORIGINS = "https://gstaichi.org,https://www.gstaichi.org"
+# Chromecast's player runs on this origin
+CAST_ORIGINS = "https://www.gstatic.com"
+# The site's API, for reporting video pieces served (copy detection). Same as BACKEND_URL on Render.
+BACKEND_URL = "https://api.gstaichi.org"
+
+# MEDIA_TOKEN_SECRET (secret, same as on Render): npx wrangler secret put MEDIA_TOKEN_SECRET --config wrangler.workersdev.toml

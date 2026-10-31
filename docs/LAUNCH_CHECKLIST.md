@@ -17,7 +17,7 @@ Where things run:
 
 ## Where we are (2026-10-31)
 
-**Next time: start with the "Left for you" list under step 6 below.** Step 3 passed. Steps 4 and 5 were still
+**Next time: start with the "Left for you" list under step 6 below (item 1 is done).** Step 3 passed. Steps 4 and 5 were still
 open when step 6 began.
 
 - Render: `gstaichi-api`, `tai-chi-company-worker` and `gstaichi-db` are running from render.yaml. The API answers at
@@ -28,8 +28,16 @@ open when step 6 began.
 - Step 3 passed: the free sample `fundamentals` plays end to end through the workers.dev Worker. Its key address is
   `https://api.gstaichi.org/api/tcc/key/fundamentals`. The key comes from that address both ways (hls.js headers and
   Safari's signed link) and decrypts the video.
-- Still to do: `FRONTEND_URL` in `tai-chi-company-secrets` is still the Codespace address. Change it to
-  `https://gstaichi.org` in step 5.
+- Done 2026-10-31 (launch day), all from the Codespace:
+  - 6 live PayPal plans created (product `PROD-1H037759EH3969146`); /api/tcc/plan-options serves them.
+  - Render database: new credential `gstaichidb_gwpw_user`, old one deleted. Its External URL is in `.env` as
+    `RENDER_DATABASE_URL` (gitignored), so the database can be checked from the Codespace without `render-db.url`.
+  - New `MEDIA_TOKEN_SECRET` on Render and on the Worker (it must be changed once more after launch, see 13).
+  - Locked to gstaichi.org: `taichi-masters` CORS allows only `https://gstaichi.org` and `https://www.gstaichi.org`
+    (`taichi-streams` has no CORS rule; only the Worker reads it). The video Worker stays on its workers.dev
+    address (DNS is at HostGator, so `media.gstaichi.org` is not possible yet) and is deployed with
+    `cloudflare-worker/wrangler.workersdev.toml`: it plays videos only for gstaichi.org.
+  - To do: `FRONTEND_URL` in `tai-chi-company-secrets` → `https://gstaichi.org` (still the Codespace address).
 - Clean-up: delete the test member `baguajoe+keycheck@gmail.com` in /admin when it's no longer needed for checks.
 - Step 6 (PayPal live), in progress:
   - Done: new secret on the one live app, "Gin Soon Tai Chi …ation" (client ID `BAA0zQJv…tVLk`, the same one the store
@@ -39,11 +47,7 @@ open when step 6 began.
   - Checked 2026-10-31: the live plan column is empty for all 6 plans. The sandbox IDs are correctly in the sandbox column.
   - Until the website is rebuilt in live mode, the site and the API are in different modes, and no subscribe buttons show.
   - **Left for you**, in this order:
-    1. Render → API → **Shell**: `python scripts/create_paypal_plans.py --dry-run`. It should list 6 plans: Beginner
-       $9.99/$99.00, Intermediate $14.99/$149.00, Advanced $19.99/$199.00 (monthly/annual). Then run
-       `python scripts/create_paypal_plans.py`. "Could not sign in to PayPal" means the new secret in Render is wrong.
-       Check the result: https://api.gstaichi.org/api/tcc/plan-options should show 6 new `P-…` IDs, not the
-       sandbox ones (which start `P-0JD2`, `P-9983`, `P-86Y9`, `P-5H13`, `P-3JN7`, `P-25G6`).
+    1. ~~Create the 6 live plans~~ Done 2026-10-31 from the Codespace (see above).
     2. /admin → **Users** → `ginsoontachi@gmail.com`. It still has Beginner access (status active) from a sandbox
        test payment made 2026-10-30. Set Paid level 0 and status none, and clear its PayPal subscription ID, current
        plan and paid-through date. Untick founding member unless you want to keep it.
@@ -252,6 +256,18 @@ At minimum:
 
 ## 13. After launch
 
+- **Fresh keys** (put off on launch day). Change one at a time and check the site after each. Never change
+  `KEY_ENCRYPTION_SECRET`.
+  - `MEDIA_TOKEN_SECRET` once more (the launch-day value showed in a screenshot): make a new one (step 1), set it in
+    Render → `gstaichi-api` → Environment, then on the Worker:
+    `npx wrangler secret put MEDIA_TOKEN_SECRET --config wrangler.workersdev.toml` (in `cloudflare-worker/`).
+    Videos stop playing between the two, so do both together.
+  - R2 API token: create a new one (step 2.6), put `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY` in
+    `tai-chi-company-secrets`, then delete the old token. The Windows upload tool has its own token
+    (`tools/README.md` step 3): roll that one the same way.
+  - `GMAIL_PASSWORD`: new app password (step 3), set it in `tai-chi-company-secrets`, delete the old one in Google.
+  - `CLOUDFLARE_API_TOKEN` (used from the Codespace for wrangler): roll it at
+    https://dash.cloudflare.com/profile/api-tokens and update `.env`.
 - Check **/admin** (Dashboard) every few days: accounts to check, failed videos, unanswered questions.
 - To change a price: in **Plans and Prices** untick **Is Active** on the old plan, add a new plan with the
   new price, run `scripts/create_paypal_plans.py`. Members already subscribed keep their price.
