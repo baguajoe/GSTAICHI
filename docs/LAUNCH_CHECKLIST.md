@@ -15,6 +15,47 @@ Where things run:
 | Video delivery | Cloudflare Worker | https://media.gstaichi.org |
 | Payments | PayPal Subscriptions | none |
 
+## Where we are (2026-10-31)
+
+**Next time: start with the "Left for you" list under step 6 below.** Step 3 passed. Steps 4 and 5 were still
+open when step 6 began.
+
+- Render: `gstaichi-api`, `tai-chi-company-worker` and `gstaichi-db` are running from render.yaml. The API answers at
+  https://api.gstaichi.org.
+- Shared secrets live in the dashboard-only group `tai-chi-company-secrets`. It is linked to both services but kept out
+  of render.yaml, so a Blueprint sync can't wipe it. `tai-chi-company-shared` holds only the four plain settings.
+- `KEY_ENCRYPTION_SECRET` is set on the API (44 characters) and matches the one `fundamentals` was encrypted with (only that video was tested).
+- Step 3 passed: the free sample `fundamentals` plays end to end through the workers.dev Worker. Its key address is
+  `https://api.gstaichi.org/api/tcc/key/fundamentals`. The key comes from that address both ways (hls.js headers and
+  Safari's signed link) and decrypts the video.
+- Still to do: `FRONTEND_URL` in `tai-chi-company-secrets` is still the Codespace address. Change it to
+  `https://gstaichi.org` in step 5.
+- Clean-up: delete the test member `baguajoe+keycheck@gmail.com` in /admin when it's no longer needed for checks.
+- Step 6 (PayPal live), in progress:
+  - Done: new secret on the one live app, "Gin Soon Tai Chi …ation" (client ID `BAA0zQJv…tVLk`, the same one the store
+    uses), and the old secret deleted. The one live webhook points to `https://api.gstaichi.org/api/tcc/paypal/webhook`
+    with the 7 events. The API runs with `PAYPAL_MODE=live` (also in render.yaml) and the live
+    `PAYPAL_CLIENT_ID` / `PAYPAL_CLIENT_SECRET` / `PAYPAL_WEBHOOK_ID`.
+  - Checked 2026-10-31: the live plan column is empty for all 6 plans. The sandbox IDs are correctly in the sandbox column.
+  - Until the website is rebuilt in live mode, the site and the API are in different modes, and no subscribe buttons show.
+  - **Left for you**, in this order:
+    1. Render → API → **Shell**: `python scripts/create_paypal_plans.py --dry-run`. It should list 6 plans: Beginner
+       $9.99/$99.00, Intermediate $14.99/$149.00, Advanced $19.99/$199.00 (monthly/annual). Then run
+       `python scripts/create_paypal_plans.py`. "Could not sign in to PayPal" means the new secret in Render is wrong.
+       Check the result: https://api.gstaichi.org/api/tcc/plan-options should show 6 new `P-…` IDs, not the
+       sandbox ones (which start `P-0JD2`, `P-9983`, `P-86Y9`, `P-5H13`, `P-3JN7`, `P-25G6`).
+    2. /admin → **Users** → `ginsoontachi@gmail.com`. It still has Beginner access (status active) from a sandbox
+       test payment made 2026-10-30. Set Paid level 0 and status none, and clear its PayPal subscription ID, current
+       plan and paid-through date. Untick founding member unless you want to keep it.
+    3. Rebuild the website with `PAYPAL_MODE=live` and upload it (step 12.6). Keep `PAYPAL_CLIENT_ID` as the
+       `BAA0zQJv…tVLk` app so the Books & DVDs store keeps working.
+    4. Make one real subscription at the lowest price (step 12.7), check it in /admin, then cancel it. This is
+       also the first proof that the live `PAYPAL_WEBHOOK_ID` works: the payment should appear under webhook events.
+    5. Delete the test member `baguajoe+keycheck@gmail.com` (above) when no longer needed.
+  - Checking the database from the Codespace needs `render-db.url` (External Database URL, one line, gitignored) in
+    the project root. It was deleted after this session, so recreate it if needed.
+- Render Shell commands run without `pipenv run`. The build installs packages straight into Render's Python.
+
 ---
 
 ## 1. Make the two secret keys (5 minutes)
@@ -103,9 +144,9 @@ You need a paid Render plan for the background worker (Starter is enough to begi
 5. API service → **Shell**, and run once (creates tiers, plans, settings and the 21 placeholder videos):
 
    ```bash
-   pipenv run flask seed-tcc
-   pipenv run flask seed-video-descriptions
-   pipenv run flask seed-tcc-articles
+   flask seed-tcc
+   flask seed-video-descriptions
+   flask seed-tcc-articles
    ```
 
 6. Worker → **Logs** should say `Worker started`.
@@ -130,7 +171,7 @@ Use the same `MEDIA_TOKEN_SECRET` as on Render.
    (saved as the sandbox plan IDs):
 
    ```bash
-   pipenv run python scripts/create_paypal_plans.py
+   python scripts/create_paypal_plans.py
    ```
 
 5. developer.paypal.com → **Testing Tools** → **Sandbox Accounts**: use the **Personal** account's
@@ -155,8 +196,8 @@ Use the same `MEDIA_TOKEN_SECRET` as on Render.
 2. Render → API → **Shell**:
 
    ```bash
-   pipenv run flask set-role you@example.com admin
-   pipenv run flask set-role vincent@example.com teacher
+   flask set-role you@example.com admin
+   flask set-role vincent@example.com teacher
    ```
 
 3. Sign in at https://api.gstaichi.org/admin with your email and password.
@@ -199,8 +240,8 @@ At minimum:
 4. Render → API → **Shell**: make live PayPal plans (saved next to the sandbox ones, which are kept):
 
    ```bash
-   pipenv run python scripts/create_paypal_plans.py --dry-run   # check: 6 plans, right prices
-   pipenv run python scripts/create_paypal_plans.py
+   python scripts/create_paypal_plans.py --dry-run   # check: 6 plans, right prices
+   python scripts/create_paypal_plans.py
    ```
 
 5. In `/admin` → **Users**, remove the plan from test accounts that "paid" in sandbox (set Paid level 0,
