@@ -3,8 +3,8 @@
 #
 # The website itself (public/ after `npm run build`) is hosted on HostGator; Render runs the Flask API, its Postgres database
 # (which also serves /admin) and the background worker that prepares uploaded videos.
-# Values marked "sync: false" are secrets: Render asks for them when you create the Blueprint, and they are
-# never stored in this file. See .env.example for what each one is and where to get it.
+# Values marked "sync: false" are per-service secrets: Render asks for them when you create the Blueprint, never
+# stores them in this file, and leaves them alone on every later sync. See .env.example for what each one is.
 # Step-by-step instructions: docs/LAUNCH_CHECKLIST.md
 
 databases:
@@ -17,34 +17,27 @@ databases:
       user: gstaichi
 
 envVarGroups:
-    # Shared by the API and the worker, so both always use the same keys
+    # Plain settings shared by the API and the worker. This group is managed by the Blueprint: every sync
+    # resets it to exactly these values, so never add keys to it in the dashboard.
     # (DATABASE_URL is set on each service below: a group cannot point at the database)
     - name: tai-chi-company-shared
       envVars:
-          - key: BACKEND_URL # the API's public address, e.g. https://api.gstaichi.org (baked into every video)
-            sync: false
-          - key: FRONTEND_URL # the website, e.g. https://gstaichi.org (www. is allowed automatically)
-            sync: false
-          - key: KEY_ENCRYPTION_SECRET # never change after videos are uploaded, or they stop playing
-            sync: false
           - key: MEDIA_BASE_URL # the video Worker (workers.dev until DNS moves to Cloudflare)
             value: https://tai-chi-company-media-test.tai-chi-company-media-worker.workers.dev
-          - key: R2_ACCOUNT_ID
-            sync: false
-          - key: R2_ACCESS_KEY_ID
-            sync: false
-          - key: R2_SECRET_ACCESS_KEY
-            sync: false
           - key: R2_MASTERS_BUCKET
             value: taichi-masters
           - key: R2_STREAMS_BUCKET
             value: taichi-streams
-          - key: GMAIL
-            sync: false
-          - key: GMAIL_PASSWORD
-            sync: false
           - key: PYTHON_VERSION
             value: 3.10.12
+
+    # Shared secrets live in a second group, tai-chi-company-secrets, which is created in the dashboard and
+    # deliberately NOT defined here, so a Blueprint sync can never remove or blank its values. (Render
+    # ignores "sync: false" inside a group defined in this file, which is how they were wiped before.)
+    # It holds: BACKEND_URL (https://api.gstaichi.org, baked into every video), FRONTEND_URL,
+    # KEY_ENCRYPTION_SECRET (never change after videos are uploaded, or they stop playing), R2_ACCOUNT_ID,
+    # R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, GMAIL, GMAIL_PASSWORD.
+    # Create it before syncing this file, or the sync fails. Steps: docs/LAUNCH_CHECKLIST.md step 4.
 
 services:
     - type: web
@@ -58,6 +51,7 @@ services:
       healthCheckPath: /api/tcc/settings
       envVars:
           - fromGroup: tai-chi-company-shared
+          - fromGroup: tai-chi-company-secrets # dashboard-only, see envVarGroups above
           - key: DATABASE_URL
             fromDatabase:
                 name: gstaichi-db
@@ -96,6 +90,7 @@ services:
       dockerContext: .
       envVars:
           - fromGroup: tai-chi-company-shared
+          - fromGroup: tai-chi-company-secrets # dashboard-only, see envVarGroups above
           - key: DATABASE_URL
             fromDatabase:
                 name: gstaichi-db

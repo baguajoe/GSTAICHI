@@ -76,12 +76,19 @@ You need a paid Render plan for the background worker (Starter is enough to begi
 2. **Database**: if the site already has a Render PostgreSQL database, open it and copy the
    **Internal Database URL** → `DATABASE_URL`. Otherwise **New** → **PostgreSQL**, name `gstaichi-db`,
    same region as below, **Create**, then copy its Internal Database URL.
-3. **New** → **Blueprint** → connect the GitHub repository `baguajoe/GSTAICHI`, branch
+3. **First create the secrets group** (render.yaml links it but deliberately does not define it, so a
+   Blueprint sync can never wipe it): **Environment Groups** → **New Environment Group**, name exactly
+   `tai-chi-company-secrets`, then **Add from .env** with `BACKEND_URL`, `FRONTEND_URL`,
+   `KEY_ENCRYPTION_SECRET`, `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `GMAIL`,
+   `GMAIL_PASSWORD` (a local, uncommitted `render-group.env` works well for this). Do **not** put these
+   in `tai-chi-company-shared`: that group is reset to what render.yaml says on every sync.
+
+   Then **New** → **Blueprint** → connect the GitHub repository `baguajoe/GSTAICHI`, branch
    `tai-chi-company` (or `main` once merged). Render reads `render.yaml` and shows the API, the worker
-   and the shared settings group. Fill in every value it asks for:
-   - `DATABASE_URL` (step 4.2), `KEY_ENCRYPTION_SECRET` and `MEDIA_TOKEN_SECRET` (step 1)
-   - `BACKEND_URL` = `https://api.gstaichi.org`, `FRONTEND_URL` = `https://gstaichi.org`
-   - `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` (step 2), `GMAIL`, `GMAIL_PASSWORD` (step 3)
+   and the shared settings group (the secrets group above holds `BACKEND_URL` = `https://api.gstaichi.org`,
+   `FRONTEND_URL` = `https://gstaichi.org`, `KEY_ENCRYPTION_SECRET` (step 1), R2 (step 2) and Gmail (step 3)).
+   Fill in every value it asks for:
+   - `DATABASE_URL` (step 4.2), `MEDIA_TOKEN_SECRET` (step 1), `NOTIFICATION_EMAIL`
    - PayPal values: leave empty for now (step 6)
    - `REDIS_URL`: leave empty
 
@@ -89,7 +96,7 @@ You need a paid Render plan for the background worker (Starter is enough to begi
    the database up to date.
    *If the API already exists in Render from before*, you can instead add the missing variables to it by
    hand (Environment tab) and create only the worker: **New** → **Background Worker** → this repository →
-   Runtime **Docker**, Dockerfile path `./Dockerfile.worker`, same variables as the shared group.
+   Runtime **Docker**, Dockerfile path `./Dockerfile.worker`, linked to both groups.
 4. API service → **Settings** → **Custom Domains** → add `api.gstaichi.org`. Render shows a CNAME
    record; add it in Cloudflare (**DNS** → **Add record**, type CNAME, name `api`, target as shown,
    proxy status **DNS only**). Wait for the green check.
