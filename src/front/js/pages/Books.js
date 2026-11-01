@@ -8,7 +8,6 @@ import taiChiCirclesImg from '../../img/TaiChiChuanCircles.jpg';
 import ebookImg from '../../img/ebook.gif';
 import mediumFrame8Img from '../../img/8TechniquesMediumFrameSoloFormCover.gif';
 import beginnersCoverImg from '../../img/beginnersCover.jpg';
-import largeFrameCoverImg from '../../img/largeFrameCover.jpg';
 import centerHarmonyImg from '../../img/centerHarmonyQigong.gif';
 import threeCirclesImg from '../../img/threeCirclesExercise.gif';
 import returningTaiChiImg from '../../img/ReturningTaiChi.jpg';
@@ -83,7 +82,6 @@ export const BooksAndVideos = () => {
   const dvds = [
     { id: 7, title: 'Eight Techniques Medium Frame Solo Form', cost: 29.95, runtime: '59 Minutes', image: mediumFrame8Img, type: 'dvd' },
     { id: 8, title: 'Tai Chi Chuan for Beginners', cost: 29.95, runtime: '55 Minutes', image: beginnersCoverImg, type: 'dvd' },
-    { id: 9, title: 'Yang Family Tai Chi Chuan: Large Frame Short Form', cost: 39.95, runtime: '52 Minutes', image: largeFrameCoverImg, type: 'dvd' },
     { id: 10, title: 'Center Harmony Qigong', cost: 29.95, runtime: '45 Minutes', image: centerHarmonyImg, type: 'dvd' },
     { id: 11, title: 'Three Circles Exercise', cost: 29.95, runtime: '45 Minutes', image: threeCirclesImg, type: 'dvd' },
     { id: 12, title: '12 Techniques Returning Tai Chi Chuan Solo Form', cost: 29.95, runtime: '1 hour 39 Minutes', image: returningTaiChiImg, type: 'dvd' },
