@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { useTcc } from "./TccContext";
+import { useTcc, HELP_EMAIL } from "./TccContext";
 import Overlay from "./Overlay";
 import { useInstallPrompt, detectDevice, iosBrowser, computerBrowser } from "./homeScreenApp";
 import {
@@ -150,7 +150,7 @@ const InstallDialog = ({ onClose }) => {
                         <Link to="/tai-chi-company/add-to-phone" onClick={onClose} className="tcc-text-link">
                             See the full help page
                         </Link>
-                        {settings.contact_phone && <> or call us at {settings.contact_phone} and we will walk you through it.</>}
+                        <> or email Vincent at <a href={`mailto:${HELP_EMAIL}`}>{HELP_EMAIL}</a> and we will walk you through it.</>
                     </p>
                     <div className="tcc-button-row">
                         <button type="button" className="custom-btn1 tcc-btn" onClick={onClose}>Done</button>

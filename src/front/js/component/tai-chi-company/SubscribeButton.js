@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { apiFetch } from "./api";
 import { FormMessage } from "./FormField";
+import { HELP_EMAIL } from "./TccContext";
 
 // While subscriptions are tested in sandbox mode they use the sandbox app; the shop keeps the live PAYPAL_CLIENT_ID
 const PAYPAL_CLIENT_ID = (process.env.PAYPAL_MODE || "sandbox").toLowerCase() !== "live" && process.env.PAYPAL_SANDBOX_CLIENT_ID
@@ -27,7 +28,7 @@ const SubscribeButton = ({ plan, user, onSubscribed }) => {
     const [busy, setBusy] = useState(false);
 
     if (!PAYPAL_CLIENT_ID || !plan.paypal_plan_id) {
-        return <p className="tcc-notice">Online payment is being set up. Please check back soon, or call us to join.</p>;
+        return <p className="tcc-notice">Online payment is being set up. Please check back soon, or email <a href={`mailto:${HELP_EMAIL}`}>{HELP_EMAIL}</a> to join.</p>;
     }
     if (busy) return <p className="tcc-success" role="status">Thank you! Confirming your payment with PayPal…</p>;
 
@@ -51,7 +52,7 @@ const SubscribeButton = ({ plan, user, onSubscribed }) => {
                             setBusy(false);
                         }
                     }}
-                    onError={() => setError("PayPal could not start the payment. Please try again, or call us for help.")}
+                    onError={() => setError(`PayPal could not start the payment. Please try again, or email ${HELP_EMAIL} for help.`)}
                 />
             </PayPalScriptProvider>
             <p className="tcc-field-hint">By subscribing you agree to the <Link to="/tai-chi-company/terms">Terms of Use</Link>.</p>

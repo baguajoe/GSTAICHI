@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useTcc } from "../../component/tai-chi-company/TccContext";
+import { useTcc, HELP_EMAIL } from "../../component/tai-chi-company/TccContext";
 import { useInstallPrompt, detectDevice, iosBrowser } from "../../component/tai-chi-company/homeScreenApp";
 import {
     IphoneSteps, AndroidSteps, ComputerSteps, OpenInSafariNotice
@@ -79,7 +79,7 @@ const AddToPhone = () => {
             <section className="tcc-section tcc-notice">
                 <h2>Need a hand?</h2>
                 <p>
-                    Call us at <a href={`tel:${(settings.contact_phone || "").replace(/[^\d+]/g, "")}`}>{settings.contact_phone}</a> and
+                    Email Vincent at <a href={`mailto:${HELP_EMAIL}`}>{HELP_EMAIL}</a> and
                     we will walk you through it, step by step.
                 </p>
             </section>

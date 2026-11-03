@@ -4,6 +4,9 @@ import { apiFetch, getToken, setToken } from "./api";
 // Shared data for every Tai Chi Company page: site settings, tiers/plans and the signed-in member.
 const TccContext = createContext(null);
 
+// Who members contact for help (shown in the app's help lines)
+export const HELP_EMAIL = "chu.v@usa.com";
+
 export const useTcc = () => useContext(TccContext);
 
 export const TccProvider = ({ children }) => {

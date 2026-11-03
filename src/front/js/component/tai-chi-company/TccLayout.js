@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, Outlet, Link } from "react-router-dom";
-import { TccProvider, useTcc } from "./TccContext";
+import { TccProvider, useTcc, HELP_EMAIL } from "./TccContext";
 import { useHomeScreenApp } from "./homeScreenApp";
 import { InstallButton } from "./InstallApp";
 import "../../../styles/taiChiCompany.css";
@@ -49,14 +49,11 @@ const TccNav = () => {
 
 const TccFooter = () => {
     const { settings } = useTcc();
-    const phoneHref = (settings.contact_phone || "").replace(/[^\d+]/g, "");
     return (
         <footer className="tcc-footer">
-            {settings.contact_phone && (
-                <p className="tcc-help-line">
-                    Need help? Call <a href={`tel:${phoneHref}`}>{settings.contact_phone}</a>
-                </p>
-            )}
+            <p className="tcc-help-line">
+                Need help? Email Vincent at <a href={`mailto:${HELP_EMAIL}`}>{HELP_EMAIL}</a>
+            </p>
             <p className="tcc-copyright">
                 &copy; {new Date().getFullYear()} {settings.copyright_line || settings.school_name}
             </p>
