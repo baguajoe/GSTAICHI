@@ -26,6 +26,7 @@ const meta = (name, content) => {
 // Android/Chrome/Edge fire this once, possibly before any install button is on screen, so keep it here.
 let deferredPrompt = null;
 let installedThisVisit = false;
+let macNoticePending = false;  // installed from Chrome or Edge on a Mac: explain macOS's "Data Access Blocked" notice
 const installListeners = new Set();
 const notifyInstall = () => installListeners.forEach(fn => fn(n => n + 1));
 if (typeof window !== "undefined") {
@@ -72,11 +73,21 @@ export const useInstallPrompt = () => {
         deferredPrompt = null;  // the browser allows each prompt to be shown only once
         promptEvent.prompt();
         const choice = await promptEvent.userChoice;
-        if (choice.outcome === "accepted") installedThisVisit = true;
+        if (choice.outcome === "accepted") {
+            installedThisVisit = true;
+            if (installGuide() === "mac-chrome") macNoticePending = true;
+        }
         notifyInstall();
         return choice.outcome === "accepted";
     };
-    return { canInstall: !!deferredPrompt, installed: installedThisVisit || isRunningAsApp(), install };
+    const dismissMacNotice = () => {
+        macNoticePending = false;
+        notifyInstall();
+    };
+    return {
+        canInstall: !!deferredPrompt, installed: installedThisVisit || isRunningAsApp(), install,
+        showMacNotice: macNoticePending, dismissMacNotice,
+    };
 };
 
 export const isRunningAsApp = () =>
@@ -114,4 +125,18 @@ export const computerBrowser = () => {
     if (/Chrome\//.test(ua)) return "chrome";
     if (/Safari\//.test(ua) && /Macintosh/.test(ua)) return "mac-safari";
     return "other";
+};
+
+// Which set of install steps fits this device, so the install pop-up and help page can show it first:
+// "iphone" (iPhone and iPad), "android", "mac-safari", "mac-chrome" (Chrome, Edge or another Chrome-based
+// browser on a Mac) or "windows" (Windows and any other computer)
+export const installGuide = () => {
+    const device = detectDevice();
+    if (device === "iphone" || device === "ipad") return "iphone";
+    if (device === "android") return "android";
+    if (/Macintosh/.test(navigator.userAgent || "")) {
+        const browser = computerBrowser();
+        return browser === "chrome" || browser === "edge" ? "mac-chrome" : "mac-safari";
+    }
+    return "windows";
 };

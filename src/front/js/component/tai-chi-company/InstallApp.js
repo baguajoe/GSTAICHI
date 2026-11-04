@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTcc, HELP_EMAIL } from "./TccContext";
 import Overlay from "./Overlay";
-import { useInstallPrompt, detectDevice, iosBrowser, computerBrowser } from "./homeScreenApp";
+import { useInstallPrompt, detectDevice, iosBrowser, computerBrowser, installGuide } from "./homeScreenApp";
 import {
     SafariStep, IphoneShareStep, IphoneAddStep, ConfirmStep, HomeScreenStep, AndroidMenuStep, AndroidAddStep
 } from "./PhonePictures";
@@ -13,7 +13,7 @@ import {
 const BANNER_DISMISSED_KEY = "tcc-install-banner-dismissed";
 
 export const Step = ({ number, title, children, picture }) => (
-    <li className="tcc-step">
+    <li className={picture ? "tcc-step" : "tcc-step tcc-step-nopic"}>
         <div className="tcc-step-text">
             <h3><span className="tcc-step-number">Step {number}</span> {title}</h3>
             {children}
@@ -22,7 +22,9 @@ export const Step = ({ number, title, children, picture }) => (
     </li>
 );
 
-const CopyLink = () => {
+const PHONE_PASTE = "Copied. Now open Safari, tap the address bar at the top, and choose Paste and Go.";
+
+const CopyLink = ({ copiedMessage = PHONE_PASTE }) => {
     const [copied, setCopied] = useState(false);
     const copy = async () => {
         try {
@@ -35,7 +37,7 @@ const CopyLink = () => {
     return (
         <>
             <button type="button" className="tcc-btn tcc-btn-outline" onClick={copy}>Copy the link to this page</button>
-            {copied && <p className="tcc-success" role="status">Copied. Now open Safari, tap the address bar at the top, and choose Paste and Go.</p>}
+            {copied && <p className="tcc-success" role="status">{copiedMessage}</p>}
         </>
     );
 };
@@ -77,6 +79,10 @@ export const IphoneSteps = ({ appName, device, showFinish = true }) => {
 
 export const AndroidSteps = ({ appName, showFinish = true }) => (
     <>
+        <p>
+            Use <strong>Chrome</strong>. If you see an <strong>Install app</strong> button or message, tap it, then
+            tap <strong>Install</strong>. If not, follow these steps:
+        </p>
         <ol className="tcc-steps">
             <Step number={1} title="Tap the menu button" picture={<AndroidMenuStep />}>
                 <p>In <strong>Chrome</strong>, look at the top right corner of the screen. Tap the button with <strong>three dots</strong>.</p>
@@ -102,28 +108,147 @@ const FinishNote = ({ appName }) => (
     </div>
 );
 
-export const ComputerSteps = ({ appName }) => {
-    const browser = computerBrowser();
-    if (browser === "mac-safari") {
-        return <p>In the menu bar at the top of the screen, click <strong>File</strong>, then <strong>Add to Dock</strong>, then <strong>Add</strong>. {appName} will appear in your Dock.</p>;
-    }
-    if (browser === "chrome" || browser === "edge") {
-        return (
-            <p>
-                Click the <strong>install icon</strong> at the right end of the address bar (a small screen with an arrow),
-                or open the browser menu (the three dots in the top right) and look
-                for <strong>Install {appName}</strong>. If you do not see it, {appName} may already be installed on this computer.
+export const BookmarkNote = () => (
+    <p className="tcc-bookmark-note">
+        <strong>You don't have to install it.</strong> Bookmarking the page works the same.
+    </p>
+);
+
+// The macOS notice some members see the first time they open the app installed from Chrome or Edge
+export const MacDataAccessNotice = ({ appName }) => (
+    <div className="tcc-notice tcc-install-warning">
+        <p><strong>If your Mac shows "Data Access Blocked"</strong></p>
+        <p>
+            Your Mac may show a message saying an app "tried to access your data from other apps". This is a normal
+            Mac security notice. Nothing is wrong.
+        </p>
+        <p>
+            Click <strong>Manage</strong> in that message (or open <strong>System Settings</strong>, then <strong>Privacy &amp; Security</strong>,
+            then <strong>App Management</strong>) and turn on <strong>{appName}</strong>. Then open {appName} again.
+        </p>
+    </div>
+);
+
+// thisDevice: the member is reading this on the device the steps are for, so browser warnings apply
+export const MacSafariSteps = ({ appName, thisDevice = true }) => {
+    const inSafari = !thisDevice || computerBrowser() === "mac-safari";
+    return (
+        <>
+            {!inSafari && (
+                <div className="tcc-notice tcc-install-warning">
+                    <p>You are not using Safari right now. Copy the link, then open <strong>Safari</strong> (the blue compass) and paste it into the address bar.</p>
+                    <CopyLink copiedMessage="Copied. Now open Safari, click the address bar at the top, press Command (⌘) and V together, then press Return." />
+                </div>
+            )}
+            <ol className="tcc-steps">
+                <Step number={1} title="Open this site in Safari">
+                    <p>Open the <strong>Safari</strong> app (the blue compass) and go to <strong>gstaichi.org/tai-chi-company</strong>.</p>
+                </Step>
+                <Step number={2} title={'Click "File", then "Add to Dock"'}>
+                    <p>In the menu bar at the very top of the screen, click <strong>File</strong>. Then click <strong>Add to Dock</strong>.</p>
+                </Step>
+                <Step number={3} title={'Click "Add"'}>
+                    <p>
+                        A box shows the name <strong>{appName}</strong>. Click <strong>Add</strong>.
+                        Its icon appears in your Dock at the bottom of the screen.
+                    </p>
+                </Step>
+            </ol>
+            <p className="tcc-small-note">
+                Don't see <strong>Add to Dock</strong>? It needs macOS Sonoma (14) or newer. You can use Chrome instead
+                (see "Mac with Chrome or Edge"), or simply bookmark the page.
             </p>
-        );
-    }
-    return <p>This browser cannot install apps. Open this site in <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong>, then click <strong>Install the app</strong> again.</p>;
+        </>
+    );
 };
 
-const InstallDialog = ({ onClose }) => {
-    const { settings } = useTcc();
-    const appName = settings.app_name;
+export const MacChromeSteps = ({ appName }) => (
+    <ol className="tcc-steps">
+        <Step number={1} title={'Click "Install the app"'}>
+            <p>
+                Open this site in <strong>Chrome</strong> or <strong>Edge</strong>. Click <strong>Install the app</strong> at
+                the top of any {appName} page, then click <strong>Install</strong>.
+            </p>
+            <p>
+                If nothing happens, click the <strong>install icon</strong> at the right end of the address bar (a small
+                screen with an arrow), or open the browser menu (the three dots in the top right corner) and look for <strong>Install</strong>.
+            </p>
+        </Step>
+        <Step number={2} title="If your Mac shows a security message">
+            <MacDataAccessNotice appName={appName} />
+        </Step>
+        <Step number={3} title="Open it any time">
+            <p>{appName} opens in its own window. You will find it in your <strong>Dock</strong> or in <strong>Launchpad</strong>.</p>
+        </Step>
+    </ol>
+);
+
+export const WindowsSteps = ({ appName, thisDevice = true }) => {
+    const browser = computerBrowser();
+    return (
+        <>
+            {thisDevice && browser !== "chrome" && browser !== "edge" && (
+                <div className="tcc-notice tcc-install-warning">
+                    <p>This browser cannot install apps. Open this site in <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong> instead.</p>
+                </div>
+            )}
+            <ol className="tcc-steps">
+                <Step number={1} title="Open this site in Chrome or Edge">
+                    <p>Use <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong>.</p>
+                </Step>
+                <Step number={2} title={'Click "Install the app"'}>
+                    <p>
+                        Click <strong>Install the app</strong> at the top of any {appName} page, then click <strong>Install</strong>.
+                        If nothing happens, click the <strong>install icon</strong> at the right end of the address bar, or open the
+                        browser menu (the three dots in the top right corner) and look for <strong>Install</strong>.
+                    </p>
+                </Step>
+                <Step number={3} title="Open it any time">
+                    <p>{appName} opens in its own window. You will find it on your desktop or in the <strong>Start</strong> menu.</p>
+                </Step>
+            </ol>
+        </>
+    );
+};
+
+// Every device, in the order the help page lists them. "quick" is the one-line version for the pop-up.
+export const INSTALL_GUIDES = [
+    { key: "mac-safari", title: "Mac with Safari (recommended on Mac)", quick: <>Open gstaichi.org/tai-chi-company in <strong>Safari</strong>, then click <strong>File</strong>, then <strong>Add to Dock</strong>.</> },
+    { key: "mac-chrome", title: "Mac with Chrome or Edge", quick: <>Click <strong>Install the app</strong>. If your Mac says "Data Access Blocked", that is a normal security notice: click <strong>Manage</strong> and turn on the app, then open it again.</> },
+    { key: "iphone", title: "iPhone and iPad", quick: <>In <strong>Safari</strong>, tap the <strong>Share</strong> button, then <strong>Add to Home Screen</strong>.</> },
+    { key: "android", title: "Android phones and tablets", quick: <>In <strong>Chrome</strong>, tap <strong>Install app</strong> (or tap the ⋮ menu, then <strong>Add to Home screen</strong>).</> },
+    { key: "windows", title: "Windows computers", quick: <>In <strong>Chrome</strong> or <strong>Edge</strong>, click <strong>Install the app</strong>.</> },
+];
+
+// This device's guide first, then the rest
+export const orderedGuides = (first) => [
+    ...INSTALL_GUIDES.filter(g => g.key === first),
+    ...INSTALL_GUIDES.filter(g => g.key !== first),
+];
+
+export const GuideSteps = ({ guide, appName, showFinish = true, thisDevice = true }) => {
     const device = detectDevice();
     const isApple = device === "iphone" || device === "ipad";
+    if (guide === "iphone") {
+        return (
+            <>
+                {thisDevice && isApple && iosBrowser() === "open-safari" && <OpenInSafariNotice />}
+                <IphoneSteps appName={appName} device={device} showFinish={showFinish} />
+            </>
+        );
+    }
+    if (guide === "android") return <AndroidSteps appName={appName} showFinish={showFinish} />;
+    if (guide === "mac-safari") return <MacSafariSteps appName={appName} thisDevice={thisDevice} />;
+    if (guide === "mac-chrome") return <MacChromeSteps appName={appName} />;
+    return <WindowsSteps appName={appName} thisDevice={thisDevice} />;
+};
+
+// installedNow: the browser's own install prompt just succeeded on a Mac, so only the macOS notice is shown
+const InstallDialog = ({ onClose, installedNow = false }) => {
+    const { settings } = useTcc();
+    const appName = settings.app_name;
+    const guide = installGuide();
+    const [mine, ...others] = orderedGuides(guide);
     const box = useRef(null);
 
     useEffect(() => {
@@ -139,13 +264,24 @@ const InstallDialog = ({ onClose }) => {
             <div className="tcc-dialog-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
                 <div className="tcc-dialog tcc-install-dialog" role="dialog" aria-modal="true" aria-labelledby="tcc-install-title" ref={box}>
                     <div className="tcc-install-dialog-top">
-                        <h2 id="tcc-install-title">Install {appName}</h2>
+                        <h2 id="tcc-install-title">{installedNow ? `${appName} is installed` : `Install ${appName}`}</h2>
                         <button type="button" className="tcc-btn tcc-btn-outline" onClick={onClose}>Close</button>
                     </div>
-                    {isApple && iosBrowser() === "open-safari" && <OpenInSafariNotice />}
-                    {isApple && <IphoneSteps appName={appName} device={device} showFinish={false} />}
-                    {device === "android" && <AndroidSteps appName={appName} showFinish={false} />}
-                    {device === "computer" && <ComputerSteps appName={appName} />}
+                    {installedNow ? (
+                        <MacDataAccessNotice appName={appName} />
+                    ) : (
+                        <>
+                            <p className="tcc-install-for">Steps for this device: <strong>{mine.title}</strong></p>
+                            <GuideSteps guide={guide} appName={appName} showFinish={false} />
+                            <BookmarkNote />
+                            <details className="tcc-install-other">
+                                <summary>Using a different device?</summary>
+                                <ul>
+                                    {others.map(g => <li key={g.key}><strong>{g.title}:</strong> {g.quick}</li>)}
+                                </ul>
+                            </details>
+                        </>
+                    )}
                     <p className="tcc-install-help">
                         <Link to="/tai-chi-company/add-to-phone" onClick={onClose} className="tcc-text-link">
                             See the full help page
@@ -183,6 +319,12 @@ export const InstallButton = ({ variant = "big", label = "Install the app" }) =>
             {showSteps && <InstallDialog onClose={() => setShowSteps(false)} />}
         </>
     );
+};
+
+// Rendered once by TccLayout, which stays on screen when install buttons disappear after installing
+export const MacInstalledNotice = () => {
+    const { showMacNotice, dismissMacNotice } = useInstallPrompt();
+    return showMacNotice ? <InstallDialog installedNow onClose={dismissMacNotice} /> : null;
 };
 
 const bannerDismissed = () => {

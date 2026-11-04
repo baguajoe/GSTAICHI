@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTcc, HELP_EMAIL } from "../../component/tai-chi-company/TccContext";
-import { useInstallPrompt, detectDevice, iosBrowser } from "../../component/tai-chi-company/homeScreenApp";
+import { useInstallPrompt, installGuide } from "../../component/tai-chi-company/homeScreenApp";
 import {
-    IphoneSteps, AndroidSteps, ComputerSteps, OpenInSafariNotice
+    GuideSteps, BookmarkNote, orderedGuides
 } from "../../component/tai-chi-company/InstallApp";
 
 const AddToPhone = () => {
     const { settings } = useTcc();
     const { canInstall, installed, install } = useInstallPrompt();
     const [justInstalled, setJustInstalled] = useState(false);
-    const device = detectDevice();
-    const isApple = device === "iphone" || device === "ipad";
+    const guides = orderedGuides(installGuide());
     const appName = settings.app_name;
 
     if (installed && !justInstalled) {
@@ -24,20 +23,6 @@ const AddToPhone = () => {
         );
     }
 
-    const iphone = (
-        <section className="tcc-section" id="iphone">
-            <h2>iPhone and iPad</h2>
-            {isApple && iosBrowser() === "open-safari" && <OpenInSafariNotice />}
-            <IphoneSteps appName={appName} device={device} />
-        </section>
-    );
-    const android = (
-        <section className="tcc-section" id="android">
-            <h2>Android phones and tablets</h2>
-            <AndroidSteps appName={appName} />
-        </section>
-    );
-
     return (
         <div className="tcc-page">
             <h1>Install {appName} on your phone or computer</h1>
@@ -45,6 +30,7 @@ const AddToPhone = () => {
                 Put an icon on your home screen (or your computer's desktop), so you can open {appName} with one tap,
                 just like any other app. It is free and takes less than a minute. Nothing is downloaded from an app store.
             </p>
+            <BookmarkNote />
 
             {canInstall && !justInstalled && (
                 <div className="tcc-notice tcc-section">
@@ -55,26 +41,24 @@ const AddToPhone = () => {
                     </button>
                 </div>
             )}
-            {justInstalled && <p className="tcc-success" role="status">Done! Look for the {appName} icon on your home screen.</p>}
+            {justInstalled && <p className="tcc-success" role="status">Done! Look for the {appName} icon on your home screen, or on a computer in your Dock, desktop or Start menu.</p>}
 
             <p>
-                Jump to: <a href="#iphone" className="tcc-text-link">iPhone and iPad</a>
-                {" · "}
-                <a href="#android" className="tcc-text-link">Android</a>
-                {" · "}
-                <a href="#computer" className="tcc-text-link">Computer</a>
+                Jump to:{" "}
+                {guides.map((g, i) => (
+                    <React.Fragment key={g.key}>
+                        {i > 0 && " · "}
+                        <a href={`#${g.key}`} className="tcc-text-link">{g.title}</a>
+                    </React.Fragment>
+                ))}
             </p>
 
-            {device === "android" ? <>{android}{iphone}</> : <>{iphone}{android}</>}
-
-            <section className="tcc-section" id="computer">
-                <h2>Computers</h2>
-                <p>
-                    In <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong>, click <strong>Install the app</strong> at
-                    the top of any {appName} page, then click <strong>Install</strong>.
-                </p>
-                {device === "computer" && <ComputerSteps appName={appName} />}
-            </section>
+            {guides.map((g, i) => (
+                <section className="tcc-section" id={g.key} key={g.key}>
+                    <h2>{g.title}{i === 0 && <span className="tcc-your-device"> (this device)</span>}</h2>
+                    <GuideSteps guide={g.key} appName={appName} thisDevice={i === 0} />
+                </section>
+            ))}
 
             <section className="tcc-section tcc-notice">
                 <h2>Need a hand?</h2>

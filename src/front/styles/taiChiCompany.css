@@ -802,3 +802,16 @@ select.tcc-input { background: #ffffff; }
 .tcc-importing { font-weight: 700; }
 .tcc-import-notice { margin-bottom: 20px; }
 .tcc-import-notice ul { margin: 8px 0 0; }
+
+/* ----- Install steps for every device ----- */
+.tcc-step.tcc-step-nopic,
+.tcc-install-dialog .tcc-step.tcc-step-nopic { grid-template-columns: 1fr; }
+.tcc-step-nopic .tcc-install-warning { margin: 8px 0 0; }
+.tcc-bookmark-note { font-size: 1.1rem; background: #f6eeee; border-radius: 6px; padding: 12px 16px; margin: 16px 0; }
+.tcc-small-note { color: #555555; margin-top: 12px; }
+.tcc-install-for { font-size: 1.1rem; margin: 12px 0 0; }
+.tcc-install-other { margin-top: 12px; }
+.tcc-install-other summary { cursor: pointer; font-weight: 700; font-size: 1.1rem; color: var(--primary-color); padding: 8px 0; }
+.tcc-install-other ul { padding-left: 20px; margin: 8px 0 0; }
+.tcc-install-other li { margin-bottom: 10px; }
+.tcc-your-device { font-weight: 400; font-size: 1rem; color: #555555; }

@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink, Outlet, Link } from "react-router-dom";
 import { TccProvider, useTcc, HELP_EMAIL } from "./TccContext";
 import { useHomeScreenApp } from "./homeScreenApp";
-import { InstallButton } from "./InstallApp";
+import { InstallButton, MacInstalledNotice } from "./InstallApp";
 import "../../../styles/taiChiCompany.css";
 
 const navItems = (settings, user) => [
@@ -91,6 +91,7 @@ const TccShell = () => {
                 <Outlet />
             </main>
             <TccFooter />
+            <MacInstalledNotice />
         </div>
     );
 };
