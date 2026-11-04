@@ -61,13 +61,6 @@ export const Sidebar = () => {
 
 
                 <Link
-                    className={`nav-link mt-2 ${location.pathname.startsWith("/tai-chi-company/articles") ? "active" : ""}`}
-                    to="/tai-chi-company/articles"
-                >
-                    Articles
-                </Link>
-
-                <Link
                     className={`nav-link mt-2 ${location.pathname === "/gallery" ? "active" : ""}`}
                     to="/gallery"
                 >
@@ -75,7 +68,7 @@ export const Sidebar = () => {
                 </Link>
 
                 <Link
-                    className={`nav-link mt-2 ${location.pathname.startsWith("/tai-chi-company") && !location.pathname.startsWith("/tai-chi-company/articles") ? "active" : ""}`}
+                    className={`nav-link mt-2 ${location.pathname.startsWith("/tai-chi-company") ? "active" : ""}`}
                     to="/tai-chi-company"
                 >
                     The Tai Chi Company

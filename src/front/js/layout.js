@@ -72,6 +72,7 @@ const Layout = () => {
                                 {/* The articles moved into Tai Chi Company; old links still work */}
                                 <Route element={<Navigate to="/tai-chi-company/articles" replace />} path="/articles" />
                                 <Route element={<LegacyArticleRedirect />} path="/articles/:id" />
+                                <Route element={<Navigate to="/tai-chi-company/articles" replace />} path="/articles/*" />
                                 <Route element={<Navigate to="/tai-chi-company/articles" replace />} path="/articles-list" />
                                 <Route element={<Gallery />} path="/gallery" />
                                 <Route element={<Navigate to="/tai-chi-company" replace />} path="/videos" />
