@@ -48,12 +48,31 @@ export const FoundingBanner = () => {
 const sectionsFor = (tier, settings) =>
     (settings.video_sections || []).filter(s => s.tier_rank <= tier.rank).map(s => s.label);
 
-const TierCards = ({ interval, onChoose, chosenPlanId }) => {
+// The Free plan: no payment, sign up with name, email and password.
+export const FreeCard = ({ onChooseFree, chosen }) => (
+    <section className={`tcc-tier-card tcc-tier-card-free${chosen ? " chosen" : ""}`}>
+        <h3 className="tcc-tier-name">Free</h3>
+        <p className="tcc-tier-price"><span className="tcc-price">$0</span></p>
+        <p>Make a free account. No payment needed. You can upgrade any time.</p>
+        <ul className="tcc-tier-includes">
+            <li>Free sample videos</li>
+            <li>All articles</li>
+        </ul>
+        {onChooseFree && (
+            <button type="button" className="custom-btn1 tcc-btn tcc-btn-block" onClick={onChooseFree}>
+                {chosen ? "Chosen" : "Create free account"}
+            </button>
+        )}
+    </section>
+);
+
+const TierCards = ({ interval, onChoose, chosenPlanId, onChooseFree, freeChosen, showFree = true }) => {
     const { tiers, settings } = useTcc();
     const per = INTERVALS.find(i => i.key === interval).per;
 
     return (
         <div className="tcc-tier-grid">
+            {showFree && <FreeCard onChooseFree={onChooseFree} chosen={freeChosen} />}
             {tiers.map(tier => {
                 const plan = planFor(tier, interval);
                 const monthly = planFor(tier, "month");

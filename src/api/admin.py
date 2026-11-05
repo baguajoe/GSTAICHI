@@ -161,10 +161,11 @@ class OptionalIntSelect(SelectField):
 
 
 class UserAdmin(SecureModelView):
-    column_list = ("id", "email", "name", "role", "tier_rank", "subscription_status", "granted_tier_rank",
+    column_list = ("id", "email", "name", "role", "plan", "tier_rank", "subscription_status", "granted_tier_rank",
                    "is_founding_member", "is_suspended", "flags", "created_at", "last_login_at")
     column_labels = {"tier_rank": "Paid level", "granted_tier_rank": "Free access level",
-                     "granted_until": "Free access until", "is_suspended": "Suspended", "flags": "Security"}
+                     "granted_until": "Free access until", "is_suspended": "Suspended", "flags": "Security",
+                     "plan": "Plan"}
     column_searchable_list = ("email", "name")
     column_filters = ("is_suspended", "role", "tier_rank", "subscription_status", "is_founding_member",
                       "granted_tier_rank")
@@ -195,7 +196,11 @@ class UserAdmin(SecureModelView):
         return Markup(f'<a href="{url_for("securityevent.index_view", search=model.email)}">'
                       f'<span class="label label-danger">{count} to check</span></a>')
 
-    column_formatters = {"flags": _flags}
+    def _plan(view, context, model, name):
+        # "Free" for accounts on the Free plan (no paid or school-given level)
+        return model.plan_name
+
+    column_formatters = {"flags": _flags, "plan": _plan}
 
     def _set_tier_choices(self, form):
         form.granted_tier_rank.choices = tier_choices("No free access")

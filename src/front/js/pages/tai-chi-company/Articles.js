@@ -22,7 +22,7 @@ const ArticleCard = ({ article }) => (
                 {article.is_new && <span className="tcc-badge tcc-badge-free">New</span>}
                 {article.is_free && <span className="tcc-badge tcc-badge-free">Free for everyone</span>}
                 {article.category && <span className="tcc-badge tcc-badge-soon">{article.category}</span>}
-                {article.locked && <span className="tcc-badge tcc-badge-locked"><i className="fas fa-lock" aria-hidden="true"></i> Subscribe to read</span>}
+                {article.locked && <span className="tcc-badge tcc-badge-locked"><i className="fas fa-lock" aria-hidden="true"></i> Free account to read</span>}
             </div>
             <h3 className="tcc-video-title">{article.title}</h3>
             <p className="tcc-article-meta">
@@ -67,7 +67,7 @@ const Articles = () => {
             <p className="tcc-lead">Articles for members about forms, history, health, training and more.</p>
             {!canRead && articles && (
                 <p className="tcc-notice">
-                    Articles marked "Free for everyone" can be read by anyone. For the others, <Link to="/tai-chi-company/join">choose any plan</Link> to read them all.
+                    Articles marked "Free for everyone" can be read by anyone. To read them all, <Link to="/tai-chi-company/join?plan=free">create a free account</Link>. No payment needed.
                 </p>
             )}
 

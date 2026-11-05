@@ -23,7 +23,7 @@
 
   <div class="row stat-row">
     <div class="col-sm-3"><div class="panel panel-default"><div class="panel-body">
-      <div class="stat">{{ stats.paid_total }}</div><div class="stat-label">paying members{% if stats.granted_total %} (+{{ stats.granted_total }} given free access){% endif %}</div>
+      <div class="stat">{{ stats.paid_total }}</div><div class="stat-label">paying members{% if stats.granted_total %} (+{{ stats.granted_total }} given free access){% endif %}; {{ stats.free_total }} on the Free plan</div>
     </div></div></div>
     <div class="col-sm-3"><div class="panel panel-default"><div class="panel-body">
       <div class="stat">${{ "{:,.2f}".format(stats.monthly_revenue) }}</div><div class="stat-label">estimated income per month (yearly plans counted as 1/12)</div>

@@ -54,14 +54,17 @@ const ArticleVideo = ({ info, caption }) => {
                     {info.locked ? (
                         <>
                             <p>Upgrade to watch. This video is part of the {needed ? `${needed} plan` : "member library"}.</p>
-                            <Link to={user ? "/tai-chi-company/account" : "/tai-chi-company/join"} className="custom-btn1 tcc-btn">See the plans</Link>
+                            <Link to={`/tai-chi-company/watch/${info.slug}`} className="custom-btn1 tcc-btn">See the plan options</Link>
                         </>
                     ) : info.coming_soon || info.processing ? (
                         <p>Coming soon. This video is still being prepared.</p>
                     ) : (
                         <>
-                            <p>Please log in to watch this video.</p>
-                            <Link to="/tai-chi-company/login" className="custom-btn1 tcc-btn">Log in</Link>
+                            <p>Please log in, or create a free account, to watch this video.</p>
+                            <div className="tcc-button-row">
+                                <Link to="/tai-chi-company/join?plan=free" className="custom-btn1 tcc-btn">Create free account</Link>
+                                <Link to="/tai-chi-company/login" className="tcc-btn tcc-btn-outline">Log in</Link>
+                            </div>
                         </>
                     )}
                 </div>

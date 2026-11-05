@@ -18,15 +18,28 @@ const Join = () => {
     const [subscribed, setSubscribed] = useState(null);
     const formRef = useRef(null);
 
-    const choose = (tier, plan) => {
-        setChosen({ tier, plan });
+    const scrollToForm = () => {
         if (formRef.current) formRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     };
+    const choose = (tier, plan) => {
+        setChosen({ tier, plan });
+        scrollToForm();
+    };
+    // The Free plan: just an account, no PayPal
+    const chooseFree = () => {
+        setChosen({ free: true });
+        scrollToForm();
+    };
+    const freeChosen = !!(chosen && chosen.free);
 
     // A plan chosen on the home page arrives as ?plan=<id>; select it (and its Monthly/Annual) once the tiers load
     const planParam = searchParams.get("plan");
     useEffect(() => {
         if (!planParam || chosen) return;
+        if (planParam === "free") {
+            chooseFree();
+            return;
+        }
         for (const tier of tiers) {
             const plan = (tier.plans || []).find(p => String(p.id) === planParam);
             if (plan) {
@@ -56,11 +69,13 @@ const Join = () => {
         }
     };
 
-    const choice = chosen && (
+    const choice = chosen && (freeChosen ? (
+        <p className="tcc-choice">You chose the <strong>Free</strong> plan. No payment needed.</p>
+    ) : (
         <p className="tcc-choice">
             You chose <strong>{chosen.tier.name}</strong>, paid {chosen.plan.interval === "year" ? "yearly" : "monthly"}.
         </p>
-    );
+    ));
 
     return (
         <div className="tcc-page">
@@ -70,7 +85,8 @@ const Join = () => {
             <section className="tcc-section">
                 <h2>Choose your level</h2>
                 <IntervalToggle interval={billing} onChange={setBilling} />
-                <TierCards interval={billing} onChoose={choose} chosenPlanId={chosen && chosen.plan.id} />
+                <TierCards interval={billing} onChoose={choose} chosenPlanId={chosen && chosen.plan && chosen.plan.id}
+                    onChooseFree={chooseFree} freeChosen={freeChosen} />
             </section>
 
             <section className="tcc-section tcc-form-section" ref={formRef}>
@@ -87,6 +103,16 @@ const Join = () => {
                                 <p>You already have a plan. You can change it on your Account page.</p>
                                 <Link to="/tai-chi-company/account" className="custom-btn1 tcc-btn">Go to my Account</Link>
                             </>
+                        ) : freeChosen ? (
+                            <>
+                                <p>{justJoined ? "You are on the Free plan." : "You already have a free account."} You can read all the
+                                    articles and watch the free sample videos.</p>
+                                <div className="tcc-button-row">
+                                    <Link to="/tai-chi-company/articles" className="custom-btn1 tcc-btn">Read the Articles</Link>
+                                    <Link to="/tai-chi-company/library" className="tcc-btn tcc-btn-outline">Go to the Library</Link>
+                                </div>
+                                <p>To watch all the videos, choose a paid plan above at any time.</p>
+                            </>
                         ) : chosen ? (
                             <>
                                 {choice}
@@ -99,15 +125,18 @@ const Join = () => {
                             </>
                         ) : (
                             <>
-                                <p><strong>Next, choose a plan above</strong> by pressing "Choose this plan".</p>
-                                <p>Or watch a free lesson in the <Link to="/tai-chi-company/library">Library</Link>.</p>
+                                <p>You are on the <strong>Free</strong> plan: you can read all the <Link to="/tai-chi-company/articles">articles</Link> and
+                                    watch the free sample videos in the <Link to="/tai-chi-company/library">Library</Link>.</p>
+                                <p><strong>To watch all the videos, choose a paid plan above</strong> by pressing "Choose this plan".</p>
                             </>
                         )}
                     </div>
                 ) : (
                     <form onSubmit={submit} className="tcc-form" noValidate>
                         <h2>Create your account</h2>
-                        <p>Next, choose your plan and pay securely with PayPal or a card.</p>
+                        {freeChosen
+                            ? <p>Just your name, email and a password. No payment needed.</p>
+                            : <p>Next, choose your plan and pay securely with PayPal or a card. Or choose <strong>Free</strong> to start without paying.</p>}
                         {choice}
                         <FormField id="join-name" label="Your name" name="name" autoComplete="name"
                             value={form.name} onChange={update} required />
@@ -118,7 +147,7 @@ const Join = () => {
                             value={form.password} onChange={update} required minLength={8} />
                         <FormMessage error={error} />
                         <button type="submit" className="custom-btn1 tcc-btn tcc-btn-block" disabled={busy}>
-                            {busy ? "Creating your account…" : "Create my account"}
+                            {busy ? "Creating your account…" : freeChosen ? "Create my free account" : "Create my account"}
                         </button>
                         <p className="tcc-form-alt">
                             Already have an account? <Link to="/tai-chi-company/login">Log in</Link>

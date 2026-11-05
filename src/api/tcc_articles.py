@@ -1,9 +1,9 @@
 """
 Member articles (Article.members_only = True), separate from the public articles on the main site.
 
-Every paying member (any tier) can read every member article. Others see the title, summary and cover
-picture only: the full text is sent only from an authenticated request by a paying member. Articles marked
-"Free for everyone" (Article.is_free) are sent in full to anyone, signed in or not.
+Every signed-in member, including free accounts (the Free plan), can read every member article. Visitors who
+are not signed in see the title, summary and cover picture only: the full text is sent only from an
+authenticated request. Articles marked "Free for everyone" (Article.is_free) are sent in full to anyone.
 The text is sanitized HTML (see rich_text.py). Videos placed in an article still need the viewer's plan.
 """
 import math
@@ -59,7 +59,8 @@ def article_card(article, can_read):
 
 
 def _is_member(viewer):
-    return viewer is not None and viewer.is_paying_member
+    """Any signed-in, non-suspended account can read the member articles (the Free plan includes them)."""
+    return viewer is not None
 
 
 def _can_read(viewer, article):

@@ -80,6 +80,18 @@ class User(db.Model):
             return 999
         return max(self.tier_rank if self.has_active_access else 0, self.granted_rank)
 
+    @property
+    def plan_name(self):
+        """Short plan label: "Free" for an account without a paid (or admin-given) level."""
+        if self.is_staff:
+            return self.role.capitalize()
+        rank = self.effective_tier_rank
+        if rank < 1:
+            return "Free"
+        tier = Tier.query.filter_by(rank=rank).first()
+        name = tier.name if tier else f"Level {rank}"
+        return name if self.tier_rank >= rank and self.has_active_access else f"{name} (given by the school)"
+
     def serialize(self):
         return {
             "id": self.id,
@@ -101,6 +113,7 @@ class User(db.Model):
             "has_paypal_subscription": bool(self.paypal_subscription_id),
             "is_founding_member": self.is_founding_member,
             "is_paying_member": self.is_paying_member,
+            "plan_name": self.plan_name,
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }
 

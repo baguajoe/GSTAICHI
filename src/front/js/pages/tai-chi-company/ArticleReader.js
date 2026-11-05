@@ -67,11 +67,11 @@ const ArticleReader = () => {
                     <ArticleCoverPhoto article={article} className="tcc-mag-cover" />
                     {article.summary && <p className="tcc-lead tcc-section">{article.summary}</p>}
                     <div className="tcc-upgrade" role="note">
-                        <p className="tcc-player-title">Subscribe to read</p>
-                        <p>Every plan includes all member articles.</p>
+                        <p className="tcc-player-title">Create a free account to read this</p>
+                        <p>All articles are free with an account. No payment needed: just your name, email and a password.</p>
                         <div className="tcc-button-row">
-                            <Link to={user ? "/tai-chi-company/account" : "/tai-chi-company/join"} className="custom-btn1 tcc-btn">See the plans</Link>
-                            {!user && <Link to="/tai-chi-company/login" className="tcc-btn tcc-btn-outline">Log in</Link>}
+                            <Link to="/tai-chi-company/join?plan=free" className="custom-btn1 tcc-btn">Create free account</Link>
+                            <Link to="/tai-chi-company/login" className="tcc-btn tcc-btn-outline">Log in</Link>
                         </div>
                     </div>
                 </article>

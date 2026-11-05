@@ -77,6 +77,8 @@ def dashboard_stats(now=None):
         "paid_total": paid_total,
         "granted_total": granted_total,
         "monthly_revenue": revenue,
+        "free_total": sum(1 for u in User.query.filter(User.role == "member", User.is_suspended.is_(False)).all()
+                          if not u.is_paying_member),
         "signups": User.query.filter(User.role == "member", User.created_at >= month).count(),
         "new_subscribers": User.query.filter(User.role == "member", User.subscribed_at >= month).count(),
         "cancellations": User.query.filter(User.role == "member", User.cancelled_at >= month).count(),

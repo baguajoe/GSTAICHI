@@ -7,6 +7,7 @@ import ProtectedPlayer from "../../component/tai-chi-company/ProtectedPlayer";
 import { VideoBadges } from "../../component/tai-chi-company/VideoCard";
 import { useTextSize, TextSizeButtons } from "../../component/tai-chi-company/TextSize";
 import { ArticleContent } from "../../component/tai-chi-company/ArticleView";
+import UpgradeToWatch from "../../component/tai-chi-company/UpgradeToWatch";
 
 const AboutThisForm = ({ html }) => {
     const size = useTextSize();
@@ -24,38 +25,13 @@ const AboutThisForm = ({ html }) => {
     );
 };
 
-const UpgradeMessage = ({ video }) => {
-    const { user, tierName } = useTcc();
-    const needed = tierName(video.tier_rank);
-    return (
-        <div className="tcc-upgrade" role="note">
-            <p className="tcc-player-title">This video is part of the {needed ? `${needed} plan` : "member library"}.</p>
-            {user ? (
-                <>
-                    <p>Upgrade your plan to watch it. Plan changes are coming soon.</p>
-                    <Link to="/tai-chi-company/join" className="custom-btn1 tcc-btn">See the plans</Link>
-                </>
-            ) : (
-                <>
-                    <p>Log in, or join and choose a plan, to watch it.</p>
-                    <div className="tcc-button-row">
-                        <Link to="/tai-chi-company/join" className="custom-btn1 tcc-btn">See the plans</Link>
-                        <Link to="/tai-chi-company/login" className="tcc-btn tcc-btn-outline">Log in</Link>
-                    </div>
-                </>
-            )}
-        </div>
-    );
-};
-
 const SignInToWatch = () => {
-    const { settings } = useTcc();
     return (
     <div className="tcc-upgrade" role="note">
         <p className="tcc-player-title">Please log in to watch</p>
-        <p>This is a free lesson. Create an account to watch the free lessons.</p>
+        <p>This is a free lesson. Create a free account to watch the free lessons. No payment needed.</p>
         <div className="tcc-button-row">
-            <Link to="/tai-chi-company/join" className="custom-btn1 tcc-btn">Join {settings.app_name}</Link>
+            <Link to="/tai-chi-company/join?plan=free" className="custom-btn1 tcc-btn">Create free account</Link>
             <Link to="/tai-chi-company/login" className="tcc-btn tcc-btn-outline">Log in</Link>
         </div>
     </div>
@@ -67,6 +43,7 @@ const Watch = () => {
     const { user, userLoaded } = useTcc();
     const [video, setVideo] = useState(null);
     const [error, setError] = useState(null);
+    const [reload, setReload] = useState(0);
 
     useEffect(() => {
         if (!userLoaded) return;
@@ -76,7 +53,7 @@ const Watch = () => {
             .then(setVideo)
             .catch(e => setError(e.message));
         window.scrollTo(0, 0);
-    }, [slug, userLoaded, user && user.id]);
+    }, [slug, userLoaded, user && user.id, reload]);
 
     if (error) {
         return (
@@ -93,7 +70,7 @@ const Watch = () => {
     return (
         <div className="tcc-page">
             <p><Link to="/tai-chi-company/library" className="tcc-text-link">&larr; Back to the Library</Link></p>
-            {video.locked ? <UpgradeMessage video={video} />
+            {video.locked ? <UpgradeToWatch tierRank={video.tier_rank} onUpgraded={() => setReload(r => r + 1)} />
                 : video.coming_soon ? <PlaceholderPlayer />
                 : !user ? <SignInToWatch />
                 : <ProtectedPlayer key={video.slug} video={video} />}
