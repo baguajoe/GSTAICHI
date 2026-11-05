@@ -32,7 +32,7 @@ const Landing = () => {
                     Learn and practice Tai Chi Chuan at home, at your own pace, with video lessons
                     {settings.school_name ? ` from ${settings.school_name}` : ""}.
                 </p>
-                <p className="tcc-lead"><strong>Over 21 instructional videos, and more are added each month.</strong></p>
+                <p className="tcc-lead"><strong>Over 21 instructional videos, with more added every month.</strong></p>
                 <div className="tcc-button-row">
                     <Link to="/tai-chi-company/join" className="custom-btn1 tcc-btn tcc-btn-big">Join {settings.app_name}</Link>
                     <a href="#tcc-plans" className="tcc-btn tcc-btn-big tcc-btn-outline">See plans</a>
@@ -50,7 +50,7 @@ const Landing = () => {
                         <li><strong>{settings.corner_name}</strong>: short videos from {settings.teacher_name} with tips, corrections and answers to your questions</li>
                     )}
                     <li><strong>Member articles</strong> on forms, history, health and more</li>
-                    <li><strong>Over 21 instructional videos</strong>, with more added each month</li>
+                    <li><strong>Over 21 instructional videos</strong>, with more added every month</li>
                 </ul>
             </section>
 
