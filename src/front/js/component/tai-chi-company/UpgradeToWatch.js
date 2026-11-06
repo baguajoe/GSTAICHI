@@ -8,7 +8,8 @@ const per = (interval) => (interval === "year" ? "per year" : "per month");
 
 // Shown in place of a paid video the viewer's plan does not include. A free member can pick a paid plan
 // and pay with PayPal right here; a member who already pays changes plan on the Account page.
-const UpgradeToWatch = ({ tierRank, onUpgraded }) => {
+// title/reason/freeLine change the wording for other paid features (Ask Vincent).
+const UpgradeToWatch = ({ tierRank, onUpgraded, title, reason, freeLine }) => {
     const { user, setUser, tierName } = useTcc();
     const [options, setOptions] = useState(null);
     const [chosen, setChosen] = useState(null);
@@ -23,8 +24,8 @@ const UpgradeToWatch = ({ tierRank, onUpgraded }) => {
             .catch(() => setOptions([]));
     }, [user && user.id, paying, tierRank]);
 
-    const heading = <p className="tcc-player-title">Upgrade to watch</p>;
-    const part = <p>This video is part of the {needed ? `${needed} plan` : "member library"}.</p>;
+    const heading = <p className="tcc-player-title">{title || "Upgrade to watch"}</p>;
+    const part = <p>{reason || <>This video is part of the {needed ? `${needed} plan` : "member library"}.</>}</p>;
 
     if (done) {
         return <div className="tcc-upgrade" role="status"><p className="tcc-success">{done}</p></div>;
@@ -59,7 +60,7 @@ const UpgradeToWatch = ({ tierRank, onUpgraded }) => {
         <div className="tcc-upgrade" role="note">
             {heading}
             {part}
-            <p>You are on the Free plan. Choose a plan below to watch it. You can cancel any time.</p>
+            <p>{freeLine || "You are on the Free plan. Choose a plan below to watch it."} You can cancel any time.</p>
             {options === null ? <p>Loading the plans…</p> : options.length === 0 ? (
                 <Link to="/tai-chi-company/account" className="custom-btn1 tcc-btn">See the plans</Link>
             ) : (

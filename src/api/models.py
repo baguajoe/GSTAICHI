@@ -36,6 +36,10 @@ class User(db.Model):
     suspended_reason = db.Column(db.String(300), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, server_default=db.func.now())
     last_login_at = db.Column(db.DateTime, nullable=True)
+    # Private profile: only the member (and admins) ever see these. There is no member list or directory.
+    photo_path = db.Column(db.String(500), nullable=True)  # small picture in the streams bucket (article-private/)
+    email_new_videos = db.Column(db.Boolean, nullable=False, default=True, server_default=db.true())
+    email_answers = db.Column(db.Boolean, nullable=False, default=True, server_default=db.true())
 
     current_plan = db.relationship("Plan", foreign_keys=[current_plan_id])
 
@@ -115,7 +119,21 @@ class User(db.Model):
             "is_paying_member": self.is_paying_member,
             "plan_name": self.plan_name,
             "created_at": self.created_at.isoformat() if self.created_at else None,
+            "photo_url": self.photo_url,
+            "email_new_videos": self.email_new_videos is not False,
+            "email_answers": self.email_answers is not False,
         }
+
+    @property
+    def photo_url(self):
+        """A signed link that opens only this member's own picture, for a few hours."""
+        if not self.photo_path:
+            return None
+        from .rich_text import image_url
+        try:
+            return image_url(self.photo_path, "profile")
+        except Exception:
+            return None
 
 class Class(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -372,7 +390,12 @@ class Question(db.Model):
     """'Ask Vincent': a paying member's question. The teacher can answer with a short video."""
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, index=True)
+    subject = db.Column(db.String(150), nullable=True)
     question = db.Column(db.Text, nullable=False)
+    lesson_video_id = db.Column(db.Integer, db.ForeignKey("video.id", ondelete="SET NULL"), nullable=True)
+    video_time = db.Column(db.String(10), nullable=True)  # "12:30" or "1:02:30"
+    member_plan = db.Column(db.String(120), nullable=True)  # the member's plan when they asked
+    is_corner_idea = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
     status = db.Column(db.String(20), nullable=False, default="new", server_default="new")
     answer_video_id = db.Column(db.Integer, db.ForeignKey("video.id", ondelete="SET NULL"), nullable=True)
     answer_note = db.Column(db.Text, nullable=True)  # optional words from the teacher
@@ -381,7 +404,8 @@ class Question(db.Model):
     member_notified_at = db.Column(db.DateTime, nullable=True)
 
     user = db.relationship("User")
-    answer_video = db.relationship("Video")
+    answer_video = db.relationship("Video", foreign_keys=[answer_video_id])
+    lesson_video = db.relationship("Video", foreign_keys=[lesson_video_id])
 
     def __repr__(self):
         return f"<Question {self.id} {self.status}>"
@@ -389,7 +413,10 @@ class Question(db.Model):
     def serialize(self, for_staff=False):
         data = {
             "id": self.id,
+            "subject": self.subject,
             "question": self.question,
+            "lesson": {"slug": self.lesson_video.slug, "title": self.lesson_video.title} if self.lesson_video else None,
+            "video_time": self.video_time,
             "status": self.status,
             "answer_note": self.answer_note,
             "created_at": self.created_at.isoformat() if self.created_at else None,
@@ -399,6 +426,8 @@ class Question(db.Model):
         }
         if for_staff:
             data["member"] = {"name": self.user.name, "email": self.user.email} if self.user else None
+            data["member_plan"] = self.member_plan
+            data["is_corner_idea"] = bool(self.is_corner_idea)
         return data
 
 

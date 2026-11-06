@@ -16,6 +16,7 @@ from .models import (db, User, Class, Book, Video, Article, SiteSettings, Tier, 
 from .extensions import limiter
 from .security import EVENT_LABELS, suspend_user, unsuspend_user
 from .tcc_dashboard import dashboard_stats
+from .tcc_questions import save_answer, mark_answered, reopen
 
 # Only users with role "admin" can use /admin. They sign in with their normal
 # site email and password; the login is kept in a signed Flask session cookie.
@@ -343,19 +344,76 @@ class SecurityEventAdmin(SecureModelView):
         flash(f"{len(users)} account(s) suspended.")
 
 
-class QuestionAdmin(SecureModelView):
-    can_create = False
-    column_list = ("created_at", "user", "question", "status", "answer_video", "answer_note", "answered_at")
-    column_labels = {"user": "Member", "answer_video": "Answer video"}
-    column_default_sort = ("created_at", True)
-    column_searchable_list = ("question", "user.email")
-    column_filters = ("status", "created_at")
-    column_formatters = {
-        "user": lambda v, c, m, n: m.user.email if m.user else "",
-        "answer_video": lambda v, c, m, n: m.answer_video.title if m.answer_video else "",
-    }
-    form_columns = ("status", "answer_note")
-    form_choices = {"status": [("new", "New"), ("answered", "Answered")]}
+QUESTION_FILTERS = (("new", "New"), ("answered", "Answered"), ("ideas", "Ideas for the corner"), ("all", "All"))
+
+
+class QuestionsInbox(AdminOnlyMixin, BaseView):
+    """Ask Vincent inbox: newest first. Answer here (shown under the member's My questions and emailed to them),
+    mark answered (for example after replying by email), or keep it as an idea for a corner video."""
+
+    def _csrf(self):
+        session.setdefault("admin_form_csrf", secrets.token_urlsafe(32))
+        return session["admin_form_csrf"]
+
+    @expose('/')
+    def index(self):
+        show = request.args.get("show", "new")
+        if show not in dict(QUESTION_FILTERS):
+            show = "new"
+        query = Question.query
+        if show == "new":
+            query = query.filter_by(status="new")
+        elif show == "answered":
+            query = query.filter_by(status="answered")
+        elif show == "ideas":
+            query = query.filter(Question.is_corner_idea.is_(True))
+        questions = query.order_by(Question.created_at.desc(), Question.id.desc()).limit(300).all()
+        counts = {"new": Question.query.filter_by(status="new").count(),
+                  "ideas": Question.query.filter(Question.is_corner_idea.is_(True)).count()}
+        return self.render('admin/tcc_questions.html', questions=questions, show=show, filters=QUESTION_FILTERS,
+                           counts=counts, csrf_token=self._csrf(), settings=SiteSettings.get())
+
+    @expose('/<int:question_id>', methods=['POST'])
+    def update(self, question_id):
+        token = session.get("admin_form_csrf")
+        if not token or token != request.form.get("csrf_token"):
+            abort(400)
+        question = db.session.get(Question, question_id)
+        if question is None:
+            abort(404)
+        do = request.form.get("do")
+        who = question.user.name or question.user.email if question.user else "the member"
+        if do == "answer":
+            already_emailed = question.member_notified_at
+            error = save_answer(question, request.form.get("answer") or "")
+            if error:
+                db.session.rollback()
+                flash("Please type an answer first.", "error")
+            else:
+                db.session.commit()
+                if question.member_notified_at and not already_emailed:
+                    sent = " It was also emailed to them."
+                elif already_emailed:
+                    sent = " (They were already emailed about this answer, so no second email was sent.)"
+                elif question.user and question.user.email_answers is False:
+                    sent = " (They turned off answer emails, so no email was sent.)"
+                else:
+                    sent = " (The email could not be sent.)"
+                flash(f"Answer saved. {who} can see it under My questions.{sent}")
+        elif do == "answered":
+            mark_answered(question)
+            db.session.commit()
+            flash("Marked as answered.")
+        elif do == "reopen":
+            reopen(question)
+            db.session.commit()
+            flash("Marked as new again.")
+        elif do == "idea":
+            question.is_corner_idea = not question.is_corner_idea
+            db.session.commit()
+            flash(f"Kept as an idea for {SiteSettings.get().corner_name or 'the corner'}." if question.is_corner_idea
+                  else "No longer marked as an idea.")
+        return redirect(url_for('.index', show=request.args.get("show", "new")) + f"#q{question.id}")
 
 
 class EncodingJobAdmin(SecureModelView):
@@ -410,7 +468,7 @@ def setup_admin(app):
     admin.add_view(PlanAdmin(Plan, db.session, name="Plans and Prices", category=tcc))
     admin.add_view(VideoAdmin(Video, db.session, name="Videos", category=tcc))
     admin.add_view(EncodingJobAdmin(EncodingJob, db.session, name="Encoding Jobs", category=tcc))
-    admin.add_view(QuestionAdmin(Question, db.session, name="Ask the Teacher Questions", category=tcc))
+    admin.add_view(QuestionsInbox(name="Questions", endpoint="questions", category=tcc))
     admin.add_view(SecurityEventAdmin(SecurityEvent, db.session, name="Security Events", category=tcc))
     admin.add_view(ReadOnlyAdmin(PlaybackSession, db.session, name="Playback Sessions", category=tcc))
     admin.add_view(ReadOnlyAdmin(WebhookEvent, db.session, name="Webhook Events", category=tcc))

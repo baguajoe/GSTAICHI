@@ -29,8 +29,14 @@ const QuestionCard = ({ question, cornerVideos, onAnswerWithVideo, onChanged }) 
         <li className="tcc-studio-item">
             <p className="tcc-question-meta">
                 <strong>{question.member ? question.member.name || question.member.email : "A member"}</strong>
+                {question.member_plan ? ` · ${question.member_plan}` : ""}
                 {" · "}{new Date(`${question.created_at}Z`).toLocaleDateString(undefined, { dateStyle: "medium" })}
+                {question.is_corner_idea && <span className="tcc-badge tcc-badge-founding">Idea for the corner</span>}
             </p>
+            {question.subject && <h3 className="tcc-question-subject">{question.subject}</h3>}
+            {question.lesson && (
+                <p className="tcc-field-hint">About "{question.lesson.title}"{question.video_time ? ` at ${question.video_time}` : ""}</p>
+            )}
             <blockquote className="tcc-question-text">{question.question}</blockquote>
             {question.status === "answered" ? (
                 <>

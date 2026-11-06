@@ -112,7 +112,7 @@ const MyPlan = () => {
                         {sub.is_founding_member && <span className="tcc-badge tcc-badge-founding">Founding member</span>}
                     </p>
                     {sub.is_founding_member && <p>As a founding member you keep your price for life.</p>}
-                    {sub.status === "active" && sub.next_billing_at && <p>Next payment: <strong>{longDate(sub.next_billing_at)}</strong></p>}
+                    {sub.status === "active" && sub.next_billing_at && <p>Renews on <strong>{longDate(sub.next_billing_at)}</strong> (your next payment).</p>}
                     {sub.status === "cancelled" && (
                         <p className="tcc-notice">Your plan is cancelled. You can keep watching until <strong>{longDate(sub.paid_through)}</strong>.</p>
                     )}

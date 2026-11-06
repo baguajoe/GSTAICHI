@@ -11,6 +11,7 @@ const navItems = (settings, user) => [
     { to: "/tai-chi-company/library", label: "Library" },
     { to: "/tai-chi-company/vincents-corner", label: settings.corner_name || "Corner" },
     { to: "/tai-chi-company/articles", label: "Articles" },
+    { to: "/tai-chi-company/ask-vincent", label: `Ask ${settings.teacher_name || "Vincent"}` },
     { to: "/tai-chi-company/account", label: "Account" },
     ...(user && (user.role === "teacher" || user.role === "admin")
         ? [{ to: "/tai-chi-company/studio", label: "Studio" }]

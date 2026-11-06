@@ -38,6 +38,7 @@ import TccAddToPhone from "./pages/tai-chi-company/AddToPhone";
 import TccAbout from "./pages/tai-chi-company/About";
 import TccArticleReader from "./pages/tai-chi-company/ArticleReader";
 import TccStudio from "./pages/tai-chi-company/Studio";
+import TccAskVincent from "./pages/tai-chi-company/AskVincent";
 
 // Create your Layout component
 const Layout = () => {
@@ -92,6 +93,7 @@ const Layout = () => {
                                     <Route element={<TccAccount />} path="account" />
                                     <Route element={<TccTerms />} path="terms" />
                                     <Route element={<TccVincentsCorner />} path="vincents-corner" />
+                                    <Route element={<TccAskVincent />} path="ask-vincent" />
                                     <Route element={<TccAddToPhone />} path="add-to-phone" />
                                     <Route element={<TccAbout />} path="about" />
                                 </Route>

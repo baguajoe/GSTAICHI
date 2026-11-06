@@ -167,4 +167,4 @@ def get_video(slug):
 
 
 # Route modules register on the same blueprint
-from . import tcc_encoding, tcc_playback, tcc_payments, tcc_articles, tcc_studio, tcc_questions  # noqa: E402,F401
+from . import tcc_encoding, tcc_playback, tcc_payments, tcc_articles, tcc_studio, tcc_questions, tcc_profile  # noqa: E402,F401

@@ -35,7 +35,7 @@
       <div class="stat">{{ stats.cancellations }}</div><div class="stat-label">cancellations this month</div>
     </div></div></div>
     <div class="col-sm-2"><div class="panel panel-default"><div class="panel-body">
-      <div class="stat">{{ stats.open_questions }}</div><div class="stat-label"><a href="{{ url_for('question.index_view') }}">unanswered questions</a></div>
+      <div class="stat"><a href="{{ url_for('questions.index') }}">{{ stats.open_questions }}</a></div><div class="stat-label"><a href="{{ url_for('questions.index') }}">new questions for {{ settings.teacher_name or 'Vincent' }}</a></div>
     </div></div></div>
   </div>
 
@@ -124,9 +124,9 @@
         <div class="panel-heading">Oldest unanswered questions</div>
         {% if stats.oldest_questions %}
         <table class="table">
-          {% for q in stats.oldest_questions %}<tr><td><span class="muted">{{ q.asked.strftime('%b %d') }} &middot; {{ q.member }}</span><br>{{ q.text }}</td></tr>{% endfor %}
+          {% for q in stats.oldest_questions %}<tr><td><span class="muted">{{ q.asked.strftime('%b %d') }} &middot; {{ q.member }}</span><br>{% if q.subject %}<strong>{{ q.subject }}</strong><br>{% endif %}{{ q.text }}</td></tr>{% endfor %}
         </table>
-        <div class="panel-footer">Teachers answer these in the Studio (Questions tab).</div>
+        <div class="panel-footer"><a href="{{ url_for('questions.index') }}">Open the Questions inbox</a></div>
         {% else %}<div class="panel-body">All questions are answered.</div>{% endif %}
       </div>
     </div>

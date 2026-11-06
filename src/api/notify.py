@@ -3,11 +3,11 @@ from .models import SiteSettings
 from .send_email import send_email
 
 
-def email(recipient, subject, body):
+def email(recipient, subject, body, reply_to=None):
     if not recipient:
         return False
     try:
-        send_email(recipient=recipient, subject=subject, body=body)
+        send_email(recipient=recipient, subject=subject, body=body, reply_to=reply_to)
         return True
     except Exception as e:
         print(f"Email to {recipient} failed: {e}")

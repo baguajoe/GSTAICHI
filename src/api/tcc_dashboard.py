@@ -87,7 +87,8 @@ def dashboard_stats(now=None):
                       Article.query.filter(Article.members_only.is_(True), Article.read_count > 0)
                       .order_by(Article.read_count.desc()).limit(TOP).all()],
         "open_questions": len(open_questions),
-        "oldest_questions": [{"asked": q.created_at, "member": q.user.email if q.user else "", "text": q.question[:160]}
+        "oldest_questions": [{"asked": q.created_at, "member": (q.user.name or q.user.email) if q.user else "",
+                              "subject": q.subject, "text": q.question[:160]}
                              for q in open_questions[:5]],
         "failed_videos": [{"id": v.id, "title": v.title, "reason": v.failure_reason} for v in failed_videos],
         "failed_jobs_30d": EncodingJob.query.filter(EncodingJob.status == "failed",

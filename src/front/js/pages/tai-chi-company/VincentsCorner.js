@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useTcc } from "../../component/tai-chi-company/TccContext";
 import { apiFetch } from "../../component/tai-chi-company/api";
 import VideoCard from "../../component/tai-chi-company/VideoCard";
-import AskTeacher from "../../component/tai-chi-company/AskTeacher";
+import { Link } from "react-router-dom";
 
 // The teacher's short videos: tips, corrections, explanations and answers to member questions.
 const VincentsCorner = () => {
@@ -61,7 +61,11 @@ const VincentsCorner = () => {
                 </div>
             )}
 
-            <AskTeacher />
+            <section className="tcc-section tcc-ask">
+                <h2>Ask {settings.teacher_name}</h2>
+                <p>Have a question about your practice? Send it to {settings.teacher_name}. Some answers become short videos here.</p>
+                <Link to="/tai-chi-company/ask-vincent" className="custom-btn1 tcc-btn">Ask {settings.teacher_name} a question</Link>
+            </section>
         </div>
     );
 };

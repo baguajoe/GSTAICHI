@@ -1,0 +1,77 @@
+{% extends 'admin/master.html' %}
+{% block head_css %}
+{{ super() }}
+<style>
+  .tcc-inbox { font-size: 17px; max-width: 980px; }
+  .tcc-inbox h1 { color: #590d0d; margin-top: 10px; }
+  .tcc-inbox .muted { color: #666; }
+  .tcc-inbox .filters a { margin: 0 6px 8px 0; font-size: 16px; }
+  .tcc-inbox .q { border: 1px solid #ddd; border-left: 6px solid #590d0d; border-radius: 6px; padding: 16px 18px; margin: 16px 0; background: #fff; }
+  .tcc-inbox .q.answered { border-left-color: #2e7d32; }
+  .tcc-inbox .q h2 { font-size: 21px; margin: 4px 0 8px; }
+  .tcc-inbox .meta { margin: 0 0 4px; }
+  .tcc-inbox .text { white-space: pre-wrap; font-size: 18px; margin: 10px 0; }
+  .tcc-inbox .answer { white-space: pre-wrap; background: #eef7ee; border-radius: 6px; padding: 10px 14px; }
+  .tcc-inbox textarea { width: 100%; font-size: 17px; padding: 10px; border-radius: 6px; border: 1px solid #999; }
+  .tcc-inbox .btn { min-height: 42px; font-size: 16px; margin: 6px 6px 0 0; }
+  .tcc-inbox .label { font-size: 13px; vertical-align: middle; }
+</style>
+{% endblock %}
+{% block body %}
+<div class="tcc-inbox">
+  <h1>Questions for {{ settings.teacher_name or 'Vincent' }}</h1>
+  <p class="muted">Sent with the "Ask {{ settings.teacher_name or 'Vincent' }}" page. Newest first. Each question was also emailed to
+    {{ settings.teacher_name or 'Vincent' }}; replying to that email goes straight to the member.</p>
+  {% for category, message in get_flashed_messages(with_categories=true) %}
+    <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">{{ message }}</div>
+  {% endfor %}
+
+  <div class="filters">
+    {% for key, label in filters %}
+      <a class="btn {{ 'btn-primary' if show == key else 'btn-default' }}" href="{{ url_for('.index', show=key) }}">
+        {{ label }}{% if key == 'new' %} ({{ counts.new }}){% elif key == 'ideas' %} ({{ counts.ideas }}){% endif %}</a>
+    {% endfor %}
+  </div>
+
+  {% if not questions %}
+    <p class="alert alert-info">{% if show == 'new' %}No new questions. Everything is answered.{% elif show == 'ideas' %}No questions marked as ideas yet.{% else %}No questions here yet.{% endif %}</p>
+  {% endif %}
+
+  {% for q in questions %}
+  <div class="q {{ 'answered' if q.status == 'answered' else '' }}" id="q{{ q.id }}">
+    <p class="meta">
+      {% if q.status == 'answered' %}<span class="label label-success">Answered</span>{% else %}<span class="label label-danger">New</span>{% endif %}
+      {% if q.is_corner_idea %}<span class="label label-warning">Idea for {{ settings.corner_name or 'the corner' }}</span>{% endif %}
+      <span class="muted">&nbsp;{{ q.created_at.strftime('%b %d, %Y %H:%M') }} UTC</span>
+    </p>
+    <h2>{{ q.subject or '(no subject)' }}</h2>
+    <p class="meta"><strong>{{ q.user.name or '(no name given)' if q.user else 'Deleted account' }}</strong>
+      {% if q.user %}<span class="muted">&middot; {{ q.user.email }}</span>{% endif %}
+      &middot; Plan: {{ q.member_plan or (q.user.plan_name if q.user else '') }}</p>
+    <p class="meta">Lesson: {% if q.lesson_video %}<strong>{{ q.lesson_video.title }}</strong>{% if q.video_time %} at {{ q.video_time }}{% endif %}{% else %}<span class="muted">not given</span>{% endif %}</p>
+    <div class="text">{{ q.question }}</div>
+
+    {% if q.answer_note or q.answer_video %}
+      <p class="meta"><strong>Answer</strong>{% if q.answered_at %} <span class="muted">({{ q.answered_at.strftime('%b %d, %Y') }})</span>{% endif %}</p>
+      {% if q.answer_note %}<div class="answer">{{ q.answer_note }}</div>{% endif %}
+      {% if q.answer_video %}<p class="meta">Video answer: {{ q.answer_video.title }} ({{ q.answer_video.studio_status }})</p>{% endif %}
+    {% elif q.status == 'answered' %}
+      <p class="muted">Marked as answered (no answer typed here).</p>
+    {% endif %}
+
+    <form method="post" action="{{ url_for('.update', question_id=q.id, show=show) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label for="answer-{{ q.id }}" style="margin-top:12px">{{ 'Change the answer' if q.answer_note else 'Type an answer' }} <span class="muted">(shown under the member's My questions and emailed to them)</span></label>
+      <textarea id="answer-{{ q.id }}" name="answer" rows="4" maxlength="5000">{{ q.answer_note or '' }}</textarea>
+      <button class="btn btn-primary" type="submit" name="do" value="answer">Save answer and email the member</button>
+      {% if q.status == 'answered' %}
+        <button class="btn btn-default" type="submit" name="do" value="reopen">Mark as new again</button>
+      {% else %}
+        <button class="btn btn-success" type="submit" name="do" value="answered">Mark answered (no email)</button>
+      {% endif %}
+      <button class="btn btn-warning" type="submit" name="do" value="idea">{{ 'Not an idea any more' if q.is_corner_idea else 'Idea for ' ~ (settings.corner_name or "Vincent's Corner") }}</button>
+    </form>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
