@@ -17,6 +17,8 @@ from .extensions import limiter
 from .security import EVENT_LABELS, suspend_user, unsuspend_user
 from .tcc_dashboard import dashboard_stats
 from .tcc_questions import save_answer, mark_answered, reopen
+from .models import EmailLog, VideoAnnouncement
+from . import member_emails
 
 # Only users with role "admin" can use /admin. They sign in with their normal
 # site email and password; the login is kept in a signed Flask session cookie.
@@ -248,6 +250,95 @@ SECTION_CHOICES = [("beginner", "Beginner"), ("intermediate", "Intermediate"), (
                    ("qigong", "Qigong"), (CORNER_SECTION, "Teacher's corner")]
 
 
+class EmailsView(AdminOnlyMixin, BaseView):
+    """Member emails: what was sent, new-video sending progress, Yes/No for new videos, and test sends."""
+
+    def _csrf(self):
+        session.setdefault("admin_form_csrf", secrets.token_urlsafe(32))
+        return session["admin_form_csrf"]
+
+    def _check_csrf(self):
+        token = session.get("admin_form_csrf")
+        if not token or token != request.form.get("csrf_token"):
+            abort(400)
+
+    @expose('/')
+    def index(self):
+        kind = request.args.get("kind") or ""
+        logs = EmailLog.query
+        if kind:
+            logs = logs.filter(EmailLog.kind == kind)
+        logs = logs.order_by(EmailLog.created_at.desc(), EmailLog.id.desc()).limit(300).all()
+        announcements = []
+        for a in VideoAnnouncement.query.order_by(VideoAnnouncement.created_at.desc()).limit(20).all():
+            counts = a.counts()
+            announcements.append({"a": a, "counts": counts, "reason": member_emails.waiting_reason(a, counts)})
+        from .taichi_company import visible_videos
+        to_ask = [v for v in visible_videos().filter(Video.announce_choice.is_(None)).order_by(Video.publish_at.desc()).all()
+                  if not v.is_coming_soon][:20]
+        latest = visible_videos().order_by(Video.publish_at.desc()).all()
+        return self.render('admin/tcc_emails.html', logs=logs, kind=kind, kinds=member_emails.KINDS,
+                           announcements=announcements, to_ask=to_ask, csrf_token=self._csrf(),
+                           sent_24h=member_emails.sent_last_24h(), daily_limit=member_emails.DAILY_LIMIT,
+                           reserve=member_emails.RESERVE, admin=current_admin(),
+                           test_videos=[v for v in latest if not v.is_coming_soon][:30],
+                           recipients=member_emails.recipients_query().count())
+
+    @expose('/test/<kind>', methods=['POST'])
+    def send_test(self, kind):
+        self._check_csrf()
+        admin = current_admin()
+        if kind not in member_emails.KINDS:
+            abort(404)
+        top = Tier.query.order_by(Tier.rank.desc()).first()
+        plan, rank = (top.name, top.rank) if top else ("Member", 1)
+        headers = None
+        video = None
+        if kind == "welcome_free":
+            subject, content = member_emails.welcome_free(admin)
+        elif kind == "welcome_paid":
+            subject, content = member_emails.welcome_paid(admin, plan, rank)
+        elif kind == "upgrade":
+            subject, content = member_emails.upgrade_email(admin, plan, rank)
+        elif kind == "cancelled":
+            subject, content = member_emails.cancelled_email(admin, until=(datetime.utcnow().replace(day=1)).strftime("%B 28, %Y"))
+        elif kind == "payment_failed":
+            subject, content = member_emails.payment_failed_email(admin)
+        else:
+            video = db.session.get(Video, int(request.form.get("video_id") or 0))
+            if video is None:
+                flash("Please choose a video for the test.", "error")
+                return redirect(url_for('.index'))
+            subject, content, headers = member_emails.new_video_email(admin, video)
+        ok = member_emails.deliver(kind, admin.email, f"[TEST] {subject}", content, user=admin, video=video,
+                                   is_test=True, headers=headers)
+        flash(f"Test \"{member_emails.KINDS[kind]}\" email sent to {admin.email}." if ok
+              else "The test email could not be sent. See the log below.", None if ok else "error")
+        return redirect(url_for('.index'))
+
+    @expose('/announce/<int:video_id>', methods=['GET', 'POST'])
+    def announce(self, video_id):
+        video = db.session.get(Video, video_id)
+        if video is None:
+            abort(404)
+        if request.method == 'POST':
+            self._check_csrf()
+            if request.form.get("send") == "yes":
+                a, error = member_emails.announce_video(video, current_admin())
+                flash(error or f"Emailing {a.total} members about \"{video.title}\", a few at a time.",
+                      "error" if error else None)
+            else:
+                if video.announce_choice != "yes":
+                    video.announce_choice = "no"
+                    db.session.commit()
+                flash(f"Members will not be emailed about \"{video.title}\".")
+            return redirect(url_for('.index'))
+        return self.render('admin/tcc_emails_announce.html', video=video, csrf_token=self._csrf(),
+                           recipients=member_emails.recipients_query().count(),
+                           plan=member_emails.video_plan_label(video),
+                           already=member_emails.announcement_for(video))
+
+
 class VideoAdmin(SecureModelView):
     column_list = ("id", "title", "slug", "section", "tier_rank", "status", "is_published",
                    "is_free_sample", "publish_at", "sort_order")
@@ -260,7 +351,18 @@ class VideoAdmin(SecureModelView):
     form_choices = {
         "section": SECTION_CHOICES,
         "status": [(s, s) for s in ("placeholder", "uploading", "processing", "ready", "failed")],
+        "announce_choice": [("", "Not asked yet"), ("yes", "Yes (emailed)"), ("no", "No")],
     }
+    form_args = {"announce_choice": {"label": "Email members about it",
+                                     "description": "Use the Emails page to send. Changing this does not send anything."}}
+
+    def after_model_change(self, form, model, is_created):
+        # "Email members about this video?" when a video is published here
+        was = getattr(getattr(form, "is_published", None), "object_data", None)
+        if model.is_published and not was and model.announce_choice is None:
+            link = url_for("emails.announce", video_id=model.id)
+            flash(Markup(f'"{Markup.escape(model.title)}" is published. <strong>Email members about this video?</strong> '
+                         f'<a class="btn btn-primary btn-sm" href="{link}">Yes or No</a>'))
 
 
 class ArticleAdmin(SecureModelView):
@@ -473,6 +575,7 @@ def setup_admin(app):
     admin.add_view(VideoAdmin(Video, db.session, name="Videos", category=tcc))
     admin.add_view(EncodingJobAdmin(EncodingJob, db.session, name="Encoding Jobs", category=tcc))
     admin.add_view(QuestionsInbox(name="Questions", endpoint="questions", category=tcc))
+    admin.add_view(EmailsView(name="Emails", endpoint="emails", category=tcc))
     admin.add_view(SecurityEventAdmin(SecurityEvent, db.session, name="Security Events", category=tcc))
     admin.add_view(ReadOnlyAdmin(PlaybackSession, db.session, name="Playback Sessions", category=tcc))
     admin.add_view(ReadOnlyAdmin(WebhookEvent, db.session, name="Webhook Events", category=tcc))

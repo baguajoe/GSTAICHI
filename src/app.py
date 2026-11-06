@@ -132,6 +132,10 @@ db.init_app(app)
 # add the admin
 setup_admin(app)
 
+# Member emails (new-video announcements, welcome emails) are sent by a small loop inside the API
+from api.member_emails import start_email_sender  # noqa: E402
+start_email_sender(app)
+
 # add the admin
 setup_commands(app)
 

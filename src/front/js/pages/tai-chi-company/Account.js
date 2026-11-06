@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useTcc } from "../../component/tai-chi-company/TccContext";
 import { apiFetch, setToken } from "../../component/tai-chi-company/api";
@@ -205,13 +205,21 @@ const EmailPreferences = () => {
         }
     };
 
+    useEffect(() => {
+        // Opened from "Manage your email preferences" in an email
+        if (window.location.hash === "#emails") {
+            const el = document.getElementById("emails");
+            if (el) el.scrollIntoView({ behavior: "smooth" });
+        }
+    }, []);
+
     const choices = [
         ["email_new_videos", "Email me when new videos are added"],
         ["email_answers", `Email me when ${name} answers my questions`]
     ];
 
     return (
-        <section className="tcc-section">
+        <section className="tcc-section" id="emails">
             <h2>Emails</h2>
             {choices.map(([field, label]) => (
                 <label key={field} className="tcc-check">

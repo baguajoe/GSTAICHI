@@ -22,6 +22,7 @@ from .taichi_company import tcc
 from .tcc_articles import media_url, reading_minutes, article_card, article_body
 from .rich_text import clean_html, editor_html, plain_text, image_url, DESCRIPTION_BLOCKS
 from .video_pipeline import chapters_to_vtt
+from .member_emails import announcement_summary
 from .article_import import import_document, DocumentError, MAX_DOCUMENT_BYTES
 
 STAFF = ("teacher", "admin")
@@ -127,6 +128,7 @@ def studio_video(v):
         "attempts": job.attempts if job else 0,
         "uploaded_by": v.uploader.name or v.uploader.email if v.uploader else None,
         "created_at": v.created_at.isoformat() if v.created_at else None,
+        "announcement": announcement_summary(v),
     }
 
 

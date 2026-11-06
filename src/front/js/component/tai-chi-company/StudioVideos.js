@@ -24,6 +24,43 @@ const shortDate = (iso) => (iso ? new Date(`${iso}Z`).toLocaleString(undefined, 
 
 export const StatusBadge = ({ status }) => <span className={`tcc-badge ${statusClass(status)}`}>{status}</span>;
 
+// "Email members about this video?" once a video is shown to members, so small uploads don't send emails
+const AnnouncePrompt = ({ video, onAction, busy }) => {
+    const a = video.announcement || {};
+    const live = ["Published", "Scheduled"].includes(video.studio_status);
+    if (a.choice === "yes") {
+        return (
+            <p className="tcc-announce-status">
+                <i className="fas fa-envelope" aria-hidden="true"></i>{" "}
+                {a.status === "done" || !a.waiting
+                    ? `Members were emailed about this video (${a.sent || 0} sent).`
+                    : `Emailing members: ${a.sent || 0} of ${a.total} sent. ${a.waiting_reason || ""}`}
+            </p>
+        );
+    }
+    if (!live) return null;
+    if (a.choice === "no") {
+        return (
+            <p className="tcc-announce-status">
+                Members were not emailed.{" "}
+                <button type="button" className="tcc-text-button" disabled={busy} onClick={() => onAction("announce", video)}>
+                    Email members after all
+                </button>
+            </p>
+        );
+    }
+    return (
+        <div className="tcc-notice tcc-announce">
+            <p><strong>Email members about this video?</strong> Members who asked for new-video emails will get one.
+                Choose No for small updates.</p>
+            <div className="tcc-button-row tcc-left">
+                <button type="button" className="custom-btn1 tcc-btn" disabled={busy} onClick={() => onAction("announce", video)}>Yes, email members</button>
+                <button type="button" className="tcc-btn tcc-btn-outline" disabled={busy} onClick={() => onAction("no-announce", video)}>No</button>
+            </div>
+        </div>
+    );
+};
+
 const VideoRow = ({ video, sectionLabel, onAction, busy }) => {
     const [confirmDelete, setConfirmDelete] = useState(false);
     const needsFile = ["Waiting for video", "Uploading", "Failed"].includes(video.studio_status);
@@ -48,6 +85,7 @@ const VideoRow = ({ video, sectionLabel, onAction, busy }) => {
                     {video.duration_seconds && <p>Length: {formatDuration(video.duration_seconds)}</p>}
                 </div>
             </div>
+            {video.show_in_library !== false && <AnnouncePrompt video={video} onAction={onAction} busy={busy} />}
             <div className="tcc-button-row tcc-left">
                 {["Published", "Scheduled", "Ready"].includes(video.studio_status) && (
                     <Link to={`/tai-chi-company/watch/${video.slug}`} className="tcc-btn tcc-btn-outline">Watch</Link>
@@ -119,6 +157,10 @@ const StudioVideos = ({ prefill, onPrefillUsed }) => {
         try {
             if (action === "delete") {
                 setMessage((await apiFetch(`/api/tcc/studio/videos/${video.id}`, { method: "DELETE" })).msg);
+            } else if (action === "announce" || action === "no-announce") {
+                setMessage((await apiFetch(`/api/tcc/studio/videos/${video.id}/announce`, {
+                    method: "POST", body: { send: action === "announce" }
+                })).msg);
             } else if (action === "retry") {
                 await apiFetch(`/api/tcc/studio/videos/${video.id}/retry`, { method: "POST" });
                 setMessage(`"${video.title}" will be tried again. This usually takes 10 to 30 minutes.`);

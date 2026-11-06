@@ -852,3 +852,9 @@ select.tcc-input { background: #ffffff; }
 .tcc-practice-note a { font-weight: 600; }
 .tcc-check.tcc-agree { align-items: flex-start; margin: 4px 0 18px; line-height: 1.5; }
 .tcc-check.tcc-agree input { margin-top: 2px; }
+
+/* ----- Studio: "Email members about this video?" ----- */
+.tcc-announce { margin: 12px 0 4px; }
+.tcc-announce p { margin-bottom: 10px; }
+.tcc-announce-status { margin: 10px 0 4px; color: #333333; }
+.tcc-text-button { background: none; border: 0; padding: 4px 0; font-size: inherit; font-weight: 700; color: var(--primary-color); text-decoration: underline; cursor: pointer; }

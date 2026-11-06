@@ -1,0 +1,87 @@
+{% extends 'admin/master.html' %}
+{% block head_css %}
+{{ super() }}
+<style>
+  .tcc-emails { font-size: 17px; }
+  .tcc-emails h1 { color: #590d0d; margin-top: 10px; }
+  .tcc-emails h2 { color: #590d0d; font-size: 22px; margin-top: 28px; }
+  .tcc-emails .muted { color: #666; }
+  .tcc-emails .btn { min-height: 40px; font-size: 16px; margin: 4px 6px 4px 0; }
+  .tcc-emails .bar { height: 14px; background: #eee; border-radius: 7px; overflow: hidden; min-width: 140px; }
+  .tcc-emails .bar span { display: block; height: 100%; background: #2e7d32; }
+  .tcc-emails td, .tcc-emails th { vertical-align: middle !important; }
+  .tcc-emails select { font-size: 16px; min-height: 40px; max-width: 360px; }
+</style>
+{% endblock %}
+{% block body %}
+<div class="tcc-emails">
+  <h1>Emails</h1>
+  <p class="muted">Sent from the school's Gmail as "Vincent Chu – The Tai Chi Company", replies go to chu.v@usa.com.
+    {{ sent_24h }} email(s) sent in the last 24 hours. New-video emails stop at {{ daily_limit - reserve }} a day
+    ({{ reserve }} are kept for welcome and account emails) and continue by themselves the next day.</p>
+  {% for category, message in get_flashed_messages(with_categories=true) %}
+    <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">{{ message }}</div>
+  {% endfor %}
+
+  <h2>New-video emails</h2>
+  {% if to_ask %}
+  <div class="panel panel-warning"><div class="panel-heading"><strong>Email members about these videos?</strong>
+    ({{ recipients }} member(s) have "Email me when new videos are added" turned on)</div>
+    <table class="table">
+      {% for v in to_ask %}
+      <tr><td><strong>{{ v.title }}</strong>{% if v.publish_at %}<br><span class="muted">Published {{ v.publish_at.strftime('%b %d, %Y') }}</span>{% endif %}</td>
+        <td style="text-align:right"><a class="btn btn-primary" href="{{ url_for('.announce', video_id=v.id) }}">Yes or No…</a></td></tr>
+      {% endfor %}
+    </table></div>
+  {% endif %}
+  {% if announcements %}
+  <table class="table table-bordered">
+    <tr><th>Video</th><th>Started</th><th>Progress</th><th>Status</th></tr>
+    {% for item in announcements %}{% set a = item.a %}{% set c = item.counts %}
+    <tr>
+      <td><strong>{{ a.video.title if a.video else '(deleted video)' }}</strong>{% if a.starter %}<br><span class="muted">by {{ a.starter.name or a.starter.email }}</span>{% endif %}</td>
+      <td>{{ a.created_at.strftime('%b %d %H:%M') }} UTC</td>
+      <td>{{ c.sent }} of {{ a.total }} sent{% if c.failed %}, {{ c.failed }} failed{% endif %}{% if c.skipped %}, {{ c.skipped }} turned emails off{% endif %}
+        <div class="bar"><span style="width: {{ ((c.sent + c.failed + c.skipped) * 100 / a.total) if a.total else 100 }}%"></span></div></td>
+      <td>{% if a.status == 'done' %}<span class="label label-success">Finished</span>{% if a.finished_at %} {{ a.finished_at.strftime('%b %d %H:%M') }}{% endif %}
+          {% else %}<span class="label label-warning">{{ c.pending }} waiting</span><br>{{ item.reason or '' }}{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% elif not to_ask %}
+  <p class="muted">No new-video emails yet. When a video is published in the Studio or here, you are asked "Email members about this video?"</p>
+  {% endif %}
+
+  <h2>Send a test email to me</h2>
+  <p class="muted">Goes only to {{ admin.email }}, marked [TEST], using your account and the highest plan as an example.</p>
+  {% for key, label in kinds.items() %}{% if key != 'new_video' %}
+  <form method="post" action="{{ url_for('.send_test', kind=key) }}" style="display:inline">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <button class="btn btn-default" type="submit">{{ label }}</button>
+  </form>
+  {% endif %}{% endfor %}
+  <form method="post" action="{{ url_for('.send_test', kind='new_video') }}" style="margin-top:8px">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <select name="video_id" aria-label="Video for the test">{% for v in test_videos %}<option value="{{ v.id }}">{{ v.title }}</option>{% endfor %}</select>
+    <button class="btn btn-default" type="submit">New video</button>
+  </form>
+
+  <h2>What was sent</h2>
+  <p>Show: <a href="{{ url_for('.index') }}" class="btn btn-{{ 'primary' if not kind else 'default' }} btn-sm">All</a>
+    {% for key, label in kinds.items() %}<a href="{{ url_for('.index', kind=key) }}" class="btn btn-{{ 'primary' if kind == key else 'default' }} btn-sm">{{ label }}</a>{% endfor %}</p>
+  {% if logs %}
+  <table class="table table-striped">
+    <tr><th>Date (UTC)</th><th>Type</th><th>To</th><th>Subject</th><th>Result</th></tr>
+    {% for e in logs %}
+    <tr>
+      <td>{{ e.created_at.strftime('%b %d, %Y %H:%M') }}</td>
+      <td>{{ kinds.get(e.kind, e.kind) }}{% if e.is_test %} <span class="label label-info">test</span>{% endif %}</td>
+      <td>{{ e.to_email }}</td>
+      <td>{{ e.subject or '' }}</td>
+      <td>{% if e.status == 'sent' %}<span class="label label-success">Sent</span>{% elif e.status == 'failed' %}<span class="label label-danger">Failed</span><br><span class="muted">{{ e.error or '' }}</span>{% else %}<span class="label label-default">Sending</span>{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}<p class="muted">Nothing sent yet.</p>{% endif %}
+</div>
+{% endblock %}

@@ -63,7 +63,7 @@ const Join = () => {
         }
         setBusy(true);
         try {
-            await apiFetch("/api/signup", { method: "POST", body: { ...form, agree_terms: true }, auth: false });
+            await apiFetch("/api/signup", { method: "POST", body: { ...form, agree_terms: true, plan_choice: freeChosen ? "free" : "paid" }, auth: false });
             await login(form.email, form.password);
             setJustJoined(true);
         } catch (err) {

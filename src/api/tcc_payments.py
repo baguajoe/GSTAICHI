@@ -13,6 +13,7 @@ from .extensions import limiter
 from . import paypal
 from .paypal import PayPalError
 from .notify import notify_school
+from .member_emails import plan_status_emails
 from .tcc_auth import role_required, get_current_user
 from .taichi_company import tcc
 
@@ -26,6 +27,7 @@ STATUS_MAP = {
 SUBSCRIPTION_EVENTS = {
     "BILLING.SUBSCRIPTION.ACTIVATED", "BILLING.SUBSCRIPTION.UPDATED", "BILLING.SUBSCRIPTION.CANCELLED",
     "BILLING.SUBSCRIPTION.SUSPENDED", "BILLING.SUBSCRIPTION.EXPIRED", "BILLING.SUBSCRIPTION.RE-ACTIVATED",
+    "BILLING.SUBSCRIPTION.PAYMENT.FAILED",
 }
 
 
@@ -150,10 +152,12 @@ def confirm_subscription():
 
     old_subscription = user.paypal_subscription_id if user.paypal_subscription_id != subscription_id else None
     was_paying = user.has_active_access and user.tier_rank > 0
+    before_status, before_rank = (user.subscription_status if not old_subscription else "none"), user.tier_rank
     status = sync_subscription(user, sub)
     if status is None:
         return jsonify({"msg": "This PayPal subscription is not for one of our plans."}), 400
     db.session.commit()
+    plan_status_emails(user, before_status, before_rank)
 
     if old_subscription:
         # Subscribed again while an older subscription existed: stop the old one so nobody pays twice
@@ -176,12 +180,14 @@ def resync_subscription():
     user = get_current_user()
     if not user.paypal_subscription_id:
         return jsonify(_subscription_summary(user))
+    before_status, before_rank = user.subscription_status, user.tier_rank
     try:
         sync_subscription(user, paypal.get_subscription(user.paypal_subscription_id))
         db.session.commit()
     except PayPalError as e:
         print(f"PayPal sync failed: {e}")
         return jsonify({"msg": "We could not reach PayPal. Please try again in a minute."}), 502
+    plan_status_emails(user, before_status, before_rank)
     return jsonify(_subscription_summary(user))
 
 
@@ -210,8 +216,10 @@ def change_subscription():
         return jsonify({"msg": "PayPal could not change the plan right now. Please try again later."}), 502
     if not approve_url:
         # No approval needed (same price): PayPal changed it already
+        before_status, before_rank = user.subscription_status, user.tier_rank
         sync_subscription(user, paypal.get_subscription(user.paypal_subscription_id))
         db.session.commit()
+        plan_status_emails(user, before_status, before_rank)
         return jsonify({"msg": "Your plan has been changed.", "subscription": _subscription_summary(user)})
     return jsonify({"approve_url": approve_url})
 
@@ -229,10 +237,12 @@ def cancel_my_subscription():
     except PayPalError as e:
         print(f"PayPal cancel failed: {e} {e.details}")
         return jsonify({"msg": "PayPal could not cancel the plan right now. Please try again, or call us."}), 502
+    before_status, before_rank = user.subscription_status, user.tier_rank
     user.subscription_status = "cancelled"
     user.cancelled_at = datetime.utcnow()
     user.next_billing_at = None
     db.session.commit()
+    plan_status_emails(user, before_status, before_rank)
     until = user.paid_through.strftime("%B %d, %Y") if user.paid_through else "the end of your paid period"
     notify_school("Cancellation", f"{user.name or ''} <{user.email}> cancelled {user.current_plan.tier.name if user.current_plan else 'their plan'}. "
                   f"Access continues until {until}. Reason: {reason}")
@@ -273,6 +283,7 @@ def paypal_webhook():
             return jsonify({"ok": True, "duplicate": True})
 
     resource = event.get("resource") or {}
+    email_after = None
     if event_type in SUBSCRIPTION_EVENTS or event_type == "PAYMENT.SALE.COMPLETED":
         user, sub_id = _user_for_subscription(resource)
         if user is not None and sub_id:
@@ -280,6 +291,7 @@ def paypal_webhook():
                 pass  # an old, replaced subscription: ignore
             else:
                 before = user.subscription_status
+                before_rank = user.tier_rank
                 try:
                     sync_subscription(user, paypal.get_subscription(sub_id))
                 except PayPalError as e:
@@ -293,6 +305,10 @@ def paypal_webhook():
                     until = user.paid_through.strftime("%B %d, %Y") if user.paid_through else "the end of the paid period"
                     notify_school("Cancellation", f"{user.name or ''} <{user.email}> cancelled through PayPal. "
                                   f"Access continues until {until}.")
+                email_after = (user, before, before_rank)
     record.processed_at = datetime.utcnow()
     db.session.commit()
+    if email_after:
+        # Member emails (thank you, cancelled, payment problem). The same change never emails twice.
+        plan_status_emails(*email_after, event_type=event_type)
     return jsonify({"ok": True})

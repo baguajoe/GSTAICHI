@@ -3,6 +3,7 @@ from api.models import db, User, Class, Book, Video, Article, SiteSettings
 from api.extensions import limiter
 from api.tcc_auth import role_required
 from api.send_email import send_email
+from api.member_emails import kick as kick_email_sender, PAID_WELCOME_WAIT
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 # from flask_login import login_required, current_user
@@ -41,10 +42,15 @@ def create_signup():
         return jsonify({"msg": "User already exists"}), 400
 
     hashed_password = generate_password_hash(password)
+    # Free: the welcome email goes out right away. Going on to PayPal: wait a little, so the member gets the
+    # paid welcome when the plan starts (or the free one if they do not finish paying)
+    paying_next = data.get("plan_choice") == "paid"
     new_user = User(email=email, password=hashed_password, is_active=True, name=name or None,
-                    agreed_terms_at=datetime.utcnow())
+                    agreed_terms_at=datetime.utcnow(),
+                    welcome_due_at=datetime.utcnow() + (PAID_WELCOME_WAIT if paying_next else timedelta(0)))
     db.session.add(new_user)
     db.session.commit()
+    kick_email_sender()
     return jsonify({"msg": "User created successfully"}), 201
 
 # User Login

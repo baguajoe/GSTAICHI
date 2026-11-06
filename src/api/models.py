@@ -43,6 +43,10 @@ class User(db.Model):
     # When the member agreed to the health disclaimer and the Terms of Use (at sign-up, or in the one-time
     # pop-up for members who joined before it existed)
     agreed_terms_at = db.Column(db.DateTime, nullable=True)
+    # Welcome email: due right after sign-up (free), or a little later if the member went on to PayPal
+    # (they get the paid welcome as soon as their plan starts, or the free one if they did not pay)
+    welcome_due_at = db.Column(db.DateTime, nullable=True)
+    welcome_sent_at = db.Column(db.DateTime, nullable=True)
 
     current_plan = db.relationship("Plan", foreign_keys=[current_plan_id])
 
@@ -232,6 +236,8 @@ class Video(db.Model):
     is_published = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
     # False for videos made inside an article: they play there but are not listed in the Video Library
     show_in_library = db.Column(db.Boolean, nullable=False, default=True, server_default=db.true())
+    # "Email members about this video?": "yes" (see VideoAnnouncement), "no", or empty (not asked yet)
+    announce_choice = db.Column(db.String(10), nullable=True)
     uploaded_by = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
     # Studio uploads (browser -> taichi-masters, multipart)
     upload_id = db.Column(db.String(1024), nullable=True)
@@ -644,6 +650,61 @@ class SecurityEvent(db.Model):
 
     def __repr__(self):
         return f"<SecurityEvent {self.type} user={self.user_id}>"
+
+
+class EmailLog(db.Model):
+    """Every member email the app sends (shown in /admin > Emails). dedupe_key stops the same plan email going
+    out twice when PayPal sends an event again."""
+    __tablename__ = "email_log"
+    id = db.Column(db.Integer, primary_key=True)
+    kind = db.Column(db.String(40), nullable=False, index=True)
+    to_email = db.Column(db.String(120), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="SET NULL"), nullable=True, index=True)
+    video_id = db.Column(db.Integer, db.ForeignKey("video.id", ondelete="SET NULL"), nullable=True)
+    subject = db.Column(db.String(300), nullable=True)
+    status = db.Column(db.String(10), nullable=False, default="sending", server_default="sending")  # sending / sent / failed
+    error = db.Column(db.String(500), nullable=True)
+    is_test = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
+    dedupe_key = db.Column(db.String(200), nullable=True, unique=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, server_default=db.func.now(), index=True)
+
+    user = db.relationship("User")
+    video = db.relationship("Video")
+
+
+class VideoAnnouncement(db.Model):
+    """One "new video" email to members, sent a little at a time to stay under Gmail's daily limit."""
+    __tablename__ = "video_announcement"
+    id = db.Column(db.Integer, primary_key=True)
+    video_id = db.Column(db.Integer, db.ForeignKey("video.id", ondelete="CASCADE"), nullable=False, unique=True)
+    created_by = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="SET NULL"), nullable=True)
+    status = db.Column(db.String(10), nullable=False, default="sending", server_default="sending")  # sending / done
+    total = db.Column(db.Integer, nullable=False, default=0, server_default="0")
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, server_default=db.func.now())
+    finished_at = db.Column(db.DateTime, nullable=True)
+
+    video = db.relationship("Video")
+    starter = db.relationship("User", foreign_keys=[created_by])
+
+    def counts(self):
+        rows = db.session.query(AnnouncementRecipient.status, db.func.count(AnnouncementRecipient.id)) \
+            .filter(AnnouncementRecipient.announcement_id == self.id).group_by(AnnouncementRecipient.status).all()
+        counts = {"pending": 0, "sent": 0, "failed": 0, "skipped": 0}
+        counts.update({status: n for status, n in rows})
+        return counts
+
+
+class AnnouncementRecipient(db.Model):
+    __tablename__ = "announcement_recipient"
+    __table_args__ = (db.UniqueConstraint("announcement_id", "user_id", name="uq_announcement_recipient"),
+                      db.Index("ix_announcement_recipient_status", "announcement_id", "status"))
+    id = db.Column(db.Integer, primary_key=True)
+    announcement_id = db.Column(db.Integer, db.ForeignKey("video_announcement.id", ondelete="CASCADE"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
+    status = db.Column(db.String(10), nullable=False, default="pending", server_default="pending")  # pending/sent/failed/skipped
+    sent_at = db.Column(db.DateTime, nullable=True)
+
+    user = db.relationship("User")
 
 
 class WebhookEvent(db.Model):
