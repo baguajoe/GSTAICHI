@@ -35,11 +35,14 @@ def create_signup():
         return jsonify({"msg": "Please enter a valid email address."}), 400
     if len(password) < MIN_PASSWORD_LENGTH:
         return jsonify({"msg": f"Password must be at least {MIN_PASSWORD_LENGTH} characters."}), 400
+    if data.get("agree_terms") is not True:
+        return jsonify({"msg": "Please tick the box to agree to the health disclaimer and the Terms of Use."}), 400
     if _find_user_by_email(email):
         return jsonify({"msg": "User already exists"}), 400
 
     hashed_password = generate_password_hash(password)
-    new_user = User(email=email, password=hashed_password, is_active=True, name=name or None)
+    new_user = User(email=email, password=hashed_password, is_active=True, name=name or None,
+                    agreed_terms_at=datetime.utcnow())
     db.session.add(new_user)
     db.session.commit()
     return jsonify({"msg": "User created successfully"}), 201

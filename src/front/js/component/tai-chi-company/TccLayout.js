@@ -3,6 +3,8 @@ import { NavLink, Outlet, Link } from "react-router-dom";
 import { TccProvider, useTcc, HELP_EMAIL } from "./TccContext";
 import { useHomeScreenApp } from "./homeScreenApp";
 import { InstallButton, MacInstalledNotice } from "./InstallApp";
+import HealthAgreement from "./HealthAgreement";
+import { LegalLinks } from "./legal";
 import "../../../styles/taiChiCompany.css";
 
 const navItems = (settings, user) => [
@@ -58,10 +60,9 @@ const TccFooter = () => {
             <p className="tcc-copyright">
                 &copy; {new Date().getFullYear()} {settings.copyright_line || settings.school_name}
             </p>
+            <LegalLinks className="tcc-footer-links" />
             <p className="tcc-footer-links">
                 <Link to="/tai-chi-company/add-to-phone">Install the app on your phone or computer</Link>
-                <span aria-hidden="true"> · </span>
-                <Link to="/tai-chi-company/terms">Terms of Use</Link>
             </p>
         </footer>
     );
@@ -93,6 +94,7 @@ const TccShell = () => {
             </main>
             <TccFooter />
             <MacInstalledNotice />
+            <HealthAgreement />
         </div>
     );
 };

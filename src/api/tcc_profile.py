@@ -10,7 +10,7 @@ from flask import jsonify, request
 from flask_jwt_extended import create_access_token
 from sqlalchemy import func
 from werkzeug.security import check_password_hash
-from datetime import timedelta
+from datetime import datetime, timedelta
 from .models import db, User, SiteSettings
 from .extensions import limiter
 from . import r2
@@ -46,6 +46,17 @@ def update_profile():
             setattr(user, field, bool(data[field]))
     db.session.commit()
     return jsonify({"msg": "Saved.", "user": user.serialize_account()})
+
+
+@tcc.route('/agree-terms', methods=['POST'])
+@role_required()
+def agree_terms():
+    """The one-time "I agree" pop-up for members who joined before sign-up asked for it."""
+    user = get_current_user()
+    if user.agreed_terms_at is None:
+        user.agreed_terms_at = datetime.utcnow()
+        db.session.commit()
+    return jsonify({"msg": "Thank you.", "user": user.serialize_account()})
 
 
 @tcc.route('/change-email', methods=['POST'])

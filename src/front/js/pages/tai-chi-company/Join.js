@@ -5,6 +5,7 @@ import { apiFetch } from "../../component/tai-chi-company/api";
 import TierCards, { IntervalToggle, FoundingBanner } from "../../component/tai-chi-company/TierCards";
 import FormField, { FormMessage } from "../../component/tai-chi-company/FormField";
 import SubscribeButton from "../../component/tai-chi-company/SubscribeButton";
+import { LegalLinks } from "../../component/tai-chi-company/legal";
 
 const Join = () => {
     const { user, login, setUser, tiers } = useTcc();
@@ -12,6 +13,7 @@ const Join = () => {
     const [billing, setBilling] = useState("month");
     const [chosen, setChosen] = useState(null);
     const [form, setForm] = useState({ name: "", email: "", password: "" });
+    const [agreed, setAgreed] = useState(false);
     const [error, setError] = useState(null);
     const [busy, setBusy] = useState(false);
     const [justJoined, setJustJoined] = useState(false);
@@ -55,9 +57,13 @@ const Join = () => {
     const submit = async (e) => {
         e.preventDefault();
         setError(null);
+        if (!agreed) {
+            setError("Please tick the box to agree to the health disclaimer and the Terms of Use.");
+            return;
+        }
         setBusy(true);
         try {
-            await apiFetch("/api/signup", { method: "POST", body: form, auth: false });
+            await apiFetch("/api/signup", { method: "POST", body: { ...form, agree_terms: true }, auth: false });
             await login(form.email, form.password);
             setJustJoined(true);
         } catch (err) {
@@ -87,6 +93,7 @@ const Join = () => {
                 <IntervalToggle interval={billing} onChange={setBilling} />
                 <TierCards interval={billing} onChoose={choose} chosenPlanId={chosen && chosen.plan && chosen.plan.id}
                     onChooseFree={chooseFree} freeChosen={freeChosen} />
+                <LegalLinks className="tcc-center" />
             </section>
 
             <section className="tcc-section tcc-form-section" ref={formRef}>
@@ -145,6 +152,13 @@ const Join = () => {
                         <FormField id="join-password" label="Password" name="password" type="password"
                             autoComplete="new-password" hint="At least 8 characters."
                             value={form.password} onChange={update} required minLength={8} />
+                        <label className="tcc-check tcc-agree">
+                            <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)} required aria-required="true" />
+                            <span>
+                                I have read the <Link to="/tai-chi-company/health" target="_blank" rel="noopener">health disclaimer</Link> and
+                                agree to the <Link to="/tai-chi-company/terms" target="_blank" rel="noopener">Terms of Use</Link>
+                            </span>
+                        </label>
                         <FormMessage error={error} />
                         <button type="submit" className="custom-btn1 tcc-btn tcc-btn-block" disabled={busy}>
                             {busy ? "Creating your account…" : freeChosen ? "Create my free account" : "Create my account"}
@@ -152,6 +166,7 @@ const Join = () => {
                         <p className="tcc-form-alt">
                             Already have an account? <Link to="/tai-chi-company/login">Log in</Link>
                         </p>
+                        <LegalLinks className="tcc-center" />
                     </form>
                 )}
             </section>

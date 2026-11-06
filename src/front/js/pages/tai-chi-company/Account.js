@@ -5,6 +5,7 @@ import { apiFetch, setToken } from "../../component/tai-chi-company/api";
 import FormField, { FormMessage } from "../../component/tai-chi-company/FormField";
 import MyPlan from "../../component/tai-chi-company/MyPlan";
 import MyQuestions from "../../component/tai-chi-company/MyQuestions";
+import { LegalLinks } from "../../component/tai-chi-company/legal";
 import { InstallButton } from "../../component/tai-chi-company/InstallApp";
 import { useInstallPrompt } from "../../component/tai-chi-company/homeScreenApp";
 
@@ -264,7 +265,7 @@ const Account = () => {
                 <button type="button" className="tcc-btn tcc-btn-outline" onClick={signOut}>Log out</button>
             </section>
             <p className="tcc-form-alt"><Link to="/tai-chi-company/add-to-phone">Help installing the app</Link></p>
-            <p className="tcc-form-alt"><Link to="/tai-chi-company/terms">Terms of Use</Link></p>
+            <LegalLinks className="tcc-center" />
         </div>
     );
 };

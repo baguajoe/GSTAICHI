@@ -40,6 +40,9 @@ class User(db.Model):
     photo_path = db.Column(db.String(500), nullable=True)  # small picture in the streams bucket (article-private/)
     email_new_videos = db.Column(db.Boolean, nullable=False, default=True, server_default=db.true())
     email_answers = db.Column(db.Boolean, nullable=False, default=True, server_default=db.true())
+    # When the member agreed to the health disclaimer and the Terms of Use (at sign-up, or in the one-time
+    # pop-up for members who joined before it existed)
+    agreed_terms_at = db.Column(db.DateTime, nullable=True)
 
     current_plan = db.relationship("Plan", foreign_keys=[current_plan_id])
 
@@ -122,6 +125,7 @@ class User(db.Model):
             "photo_url": self.photo_url,
             "email_new_videos": self.email_new_videos is not False,
             "email_answers": self.email_answers is not False,
+            "agreed_terms_at": self.agreed_terms_at.isoformat() if self.agreed_terms_at else None,
         }
 
     @property
@@ -453,6 +457,8 @@ class SiteSettings(db.Model):
     founding_member_end_date = db.Column(db.DateTime, nullable=True)
     # The moving member email/number over playing videos. Off for now; the code stays so it can be switched back on.
     video_watermark = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
+    # Refund policy: a full refund if asked within this many days of the first payment
+    refund_days = db.Column(db.Integer, nullable=False, default=7, server_default="7")
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     @classmethod
@@ -482,6 +488,9 @@ class SiteSettings(db.Model):
             "corner_section": CORNER_SECTION,
             "corner_categories": self.corner_categories or [],
             "founding_member_end_date": self.founding_member_end_date.isoformat() if self.founding_member_end_date else None,
+            "refund_days": self.refund_days if self.refund_days is not None else 7,
+            # The Terms and Privacy pages only mention the watermark while it is switched on
+            "video_watermark": bool(self.video_watermark),
         }
 
     def __repr__(self):

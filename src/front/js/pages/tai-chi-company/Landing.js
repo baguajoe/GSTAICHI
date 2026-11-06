@@ -6,6 +6,7 @@ import TierCards, { IntervalToggle, FoundingBanner } from "../../component/tai-c
 import PlaceholderPlayer from "../../component/tai-chi-company/PlaceholderPlayer";
 import { VideoThumbnail } from "../../component/tai-chi-company/VideoCard";
 import LivingLineage from "../../component/tai-chi-company/LivingLineage";
+import { LegalLinks } from "../../component/tai-chi-company/legal";
 
 const Landing = () => {
     const { settings, user } = useTcc();
@@ -61,6 +62,7 @@ const Landing = () => {
                 <IntervalToggle interval={billing} onChange={setBilling} />
                 <TierCards interval={billing} onChoose={(tier, plan) => navigate(`/tai-chi-company/join?plan=${plan.id}`)}
                     onChooseFree={() => navigate("/tai-chi-company/join?plan=free")} />
+                <LegalLinks className="tcc-center" />
             </section>
 
             {sample && (

@@ -8,6 +8,7 @@ import { VideoBadges } from "../../component/tai-chi-company/VideoCard";
 import { useTextSize, TextSizeButtons } from "../../component/tai-chi-company/TextSize";
 import { ArticleContent } from "../../component/tai-chi-company/ArticleView";
 import UpgradeToWatch from "../../component/tai-chi-company/UpgradeToWatch";
+import { PracticeNote } from "../../component/tai-chi-company/legal";
 
 const AboutThisForm = ({ html }) => {
     const size = useTextSize();
@@ -74,6 +75,7 @@ const Watch = () => {
                 : video.coming_soon ? <PlaceholderPlayer />
                 : !user ? <SignInToWatch />
                 : <ProtectedPlayer key={video.slug} video={video} />}
+            <PracticeNote />
 
             <h1 className="tcc-watch-title">{video.title}</h1>
             <VideoBadges video={video} />

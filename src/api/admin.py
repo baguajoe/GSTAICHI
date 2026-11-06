@@ -279,7 +279,11 @@ class SiteSettingsAdmin(SecureModelView):
                                                     "keep their price for life. Empty = the founding offer is open with no end date yet."},
         "notification_email": {"description": "Gets emails about new subscribers, cancellations and member questions. "
                                               "Never shown on the website."},
-        "video_watermark": {"description": "Show the member's email and number moving over videos while they play."},
+        "video_watermark": {"description": "Show the member's email and number moving over videos while they play. "
+                                           "The Terms of Use and Privacy pages mention the watermark only while this is on."},
+        "refund_days": {"label": "Refund days",
+                        "description": "Refund policy: members get a full refund if they email within this many days "
+                                       "of their first payment. Shown on the Refunds page."},
         "video_sections": {"description": 'List of {"key", "label", "tier_rank"}. Keys must not change once videos use them.'},
     }
 

@@ -836,3 +836,19 @@ select.tcc-input { background: #ffffff; }
 .tcc-profile-initial { display: inline-flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: 700; color: #ffffff; background: var(--primary-color); }
 .tcc-check { display: flex; align-items: center; gap: 14px; min-height: 52px; font-size: 1.15rem; cursor: pointer; margin: 4px 0; }
 .tcc-check input { width: 28px; height: 28px; flex: none; accent-color: var(--primary-color); cursor: pointer; }
+
+/* ----- Terms, Privacy, Refunds, Health disclaimer ----- */
+.tcc-legal h2 { font-size: 1.5rem; margin: 0 0 10px; }
+.tcc-legal p, .tcc-legal li { font-size: 1.2rem; line-height: 1.6; }
+.tcc-legal-section { margin: 32px 0; }
+.tcc-legal-list { padding-left: 1.4rem; }
+.tcc-legal-list li { margin-bottom: 6px; }
+.tcc-legal-bottom { margin-top: 40px; text-align: center; }
+.tcc-legal-links { font-size: 1.1rem; margin: 16px 0; }
+.tcc-legal-links a { display: inline-block; padding: 6px 2px; font-weight: 600; }
+.tcc-health-text p { font-size: 1.2rem; line-height: 1.6; margin: 0 0 12px; }
+.tcc-health-dialog h2 { margin-top: 0; color: var(--primary-color); }
+.tcc-practice-note { font-size: 1.1rem; margin: 12px 0 0; padding: 10px 14px; background: #f6eeee; border-radius: 8px; }
+.tcc-practice-note a { font-weight: 600; }
+.tcc-check.tcc-agree { align-items: flex-start; margin: 4px 0 18px; line-height: 1.5; }
+.tcc-check.tcc-agree input { margin-top: 2px; }
