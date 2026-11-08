@@ -6,6 +6,7 @@ from decimal import Decimal
 import click
 from sqlalchemy import func, inspect
 from werkzeug.security import generate_password_hash
+from . import question_videos
 from .models import db, User, SiteSettings, Tier, Plan, Video, Article, USER_ROLES
 from .routes import MIN_PASSWORD_LENGTH
 from .seed_data.tcc_catalog import DEFAULT_SITE_SETTINGS, TIERS, VIDEOS, SECTION_TIER_RANK
@@ -31,6 +32,21 @@ def setup_tcc_commands(app):
         else:
             upgrade()
             print("Database is up to date.")
+
+    @app.cli.command("purge-question-videos")
+    @click.option("--member", help="Instead, delete all videos of this member now (their email address).")
+    def purge_question_videos_command(member):
+        """Delete members' Ask Vincent videos that are past their time. The worker also runs this by itself."""
+        if member:
+            user = User.query.filter(func.lower(User.email) == member.strip().lower()).first()
+            if user is None:
+                raise click.ClickException(f"No account with the email {member}.")
+            removed, failed = question_videos.delete_member_videos(user)
+            print(f"Deleted {removed} video(s) of {user.email}. {failed} could not be deleted.")
+            return
+        result = question_videos.purge_question_videos()
+        print(f"Deleted {result['removed']} old video(s) and {result['abandoned']} abandoned upload(s). "
+              f"{result['failed']} could not be deleted and will be tried again.")
 
     @app.cli.command("seed-tcc")
     @click.option("--no-videos", is_flag=True, help="Skip the Gin Soon video list (for a new teacher's own site).")

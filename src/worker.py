@@ -24,12 +24,16 @@ from api.models import db, EncodingJob, Video, PlaybackSession, Question, SiteSe
 from api.video_pipeline import encode_video, PipelineError  # noqa: E402
 from api.tcc_encoding import apply_encode_result  # noqa: E402
 from api.tcc_questions import notify_member_answered  # noqa: E402
+from api.question_videos import purge_question_videos  # noqa: E402
 from api.notify import email, signature  # noqa: E402
 from api import r2  # noqa: E402
 
 MAX_ATTEMPTS = 3
 POLL_SECONDS = 15
 STUCK_AFTER = timedelta(hours=4)  # a job "running" this long means the worker was restarted mid-job
+PURGE_EVERY = timedelta(hours=6)  # members' Ask Vincent videos past their time
+
+last_purge = None
 
 
 def log(msg):
@@ -147,6 +151,22 @@ def housekeeping():
     db.session.commit()
 
 
+def purge_videos_when_due():
+    """A storage problem here must never stop videos being encoded, so it is only logged."""
+    global last_purge
+    now = datetime.utcnow()
+    if last_purge and now - last_purge < PURGE_EVERY:
+        return
+    last_purge = now
+    try:
+        result = purge_question_videos(now)
+        if any(result.values()):
+            log(f"Member question videos: {result}")
+    except Exception as e:
+        db.session.rollback()
+        log(f"Could not delete old member question videos, will try again later: {e}")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--once", action="store_true", help="process waiting jobs, then exit")
@@ -158,6 +178,7 @@ def main():
         while True:
             try:
                 housekeeping()
+                purge_videos_when_due()
                 job = claim_job()
             except Exception as e:
                 db.session.rollback()

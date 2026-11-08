@@ -4,6 +4,7 @@ import { useTcc } from "../../component/tai-chi-company/TccContext";
 import { apiFetch } from "../../component/tai-chi-company/api";
 import FormField, { FormMessage } from "../../component/tai-chi-company/FormField";
 import UpgradeToWatch from "../../component/tai-chi-company/UpgradeToWatch";
+import { QuestionVideoPicker } from "../../component/tai-chi-company/QuestionVideo";
 
 const MAX_SUBJECT = 150;
 const MAX_QUESTION = 2000;
@@ -25,6 +26,8 @@ const AskVincent = () => {
     const [error, setError] = useState(null);
     const [sent, setSent] = useState(null);
     const [busy, setBusy] = useState(false);
+    const [video, setVideo] = useState({ token: null, busy: false });
+    const [pickerRound, setPickerRound] = useState(0); // a new round starts the video picker afresh
     const canAsk = user && user.is_paying_member;
 
     useEffect(() => {
@@ -48,6 +51,7 @@ const AskVincent = () => {
         if (form.lesson_video_id && form.video_time.trim() && !TIME_PATTERN.test(form.video_time.trim())) {
             return setError("Please write the time like this: 12:30 (minutes and seconds), or leave it empty.");
         }
+        if (video.busy) return setError("Please wait for your video to finish uploading.");
         setBusy(true);
         try {
             const result = await apiFetch("/api/tcc/questions", {
@@ -55,16 +59,20 @@ const AskVincent = () => {
                 body: {
                     subject, question,
                     lesson_video_id: form.lesson_video_id ? Number(form.lesson_video_id) : null,
-                    video_time: form.lesson_video_id ? form.video_time.trim() : ""
+                    video_time: form.lesson_video_id ? form.video_time.trim() : "",
+                    video_token: video.token || undefined
                 }
             });
             setSent(result.msg);
             setForm(empty);
-            setAllowance(a => a ? { ...a, remaining: result.remaining } : a);
+            setPickerRound(n => n + 1);
+            setAllowance(a => a ? { ...a, remaining: result.remaining, videos_remaining: result.videos_remaining } : a);
             window.scrollTo({ top: 0, behavior: "smooth" });
         } catch (err) {
             setError(err.message);
             if (err.data && err.data.weekly_limit) setAllowance(a => a ? { ...a, remaining: 0, next_at: err.data.next_at } : a);
+            if (err.data && err.data.video_problem) setPickerRound(n => n + 1); // the question text stays; the video is chosen again
+            if (err.data && err.data.video_limit) setAllowance(a => a ? { ...a, videos_remaining: 0 } : a);
         }
         setBusy(false);
     };
@@ -92,6 +100,10 @@ const AskVincent = () => {
             <div className="tcc-page tcc-narrow tcc-ask-page">
                 <h1>Ask {name}</h1>
                 {intro}
+                <p className="tcc-notice">
+                    Video feedback from {name} is included with paid plans.{" "}
+                    <Link to={user ? "/tai-chi-company/account" : "/tai-chi-company/join"}>See the plans</Link>
+                </p>
                 <UpgradeToWatch
                     title={`Upgrade to ask ${name} your questions`}
                     reason={`Asking ${name} is included with every paid plan.`}
@@ -165,9 +177,11 @@ const AskVincent = () => {
                             placeholder="12:30" maxLength={8} />
                     )}
 
+                    {allowance && <QuestionVideoPicker key={pickerRound} allowance={allowance} teacher={name} onChange={setVideo} />}
+
                     <FormMessage error={error} />
-                    <button type="submit" className="custom-btn1 tcc-btn" disabled={busy}>
-                        {busy ? "Sending…" : `Send my question to ${name}`}
+                    <button type="submit" className="custom-btn1 tcc-btn" disabled={busy || video.busy}>
+                        {busy ? "Sending…" : video.busy ? "Please wait for your video…" : `Send my question to ${name}`}
                     </button>
                 </form>
             )}

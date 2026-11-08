@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTcc } from "./TccContext";
 import { apiFetch, toParagraphs } from "./api";
+import { QuestionVideoPlayer } from "./QuestionVideo";
 
 const shortDate = (iso) => iso
     ? new Date(`${iso}${iso.endsWith("Z") ? "" : "Z"}`).toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })
@@ -61,6 +62,8 @@ const MyQuestions = () => {
                                     </p>
                                 )}
                                 <blockquote className="tcc-question-text">{q.question}</blockquote>
+                                <div className={q.member_video ? "tcc-qa-row" : undefined}>
+                                {q.member_video && <QuestionVideoPlayer questionId={q.id} video={q.member_video} title="Your video" />}
                                 {q.status === "answered" ? (
                                     <div className="tcc-answer">
                                         <p className="tcc-answer-title">{name}'s answer{q.answered_at ? ` (${shortDate(q.answered_at)})` : ""}</p>
@@ -71,6 +74,7 @@ const MyQuestions = () => {
                                         {!q.answer_note && !q.answer_video && <p>{name} answered you by email.</p>}
                                     </div>
                                 ) : <p className="tcc-field-hint">{name} will answer as soon as he can.</p>}
+                                </div>
                             </li>
                         ))}
                     </ul>

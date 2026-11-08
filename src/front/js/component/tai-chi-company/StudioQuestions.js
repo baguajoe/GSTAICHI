@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useTcc } from "./TccContext";
 import { apiFetch } from "./api";
 import { FormMessage } from "./FormField";
+import { QuestionVideoPlayer } from "./QuestionVideo";
 
 const QuestionCard = ({ question, cornerVideos, onAnswerWithVideo, onChanged }) => {
     const [videoId, setVideoId] = useState("");
@@ -37,7 +38,10 @@ const QuestionCard = ({ question, cornerVideos, onAnswerWithVideo, onChanged }) 
             {question.lesson && (
                 <p className="tcc-field-hint">About "{question.lesson.title}"{question.video_time ? ` at ${question.video_time}` : ""}</p>
             )}
-            <blockquote className="tcc-question-text">{question.question}</blockquote>
+            <div className={question.member_video ? "tcc-qa-row" : undefined}>
+                <blockquote className="tcc-question-text">{question.question}</blockquote>
+                {question.member_video && <QuestionVideoPlayer questionId={question.id} video={question.member_video} title="The member's video" />}
+            </div>
             {question.status === "answered" ? (
                 <>
                     <p className="tcc-success">

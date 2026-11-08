@@ -76,8 +76,25 @@ def presign_put(bucket, key, content_type, seconds=3600):
         "Bucket": bucket, "Key": key, "ContentType": content_type})
 
 
+def presign_get(bucket, key, seconds=3600, download_name=None):
+    """A private file's address for about an hour. Check who is asking before calling this.
+    With download_name the browser saves the file under that name instead of playing it."""
+    params = {"Bucket": bucket, "Key": key}
+    if download_name:
+        params["ResponseContentDisposition"] = f'attachment; filename="{download_name}"'
+    return client().generate_presigned_url("get_object", ExpiresIn=seconds, Params=params)
+
+
 def object_size(bucket, key):
     return client().head_object(Bucket=bucket, Key=key)["ContentLength"]
+
+
+def list_objects(bucket, prefix):
+    """Yields (key, last modified) for every object under prefix."""
+    paginator = client().get_paginator("list_objects_v2")
+    for page in paginator.paginate(Bucket=bucket, Prefix=prefix):
+        for obj in page.get("Contents", []):
+            yield obj["Key"], obj["LastModified"]
 
 
 # ----- used by the background worker -----

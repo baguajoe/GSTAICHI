@@ -9,7 +9,7 @@ from flask_admin.form import SecureForm
 from markupsafe import Markup
 from werkzeug.security import check_password_hash
 from wtforms import SelectField
-from wtforms.validators import ValidationError
+from wtforms.validators import NumberRange, ValidationError
 from sqlalchemy import func
 from .models import (db, User, Class, Book, Video, Article, SiteSettings, Tier, Plan, Question,
                      EncodingJob, PlaybackSession, SecurityEvent, WebhookEvent, CORNER_SECTION)
@@ -18,7 +18,7 @@ from .security import EVENT_LABELS, suspend_user, unsuspend_user
 from .tcc_dashboard import dashboard_stats
 from .tcc_questions import save_answer, mark_answered, reopen
 from .models import EmailLog, VideoAnnouncement
-from . import member_emails
+from . import member_emails, question_videos
 
 # Only users with role "admin" can use /admin. They sign in with their normal
 # site email and password; the login is kept in a signed Flask session cookie.
@@ -227,6 +227,20 @@ class UserAdmin(SecureModelView):
             else:
                 unsuspend_user(model, admin)
 
+    def on_model_delete(self, model):
+        """A deleted account takes its questions with it (they would otherwise block the delete). Their video files
+        go in after_model_delete, once the delete has really worked, so a failed delete loses nothing."""
+        model._question_video_keys = [q.member_video_key for q in question_videos.live_videos(model)]
+        Question.query.filter_by(user_id=model.id).delete()
+
+    def after_model_delete(self, model):
+        for key in getattr(model, "_question_video_keys", []):
+            try:
+                question_videos.delete_file(key)
+            except question_videos.STORAGE_ERRORS as e:
+                # No question points at the file any more, so the next purge removes it as abandoned
+                print(f"Could not delete a deleted member's video now: {e}")
+
     @action("suspend", "Suspend", "Suspend the selected accounts? They are stopped from watching right away and cannot sign in.")
     def action_suspend(self, ids):
         admin = current_admin()
@@ -386,6 +400,11 @@ class SiteSettingsAdmin(SecureModelView):
         "refund_days": {"label": "Refund days",
                         "description": "Refund policy: members get a full refund if they email within this many days "
                                        "of their first payment. Shown on the Refunds page."},
+        "question_videos_per_month": {
+            "label": "Ask Vincent videos per month",
+            "description": "How many practice videos one paying member can send with their questions each calendar "
+                           "month. 0 turns off new videos. Changing this takes effect straight away.",
+            "validators": [NumberRange(min=0, max=100)]},
         "video_sections": {"description": 'List of {"key", "label", "tier_rank"}. Keys must not change once videos use them.'},
     }
 
@@ -474,10 +493,18 @@ class QuestionsInbox(AdminOnlyMixin, BaseView):
         elif show == "ideas":
             query = query.filter(Question.is_corner_idea.is_(True))
         questions = query.order_by(Question.created_at.desc(), Question.id.desc()).limit(300).all()
+        # The link in the email to the teacher opens one question, and survives the sign-in page
+        one_question = request.args.get("q", type=int)
+        if one_question:
+            show = "all"
+            questions = Question.query.filter_by(id=one_question).all()
+        viewer = current_admin()
+        member_videos = {q.id: question_videos.member_video_json(q, viewer) for q in questions if q.member_video_key}
         counts = {"new": Question.query.filter_by(status="new").count(),
                   "ideas": Question.query.filter(Question.is_corner_idea.is_(True)).count()}
         return self.render('admin/tcc_questions.html', questions=questions, show=show, filters=QUESTION_FILTERS,
-                           counts=counts, csrf_token=self._csrf(), settings=SiteSettings.get())
+                           counts=counts, csrf_token=self._csrf(), settings=SiteSettings.get(),
+                           member_videos=member_videos, one_question=one_question)
 
     @expose('/<int:question_id>', methods=['POST'])
     def update(self, question_id):

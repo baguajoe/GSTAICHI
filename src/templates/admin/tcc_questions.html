@@ -15,6 +15,10 @@
   .tcc-inbox textarea { width: 100%; font-size: 17px; padding: 10px; border-radius: 6px; border: 1px solid #999; }
   .tcc-inbox .btn { min-height: 42px; font-size: 16px; margin: 6px 6px 0 0; }
   .tcc-inbox .label { font-size: 13px; vertical-align: middle; }
+  .tcc-inbox .qa { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+  .tcc-inbox .qa .text { flex: 1 1 320px; min-width: 0; }
+  .tcc-inbox .member-video { flex: 1 1 320px; min-width: 0; margin: 10px 0; }
+  .tcc-inbox .member-video video { display: block; width: 100%; max-height: 480px; background: #000; border-radius: 6px; }
 </style>
 {% endblock %}
 {% block body %}
@@ -33,6 +37,10 @@
     {% endfor %}
   </div>
 
+  {% if one_question %}
+    <p class="alert alert-info">Showing one question. <a href="{{ url_for('.index') }}">See all new questions</a></p>
+  {% endif %}
+
   {% if not questions %}
     <p class="alert alert-info">{% if show == 'new' %}No new questions. Everything is answered.{% elif show == 'ideas' %}No questions marked as ideas yet.{% else %}No questions here yet.{% endif %}</p>
   {% endif %}
@@ -49,7 +57,23 @@
       {% if q.user %}<span class="muted">&middot; {{ q.user.email }}</span>{% endif %}
       &middot; Plan: {{ q.member_plan or (q.user.plan_name if q.user else '') }}</p>
     <p class="meta">Lesson: {% if q.lesson_video %}<strong>{{ q.lesson_video.title }}</strong>{% if q.video_time %} at {{ q.video_time }}{% endif %}{% else %}<span class="muted">not given</span>{% endif %}</p>
-    <div class="text">{{ q.question }}</div>
+    <div class="qa">
+      <div class="text">{{ q.question }}</div>
+      {% set video = member_videos.get(q.id) %}
+      {% if video %}
+      <div class="member-video">
+        <p class="meta"><strong>The member's video</strong>{% if video.seconds %} <span class="muted">({{ video.seconds // 60 }}:{{ '%02d' % (video.seconds % 60) }})</span>{% endif %}</p>
+        {% if video.watch_url %}
+          <video controls playsinline preload="metadata" src="{{ video.watch_url }}"></video>
+          <p class="muted">Does it not play? <a href="{{ video.download_url }}">Save the video</a> and open it on your computer. This link lasts about an hour; reload the page for a new one.</p>
+        {% elif video.note %}
+          <p class="muted">{{ video.note }}</p>
+        {% else %}
+          <p class="muted">Video storage could not be reached. Please reload the page in a few minutes.</p>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
 
     {% if q.answer_note or q.answer_video %}
       <p class="meta"><strong>Answer</strong>{% if q.answered_at %} <span class="muted">({{ q.answered_at.strftime('%b %d, %Y') }})</span>{% endif %}</p>

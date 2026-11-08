@@ -398,6 +398,8 @@ QUESTION_STATUSES = ("new", "answered")
 
 class Question(db.Model):
     """'Ask Vincent': a paying member's question. The teacher can answer with a short video."""
+    __table_args__ = (db.UniqueConstraint("member_video_key", name="uq_question_member_video_key"),)
+
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, index=True)
     subject = db.Column(db.String(150), nullable=True)
@@ -412,6 +414,13 @@ class Question(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, server_default=db.func.now(), index=True)
     answered_at = db.Column(db.DateTime, nullable=True)
     member_notified_at = db.Column(db.DateTime, nullable=True)
+    # The member's own practice video, in the private masters bucket. See question_videos.py. It is left out of
+    # serialize() on purpose: member_video_json() checks who is asking and adds it.
+    member_video_key = db.Column(db.String(200), nullable=True)
+    member_video_size = db.Column(db.Integer, nullable=True)
+    member_video_seconds = db.Column(db.Integer, nullable=True)
+    member_video_uploaded_at = db.Column(db.DateTime, nullable=True)
+    member_video_deleted_at = db.Column(db.DateTime, nullable=True)
 
     user = db.relationship("User")
     answer_video = db.relationship("Video", foreign_keys=[answer_video_id])
@@ -465,6 +474,8 @@ class SiteSettings(db.Model):
     video_watermark = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
     # Refund policy: a full refund if asked within this many days of the first payment
     refund_days = db.Column(db.Integer, nullable=False, default=7, server_default="7")
+    # Ask Vincent: how many practice videos one member can send in a calendar month
+    question_videos_per_month = db.Column(db.Integer, nullable=False, default=2, server_default="2")
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     @classmethod
