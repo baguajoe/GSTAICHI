@@ -70,6 +70,24 @@ Every Github codespace environment will have **its own database**, so if you're 
 1. Install the packages: `$ npm install`
 2. Start coding! start the webpack dev server `$ npm run start`
 
+## Admin access
+
+Sign in at `/admin` with the email and password of an account that has the admin role. To create that account, or to reset its password if it already exists, run the command below. It asks you to type the password (at least 8 characters).
+
+In a Codespace:
+
+```
+pipenv run flask create-admin --email you@example.com
+```
+
+On Render, open the API service's **Shell** and run:
+
+```
+flask create-admin --email you@example.com
+```
+
+The same email and password also work for the main site's sign-in.
+
 ## Publish your website!
 
 This boilerplate it's 100% read to deploy with Render.com and Heroku in a matter of minutes. Please read the [official documentation about it](https://start.4geeksacademy.com/deploy).

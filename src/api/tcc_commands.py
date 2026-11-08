@@ -5,7 +5,9 @@ from datetime import datetime
 from decimal import Decimal
 import click
 from sqlalchemy import func, inspect
+from werkzeug.security import generate_password_hash
 from .models import db, User, SiteSettings, Tier, Plan, Video, Article, USER_ROLES
+from .routes import MIN_PASSWORD_LENGTH
 from .seed_data.tcc_catalog import DEFAULT_SITE_SETTINGS, TIERS, VIDEOS, SECTION_TIER_RANK
 from .seed_data.video_descriptions import VIDEO_LONG_DESCRIPTIONS
 
@@ -182,3 +184,28 @@ def setup_tcc_commands(app):
         user.role = role
         db.session.commit()
         print(f"{user.email} is now {role}.")
+
+    @app.cli.command("create-admin")
+    @click.option("--email", help="The admin's email. Asked for if left out.")
+    def create_admin(email):
+        """Create an admin account, or reset an existing one. Example: flask create-admin --email you@example.com"""
+        email = (email or click.prompt("Email")).strip().lower()
+        if "@" not in email:
+            raise click.ClickException("Please enter a valid email address.")
+        # Always asked for, never an option, so the password does not end up in shell history
+        password = click.prompt("Password", hide_input=True, confirmation_prompt=True)
+        if len(password) < MIN_PASSWORD_LENGTH:
+            raise click.ClickException(f"Password must be at least {MIN_PASSWORD_LENGTH} characters.")
+        user = User.query.filter(func.lower(User.email) == email).first()
+        action = "updated"
+        if user is None:
+            user = User(email=email)
+            db.session.add(user)
+            action = "created"
+        user.password = generate_password_hash(password)
+        user.role = "admin"
+        user.is_suspended = False
+        user.suspended_reason = None
+        user.is_active = True
+        db.session.commit()
+        print(f"Admin ready: {user.email} ({action})")
