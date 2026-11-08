@@ -6,6 +6,14 @@ import logo from "../../img/gstaichi_sm.gif";
 
 import banner from "../../img/fedbanner3.gif";
 import "../../styles/navbar.css";
+import { SITE_MENU, isMenuItemActive } from "./sidebar";
+
+// Bootstrap leaves the hamburger menu open after a tap, because the page never reloads
+const closeMenuAfterLinkTap = (e) => {
+    if (!e.target.closest("a")) return;
+    const menu = window.bootstrap && window.bootstrap.Collapse.getInstance(e.currentTarget.parentElement);
+    if (menu) menu.hide();
+};
 
 
 export const Navbar = () => {
@@ -46,7 +54,18 @@ export const Navbar = () => {
 
                         {/* Navigation Links */}
                         <div className="collapse navbar-collapse" id="navbarNav">
-                            <ul className="navbar-nav">
+                            <ul className="navbar-nav" onClick={closeMenuAfterLinkTap}>
+                                {/* The sidebar's links: phones have no sidebar column */}
+                                {SITE_MENU.map(item => (
+                                    <li className="nav-item d-md-none" key={item.to}>
+                                        <Link
+                                            className={`nav-link ${isMenuItemActive(item, location.pathname) ? "active" : ""}`}
+                                            to={item.to}
+                                        >
+                                            {item.label}
+                                        </Link>
+                                    </li>
+                                ))}
                                 <li className="nav-item">
                                     <Link
                                         className={`nav-link ${location.pathname === "/about-us" ? "active" : ""}`}

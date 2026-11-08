@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 
 // Makes /tai-chi-company installable as a home-screen app (PWA).
-// The manifest is built by the backend from SiteSettings, so the app name and color are never hard-coded.
-// Icons and the service worker are static files in public/ (tcc-icons/, tcc-sw.js).
+// The manifest, icons and service worker are static files on the website itself (public/manifest.webmanifest,
+// tcc-icons/, tcc-sw.js), linked from template.html, so the browser sees them from the moment any page opens.
+// The manifest's name and color are therefore fixed there: changing them in SiteSettings does not change them.
+// The iPhone home-screen name and the browser's theme color still follow SiteSettings, below.
 
 const setHeadTag = (selector, create) => {
     let el = document.head.querySelector(selector);
@@ -11,11 +13,6 @@ const setHeadTag = (selector, create) => {
         document.head.appendChild(el);
     }
     return el;
-};
-
-const link = (rel, href) => {
-    const el = setHeadTag(`link[rel="${rel}"]`, () => Object.assign(document.createElement("link"), { rel }));
-    el.href = href;
 };
 
 const meta = (name, content) => {
@@ -40,22 +37,40 @@ if (typeof window !== "undefined") {
         installedThisVisit = true;
         notifyInstall();
     });
+    if ("serviceWorker" in navigator) {
+        // Registered on every page, because a member often arrives on the home page first
+        navigator.serviceWorker.register("/tcc-sw.js", { scope: "/tai-chi-company/" }).catch(() => {
+            // Without the service worker the site still works; it just can't show the offline page
+        });
+    }
 }
+
+// A browser that offers its own install prompt can take a few seconds after the page opens to do so.
+// A click in that time waits briefly for it. The wait stays short because the browser only lets the
+// prompt open soon after the click.
+const PROMPT_ARRIVES_WITHIN_MS = 8000;
+const LONGEST_CLICK_WAIT_MS = 2000;
+
+const promptAvailableSoon = () => {
+    if (deferredPrompt) return Promise.resolve(true);
+    const timeLeft = PROMPT_ARRIVES_WITHIN_MS - performance.now();
+    if (!("onbeforeinstallprompt" in window) || timeLeft <= 0) return Promise.resolve(false);
+    return new Promise((resolve) => {
+        const finish = () => {
+            clearTimeout(timer);
+            installListeners.delete(finish);
+            resolve(!!deferredPrompt);
+        };
+        const timer = setTimeout(finish, Math.min(timeLeft, LONGEST_CLICK_WAIT_MS));
+        installListeners.add(finish);
+    });
+};
 
 export const useHomeScreenApp = (settings) => {
     useEffect(() => {
         if (!settings) return;
-        link("manifest", `${process.env.BACKEND_URL}/api/tcc/manifest.webmanifest`);
-        link("apple-touch-icon", "/tcc-icons/apple-touch-icon.png");
-        meta("apple-mobile-web-app-capable", "yes");
-        meta("mobile-web-app-capable", "yes");
         meta("apple-mobile-web-app-title", settings.app_name);
         meta("theme-color", settings.primary_color);
-        if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("/tcc-sw.js", { scope: "/tai-chi-company/" }).catch(() => {
-                // Without the service worker the site still works; it just can't show the offline page
-            });
-        }
     }, [settings]);
 };
 
@@ -85,7 +100,7 @@ export const useInstallPrompt = () => {
         notifyInstall();
     };
     return {
-        canInstall: !!deferredPrompt, installed: installedThisVisit || isRunningAsApp(), install,
+        canInstall: !!deferredPrompt, promptAvailableSoon, installed: installedThisVisit || isRunningAsApp(), install,
         showMacNotice: macNoticePending, dismissMacNotice,
     };
 };
@@ -115,6 +130,16 @@ export const iosBrowser = () => {
         return major > 16 || (major === 16 && minor >= 4) ? "other" : "open-safari";
     }
     return /Safari\//.test(ua) && /Version\//.test(ua) ? "safari" : "open-safari";
+};
+
+// Android: which install instructions apply when the browser did not offer its own prompt.
+// Samsung Internet's address also says "Chrome", so it is checked first. "other" is any browser better
+// replaced by Chrome, including browsers built into other apps (Facebook, Instagram, Google...).
+export const androidBrowser = () => {
+    const ua = navigator.userAgent || "";
+    if (/SamsungBrowser\//.test(ua)) return "samsung";
+    if (/; wv\)|FBAN|FBAV|Instagram|GSA\/|EdgA\/|OPR\/|Firefox\/|YaBrowser\/|MiuiBrowser\/|UCBrowser\/|DuckDuckGo\//.test(ua)) return "other";
+    return /Chrome\//.test(ua) ? "chrome" : "other";
 };
 
 // Computers: which install instructions apply when the browser did not offer its own prompt

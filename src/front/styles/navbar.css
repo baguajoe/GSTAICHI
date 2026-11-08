@@ -315,6 +315,62 @@
     }
 }
 
+/* Phones: banner and hamburger share one row, and the menu opens as a full-width list beneath them */
+@media (max-width: 767px) {
+    .navbar-content {
+        flex-flow: row wrap;
+        align-items: center;
+    }
+
+    .banner-container {
+        flex: 1 1 0;
+        width: auto;
+        min-width: 0;
+        margin: 0;
+        justify-content: flex-start;
+    }
+
+    .banner-image {
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .nav-section {
+        display: contents;
+    }
+
+    .navbar-toggler {
+        flex: none;
+        margin-left: 12px;
+        align-self: center;
+    }
+
+    .navbar-collapse {
+        flex: 0 0 100%;
+        max-height: calc(100vh - 100px);
+        max-height: calc(100dvh - 100px - env(safe-area-inset-top, 0px));
+        overflow-y: auto;
+    }
+
+    .navbar-nav {
+        flex-wrap: nowrap;
+        text-align: left;
+        padding: 8px 0 0;
+    }
+
+    .navbar-nav .nav-link {
+        font-size: 1rem;
+        padding: 12px 15px;
+        min-height: 44px;
+        white-space: normal;
+        border-radius: 5px;
+    }
+
+    .navbar-nav .nav-link.active {
+        background-color: var(--primary-color, #590d0d);
+    }
+}
+
 /* Touch devices - larger tap targets */
 @media (hover: none) and (pointer: coarse) {
     .navbar-nav .nav-link {

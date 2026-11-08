@@ -2,9 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTcc, HELP_EMAIL } from "./TccContext";
 import Overlay from "./Overlay";
-import { useInstallPrompt, detectDevice, iosBrowser, computerBrowser, installGuide } from "./homeScreenApp";
+import { useInstallPrompt, detectDevice, iosBrowser, androidBrowser, computerBrowser, installGuide } from "./homeScreenApp";
 import {
-    SafariStep, IphoneShareStep, IphoneAddStep, ConfirmStep, HomeScreenStep, AndroidMenuStep, AndroidAddStep
+    SafariStep, IphoneShareStep, IphoneAddStep, ConfirmStep, HomeScreenStep, AndroidMenuStep, AndroidAddStep,
+    SamsungMenuStep, SamsungAddPageStep, SamsungHomeScreenStep
 } from "./PhonePictures";
 
 // "Install the app": one click where the browser can install it itself (Android, Chrome, Edge), otherwise a
@@ -85,7 +86,7 @@ export const AndroidSteps = ({ appName, showFinish = true }) => (
         </p>
         <ol className="tcc-steps">
             <Step number={1} title="Tap the menu button" picture={<AndroidMenuStep />}>
-                <p>In <strong>Chrome</strong>, look at the top right corner of the screen. Tap the button with <strong>three dots</strong>.</p>
+                <p>In <strong>Chrome</strong>, look at the top right corner of the screen. Tap the button with <strong>three dots</strong> (⋮).</p>
             </Step>
             <Step number={2} title={'Tap "Add to Home screen" or "Install app"'} picture={<AndroidAddStep />}>
                 <p>A menu opens. Tap <strong>Add to Home screen</strong>. On some phones it is called <strong>Install app</strong>.</p>
@@ -97,6 +98,56 @@ export const AndroidSteps = ({ appName, showFinish = true }) => (
         {showFinish && <FinishNote appName={appName} />}
     </>
 );
+
+export const SamsungSteps = ({ appName, showFinish = true }) => (
+    <>
+        <ol className="tcc-steps">
+            <Step number={1} title="Tap the menu button" picture={<SamsungMenuStep />}>
+                <p>In <strong>Samsung Internet</strong>, look at the bottom right corner of the screen. Tap the button with <strong>three lines</strong> (☰).</p>
+            </Step>
+            <Step number={2} title={'Tap "Add page to"'} picture={<SamsungAddPageStep />}>
+                <p>A menu opens. Tap <strong>Add page to</strong>.</p>
+            </Step>
+            <Step number={3} title={'Tap "Home screen"'} picture={<SamsungHomeScreenStep />}>
+                <p>A short list opens. Tap <strong>Home screen</strong>.</p>
+            </Step>
+            <Step number={4} title={'Tap "Add"'} picture={<ConfirmStep appName={appName} button="Add" />}>
+                <p>A box shows the name <strong>{appName}</strong>. Tap <strong>Add</strong>.</p>
+            </Step>
+        </ol>
+        {showFinish && <FinishNote appName={appName} />}
+    </>
+);
+
+// Shown on Android in a browser we have no steps for
+const OpenInChromeNotice = () => (
+    <div className="tcc-notice tcc-install-warning" role="alert">
+        <p><strong>First, open this page in Chrome.</strong></p>
+        <p>
+            We don't have steps for the browser you are using. Copy the link below, then open
+            the <strong>Chrome</strong> app and paste it into the address bar.
+        </p>
+        <CopyLink copiedMessage="Copied. Now open Chrome, tap the address bar at the top, and paste the link." />
+    </div>
+);
+
+// thisDevice: the member is reading this on the phone the steps are for, so we can pick that browser's steps
+const AndroidGuide = ({ appName, showFinish, thisDevice }) => {
+    const browser = thisDevice && detectDevice() === "android" ? androidBrowser() : null;
+    if (browser === "samsung") return <SamsungSteps appName={appName} showFinish={showFinish} />;
+    return (
+        <>
+            {browser === "other" && <OpenInChromeNotice />}
+            <AndroidSteps appName={appName} showFinish={showFinish} />
+            {!browser && (
+                <p className="tcc-small-note">
+                    Using <strong>Samsung Internet</strong>? Tap the <strong>three lines</strong> (☰) at the bottom right,
+                    then <strong>Add page to</strong>, then <strong>Home screen</strong>.
+                </p>
+            )}
+        </>
+    );
+};
 
 const FinishNote = ({ appName }) => (
     <div className="tcc-step tcc-step-finish">
@@ -216,7 +267,7 @@ export const INSTALL_GUIDES = [
     { key: "mac-safari", title: "Mac with Safari (recommended on Mac)", quick: <>Open gstaichi.org/tai-chi-company in <strong>Safari</strong>, then click <strong>File</strong>, then <strong>Add to Dock</strong>.</> },
     { key: "mac-chrome", title: "Mac with Chrome or Edge", quick: <>Click <strong>Install the app</strong>. If your Mac says "Data Access Blocked", that is a normal security notice: click <strong>Manage</strong> and turn on the app, then open it again.</> },
     { key: "iphone", title: "iPhone and iPad", quick: <>In <strong>Safari</strong>, tap the <strong>Share</strong> button, then <strong>Add to Home Screen</strong>.</> },
-    { key: "android", title: "Android phones and tablets", quick: <>In <strong>Chrome</strong>, tap <strong>Install app</strong> (or tap the ⋮ menu, then <strong>Add to Home screen</strong>).</> },
+    { key: "android", title: "Android phones and tablets", quick: <>In <strong>Chrome</strong>, tap <strong>Install app</strong> (or tap the ⋮ menu, then <strong>Add to Home screen</strong>). In <strong>Samsung Internet</strong>, tap the ☰ menu at the bottom right, then <strong>Add page to</strong>, then <strong>Home screen</strong>.</> },
     { key: "windows", title: "Windows computers", quick: <>In <strong>Chrome</strong> or <strong>Edge</strong>, click <strong>Install the app</strong>.</> },
 ];
 
@@ -237,7 +288,7 @@ export const GuideSteps = ({ guide, appName, showFinish = true, thisDevice = tru
             </>
         );
     }
-    if (guide === "android") return <AndroidSteps appName={appName} showFinish={showFinish} />;
+    if (guide === "android") return <AndroidGuide appName={appName} showFinish={showFinish} thisDevice={thisDevice} />;
     if (guide === "mac-safari") return <MacSafariSteps appName={appName} thisDevice={thisDevice} />;
     if (guide === "mac-chrome") return <MacChromeSteps appName={appName} />;
     return <WindowsSteps appName={appName} thisDevice={thisDevice} />;
@@ -300,12 +351,16 @@ const InstallDialog = ({ onClose, installedNow = false }) => {
 // Hidden once the app is installed. variant "nav" looks like a menu item, "big" is a large page button,
 // anything else a normal button.
 export const InstallButton = ({ variant = "big", label = "Install the app" }) => {
-    const { canInstall, installed, install } = useInstallPrompt();
+    const { promptAvailableSoon, installed, install } = useInstallPrompt();
     const [showSteps, setShowSteps] = useState(false);
+    const [checking, setChecking] = useState(false);
     if (installed) return null;
 
     const onClick = async () => {
-        if (canInstall) await install();
+        setChecking(true);
+        const available = await promptAvailableSoon();
+        setChecking(false);
+        if (available) await install();
         else setShowSteps(true);
     };
     const className = variant === "nav" ? "tcc-nav-link tcc-nav-install"
@@ -313,8 +368,8 @@ export const InstallButton = ({ variant = "big", label = "Install the app" }) =>
         : "custom-btn1 tcc-btn";
     return (
         <>
-            <button type="button" className={className} onClick={onClick}>
-                <span><i className="fas fa-download" aria-hidden="true"></i> {label}</span>
+            <button type="button" className={className} onClick={onClick} disabled={checking}>
+                <span><i className="fas fa-download" aria-hidden="true"></i> {checking ? "One moment…" : label}</span>
             </button>
             {showSteps && <InstallDialog onClose={() => setShowSteps(false)} />}
         </>

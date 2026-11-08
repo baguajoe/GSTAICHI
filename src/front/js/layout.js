@@ -59,7 +59,7 @@ const Layout = () => {
                         <Sidebar />
 
                         {/* Main content area */}
-                        <div className="flex-grow-1 p-3">
+                        <div className="site-content flex-grow-1 p-3">
                             <Routes>
                                 {/* Routes for different pages */}
                                 <Route element={<Home />} path="/" />

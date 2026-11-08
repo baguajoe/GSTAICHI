@@ -136,3 +136,44 @@ export const AndroidAddStep = () => (
         </g>
     </Phone>
 );
+
+// Samsung Internet keeps its menu button (three lines) in the toolbar at the bottom of the screen
+export const SamsungMenuStep = () => (
+    <Phone label="Samsung Internet. The menu button, three lines, is in the bottom right corner.">
+        <PageLines top={40} />
+        <text x="178" y="274" fontSize="12" textAnchor="end" fontWeight="700" fill={HIGHLIGHT}>Tap the menu</text>
+        <rect x="16" y="288" width="168" height="40" fill="#ffffff" />
+        <g fill={HIGHLIGHT}>
+            <rect x="156" y="299" width="20" height="3" />
+            <rect x="156" y="306" width="20" height="3" />
+            <rect x="156" y="313" width="20" height="3" />
+        </g>
+        <Ring cx={166} cy={308} r={16} />
+    </Phone>
+);
+
+const SamsungList = ({ label, items, chosen }) => (
+    <Phone label={label}>
+        <PageLines top={40} />
+        <rect x="24" y="146" width="152" height="176" rx="10" fill="#ffffff" stroke="#c9c9c9" />
+        <g fontSize="12" fill="#1a1a1a">
+            {items.map((item, i) => {
+                const y = 176 + i * 44;
+                return item === chosen ? (
+                    <g key={item}>
+                        <rect x="30" y={y - 21} width="140" height="34" rx="6" fill="#f6eeee" stroke={HIGHLIGHT} strokeWidth="4" />
+                        <text x="42" y={y} fontWeight="700" fill={HIGHLIGHT}>{item}</text>
+                    </g>
+                ) : <text key={item} x="42" y={y}>{item}</text>;
+            })}
+        </g>
+    </Phone>
+);
+
+export const SamsungAddPageStep = () => (
+    <SamsungList label="The menu is open. Tap Add page to." items={["Bookmarks", "History", "Add page to", "Settings"]} chosen="Add page to" />
+);
+
+export const SamsungHomeScreenStep = () => (
+    <SamsungList label="A short list is open. Tap Home screen." items={["Bookmarks", "Quick access", "Home screen"]} chosen="Home screen" />
+);

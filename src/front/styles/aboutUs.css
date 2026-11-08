@@ -3,6 +3,7 @@
 .about-us-div {
     padding: 20px;
     min-height: 100vh;
+    min-height: 100dvh;
 }
 
 .about-us-div .nav-link {

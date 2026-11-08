@@ -261,7 +261,7 @@ export const BooksAndVideos = () => {
           <div
             style={{
               position: 'fixed',
-              top: '20px',
+              top: 'calc(20px + env(safe-area-inset-top, 0px))',
               right: '20px',
               zIndex: 1100,
               animation: 'slideIn 0.3s ease-out'

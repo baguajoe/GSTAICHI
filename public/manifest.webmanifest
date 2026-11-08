@@ -1,0 +1,16 @@
+{
+  "id": "/tai-chi-company/",
+  "name": "The Tai Chi Company",
+  "short_name": "The Tai Chi Company",
+  "description": "Tai Chi Chuan video lessons from Gin Soon Tai Chi Chuan Federation.",
+  "start_url": "/tai-chi-company/library",
+  "scope": "/tai-chi-company/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#590d0d",
+  "icons": [
+    { "src": "/tcc-icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/tcc-icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/tcc-icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

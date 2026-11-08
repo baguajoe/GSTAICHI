@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink, Outlet, Link } from "react-router-dom";
 import { TccProvider, useTcc, HELP_EMAIL } from "./TccContext";
-import { useHomeScreenApp } from "./homeScreenApp";
+import { useHomeScreenApp, useInstallPrompt } from "./homeScreenApp";
 import { InstallButton, MacInstalledNotice } from "./InstallApp";
 import HealthAgreement from "./HealthAgreement";
 import { LegalLinks } from "./legal";
@@ -52,6 +52,7 @@ const TccNav = () => {
 
 const TccFooter = () => {
     const { settings } = useTcc();
+    const { installed } = useInstallPrompt();
     return (
         <footer className="tcc-footer">
             <p className="tcc-help-line">
@@ -61,9 +62,11 @@ const TccFooter = () => {
                 &copy; {new Date().getFullYear()} {settings.copyright_line || settings.school_name}
             </p>
             <LegalLinks className="tcc-footer-links" />
-            <p className="tcc-footer-links">
-                <Link to="/tai-chi-company/add-to-phone">Install the app on your phone or computer</Link>
-            </p>
+            {!installed && (
+                <p className="tcc-footer-links">
+                    <Link to="/tai-chi-company/add-to-phone">Install the app on your phone or computer</Link>
+                </p>
+            )}
         </footer>
     );
 };
