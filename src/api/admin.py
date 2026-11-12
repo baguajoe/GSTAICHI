@@ -1,8 +1,8 @@
 import os
 import secrets
 from datetime import datetime
-from flask import request, redirect, url_for, session, render_template_string, abort, flash
-from flask_admin import Admin, AdminIndexView, expose, BaseView
+from flask import request, redirect, url_for, session, render_template_string, abort, flash, current_app
+from flask_admin import Admin, AdminIndexView, expose, BaseView, helpers as admin_helpers, babel as admin_babel
 from flask_admin.actions import action
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form import SecureForm
@@ -164,18 +164,20 @@ class OptionalIntSelect(SelectField):
 
 
 class UserAdmin(SecureModelView):
-    column_list = ("id", "email", "name", "role", "plan", "tier_rank", "subscription_status", "granted_tier_rank",
+    column_list = ("id", "email", "name", "role", "plan", "tier_rank", "subscription_status", "paypal_subscription_id",
+                   "granted_tier_rank",
                    "is_founding_member", "is_suspended", "flags", "created_at", "last_login_at")
     column_labels = {"tier_rank": "Paid level", "granted_tier_rank": "Free access level",
                      "granted_until": "Free access until", "is_suspended": "Suspended", "flags": "Security",
-                     "plan": "Plan"}
-    column_searchable_list = ("email", "name")
+                     "plan": "Plan", "paypal_subscription_id": "PayPal subscription"}
+    column_searchable_list = ("email", "name", "paypal_subscription_id")
     column_filters = ("is_suspended", "role", "tier_rank", "subscription_status", "is_founding_member",
                       "granted_tier_rank")
     column_default_sort = ("id", True)
     column_exclude_list = ("password",)
     form_columns = ("email", "name", "role", "granted_tier_rank", "granted_until", "is_suspended", "suspended_reason",
-                    "tier_rank", "subscription_status", "paid_through", "is_founding_member")
+                    "tier_rank", "subscription_status", "paypal_subscription_id", "paid_through", "is_founding_member")
+    form_widget_args = {"paypal_subscription_id": {"readonly": True}}
     form_overrides = {"granted_tier_rank": OptionalIntSelect}
     form_args = {
         "granted_tier_rank": {"label": "Give free access to level",
@@ -185,6 +187,7 @@ class UserAdmin(SecureModelView):
         "tier_rank": {"label": "Paid level (set by PayPal)",
                       "description": "Normally changed only by PayPal. To give access, use 'Give free access' above."},
         "subscription_status": {"description": "Normally changed only by PayPal."},
+        "paypal_subscription_id": {"label": "PayPal subscription ID"},
         "suspended_reason": {"description": "Only admins see this."},
     }
     form_choices = {
@@ -203,7 +206,12 @@ class UserAdmin(SecureModelView):
         # "Free" for accounts on the Free plan (no paid or school-given level)
         return model.plan_name
 
-    column_formatters = {"flags": _flags, "plan": _plan}
+    def _paypal(view, context, model, name):
+        link = url_for(".link_paypal", user_id=model.id)
+        sub_id = Markup.escape(model.paypal_subscription_id or "")
+        return Markup(f'{sub_id} <a href="{link}" class="small">{"Re-check" if sub_id else "Link"} PayPal</a>')
+
+    column_formatters = {"flags": _flags, "plan": _plan, "paypal_subscription_id": _paypal}
 
     def _set_tier_choices(self, form):
         form.granted_tier_rank.choices = tier_choices("No free access")
@@ -213,7 +221,12 @@ class UserAdmin(SecureModelView):
         return self._set_tier_choices(super().create_form(obj))
 
     def edit_form(self, obj=None):
-        return self._set_tier_choices(super().edit_form(obj))
+        form = self._set_tier_choices(super().edit_form(obj))
+        if obj is not None:
+            form.paypal_subscription_id.description = Markup(
+                f'Set by PayPal. <a href="{url_for(".link_paypal", user_id=obj.id)}">Link PayPal subscription</a> '
+                'to attach a payment that did not reach this account.')
+        return form
 
     def on_model_change(self, form, model, is_created):
         if is_created:
@@ -241,6 +254,43 @@ class UserAdmin(SecureModelView):
                 # No question points at the file any more, so the next purge removes it as abandoned
                 print(f"Could not delete a deleted member's video now: {e}")
 
+    @action("link_paypal", "Link PayPal subscription")
+    def action_link_paypal(self, ids):
+        if len(ids) != 1:
+            flash("Choose exactly one account to link a PayPal subscription to.", "error")
+            return redirect(url_for(".index_view"))
+        return redirect(url_for(".link_paypal", user_id=int(ids[0])))
+
+    @expose('/link-paypal/<int:user_id>', methods=['GET', 'POST'])
+    def link_paypal(self, user_id):
+        """Attach a PayPal subscription (checked with PayPal: must be ACTIVE and on one of our plans) to a member."""
+        from .tcc_payments import link_subscription
+        from . import paypal
+        user = db.session.get(User, user_id)
+        if user is None:
+            abort(404)
+        session.setdefault("admin_form_csrf", secrets.token_urlsafe(32))
+        result = None
+        entered = user.paypal_subscription_id or ""
+        if request.method == "POST":
+            if request.form.get("csrf_token") != session.get("admin_form_csrf"):
+                abort(400)
+            entered = (request.form.get("subscription_id") or "").strip()
+            ok, message = link_subscription(user, entered)
+            result = {"ok": ok, "message": message}
+            db.session.refresh(user)
+        return self.render_string(LINK_PAYPAL_PAGE, user=user, result=result, entered=entered,
+                                  mode="LIVE" if paypal.is_live() else "SANDBOX",
+                                  csrf_token=session["admin_form_csrf"])
+
+    def render_string(self, source, **kwargs):
+        """Like self.render, but for a template kept in this file."""
+        kwargs.update(admin_view=self, admin_base_template=self.admin.base_template, h=admin_helpers,
+                      get_url=self.get_url, config=current_app.config,
+                      _gettext=admin_babel.gettext, _ngettext=admin_babel.ngettext)
+        kwargs.update(self._template_args)
+        return render_template_string(source, **kwargs)
+
     @action("suspend", "Suspend", "Suspend the selected accounts? They are stopped from watching right away and cannot sign in.")
     def action_suspend(self, ids):
         admin = current_admin()
@@ -258,6 +308,39 @@ class UserAdmin(SecureModelView):
             unsuspend_user(user, admin)
         db.session.commit()
         flash(f"{len(users)} account(s) unsuspended.")
+
+
+LINK_PAYPAL_PAGE = """{% extends 'admin/master.html' %}
+{% block body %}
+<div style="font-size:16px;max-width:760px">
+  <h2>Link PayPal subscription</h2>
+  <p><strong>{{ user.email }}</strong> (user {{ user.id }}{% if user.name %}, {{ user.name }}{% endif %})</p>
+  {% if result %}
+    <div class="alert {{ 'alert-success' if result.ok else 'alert-danger' }}">{{ result.message }}</div>
+  {% endif %}
+  <table class="table table-bordered" style="max-width:600px">
+    <tr><th>PayPal subscription</th><td>{{ user.paypal_subscription_id or '—' }}</td></tr>
+    <tr><th>Plan</th><td>{{ user.current_plan.tier.name ~ ' (' ~ user.current_plan.interval ~ 'ly, $' ~ user.current_plan.price ~ ')' if user.current_plan else '—' }}</td></tr>
+    <tr><th>Paid level</th><td>{{ user.tier_rank }}</td></tr>
+    <tr><th>Subscription status</th><td>{{ user.subscription_status }}</td></tr>
+    <tr><th>Paid through</th><td>{{ user.paid_through.strftime('%b %d, %Y') if user.paid_through else '—' }}</td></tr>
+    <tr><th>Next PayPal payment</th><td>{{ user.next_billing_at.strftime('%b %d, %Y') if user.next_billing_at else '—' }}</td></tr>
+    <tr><th>Free access</th><td>{{ 'level ' ~ user.granted_tier_rank if user.granted_tier_rank else 'none' }}{{ ' until ' ~ user.granted_until.strftime('%b %d, %Y') if user.granted_until else '' }} (not changed here)</td></tr>
+  </table>
+  <form method="post" class="form-inline">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label for="subscription_id">PayPal subscription ID</label>
+    <input id="subscription_id" name="subscription_id" class="form-control" style="width:260px" placeholder="I-XXXXXXXXXXXX"
+           value="{{ entered }}" required>
+    <button type="submit" class="btn btn-primary">Check with PayPal and link</button>
+  </form>
+  <p class="help-block">PayPal mode: <strong>{{ mode }}</strong>. The subscription must be ACTIVE in PayPal and on one of the plans
+    in Plans and Prices. This sets the PayPal subscription, plan, paid level, status and paid-through date. It never cancels
+    anything in PayPal and never changes free access.</p>
+  <p><a href="{{ url_for('.edit_view', id=user.id) }}">Edit this account</a> · <a href="{{ url_for('.index_view') }}">Back to Users</a></p>
+</div>
+{% endblock %}
+"""
 
 
 SECTION_CHOICES = [("beginner", "Beginner"), ("intermediate", "Intermediate"), ("advanced", "Advanced"),

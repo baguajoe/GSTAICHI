@@ -69,6 +69,11 @@ def create_login():
     user.last_login_at = datetime.utcnow()
     db.session.commit()
 
+    # A PayPal subscription ID without an active paid level (a signup whose confirm never finished):
+    # ask PayPal and give the level back if the subscription is ACTIVE. Never stops the sign-in.
+    from .tcc_payments import restore_on_login
+    restore_on_login(user)
+
     expiration = timedelta(days=7)
     access_token = create_access_token(identity=user.email, expires_delta=expiration)
     return jsonify({"token": access_token, "user": user.serialize_account()}), 200

@@ -59,12 +59,17 @@ def _access_token():
     return data["access_token"]
 
 
-def _request(method, path, json=None, expected=(200, 201, 204)):
-    resp = requests.request(method, f"{api_base()}{path}", json=json, timeout=30, headers={
-        "Authorization": f"Bearer {_access_token()}",
-        "Content-Type": "application/json",
-        "Prefer": "return=representation",
-    })
+def _request(method, path, json=None, expected=(200, 201, 204), timeout=30):
+    try:
+        token = _access_token()
+        resp = requests.request(method, f"{api_base()}{path}", json=json, timeout=timeout, headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+            "Prefer": "return=representation",
+        })
+    except requests.RequestException as e:
+        # Timeouts and connection errors become PayPalError so every caller handles them the same way
+        raise PayPalError(f"Could not reach PayPal: {e.__class__.__name__}", None, str(e)[:500])
     if resp.status_code not in expected:
         try:
             details = resp.json()
@@ -97,8 +102,8 @@ def create_plan(product_id, name, price, interval):
     })["id"]
 
 
-def get_subscription(subscription_id):
-    return _request("GET", f"/v1/billing/subscriptions/{subscription_id}")
+def get_subscription(subscription_id, timeout=30):
+    return _request("GET", f"/v1/billing/subscriptions/{subscription_id}", timeout=timeout)
 
 
 def revise_subscription(subscription_id, plan_id, return_url, cancel_url, brand_name):
