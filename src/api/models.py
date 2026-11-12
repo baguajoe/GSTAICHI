@@ -627,6 +627,13 @@ class PlaybackSession(db.Model):
     flagged = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
     ended_at = db.Column(db.DateTime, nullable=True)
     end_reason = db.Column(db.String(40), nullable=True)  # stopped / timeout / replaced / access_lost
+    # Download-speed check (api/playback_rules.py): pieces fetched in the current 10-minute window, seeks the
+    # player reported in it, how many windows ran well above playback speed, and when the whole video was fetched
+    window_started_at = db.Column(db.DateTime, nullable=True)
+    window_pieces = db.Column(db.Integer, nullable=False, default=0, server_default="0")
+    window_seeks = db.Column(db.Integer, nullable=False, default=0, server_default="0")
+    fast_windows = db.Column(db.Integer, nullable=False, default=0, server_default="0")
+    fetched_all_at = db.Column(db.DateTime, nullable=True)
 
     user = db.relationship("User")
     video = db.relationship("Video")

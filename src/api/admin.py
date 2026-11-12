@@ -18,7 +18,7 @@ from .security import EVENT_LABELS, suspend_user, unsuspend_user
 from .tcc_dashboard import dashboard_stats
 from .tcc_questions import save_answer, mark_answered, reopen
 from .models import EmailLog, VideoAnnouncement
-from . import member_emails, question_videos
+from . import member_emails, question_videos, playback_rules
 
 # Only users with role "admin" can use /admin. They sign in with their normal
 # site email and password; the login is kept in a signed Flask session cookie.
@@ -102,6 +102,36 @@ class SecureIndexView(AdminIndexView):
         db.session.commit()
         flash(f"Marked {user.email}'s events as checked.")
         return redirect(url_for('.index'))
+
+    @expose('/account/<int:user_id>')
+    def account_events(self, user_id):
+        """"See events": a plain-English summary of one member's flags and recent playback."""
+        if current_admin() is None:
+            return redirect(url_for('.login', next=request.full_path))
+        user = db.session.get(User, user_id)
+        if user is None:
+            abort(404)
+        session.setdefault("admin_form_csrf", secrets.token_urlsafe(32))
+        return self.render('admin/tcc_account_events.html', member=user, summary=playback_rules.account_summary(user),
+                           min_days=playback_rules.MIN_DAYS, lookback=playback_rules.LOOKBACK_DAYS,
+                           csrf_token=session["admin_form_csrf"])
+
+    @expose('/rules-check', methods=['GET', 'POST'])
+    def rules_check(self):
+        """What the new "Accounts to check" rules would have flagged from the existing logs, and clearing old flags."""
+        if current_admin() is None:
+            return redirect(url_for('.login', next=request.full_path))
+        session.setdefault("admin_form_csrf", secrets.token_urlsafe(32))
+        if request.method == "POST":
+            if request.form.get("csrf_token") != session.get("admin_form_csrf"):
+                abort(400)
+            flash(f"Marked {playback_rules.clear_flags()} flag(s) as checked. Nobody was suspended.")
+            return redirect(url_for('.rules_check'))
+        days = min(max(request.args.get("days", playback_rules.LOOKBACK_DAYS, type=int), 1), 365)
+        unchecked = SecurityEvent.query.filter(SecurityEvent.is_reviewed.is_(False),
+                                               SecurityEvent.type.in_(playback_rules.FLAG_RULES + playback_rules.OLD_RULES)).count()
+        return self.render('admin/tcc_rules_check.html', report=playback_rules.replay(days=days), unchecked=unchecked,
+                           rules=playback_rules, csrf_token=session["admin_form_csrf"])
 
     @expose('/login', methods=['GET', 'POST'])
     @limiter.limit("10 per minute;50 per hour", methods=["POST"])

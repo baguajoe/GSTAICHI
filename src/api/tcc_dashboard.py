@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 from sqlalchemy import func
 from .models import db, User, Tier, Video, Article, PlaybackSession, EncodingJob, Question, SecurityEvent
-from .security import EVENT_LABELS, NOT_FLAGGED
+from .playback_rules import flagged_accounts
 
 TOP = 10
 
@@ -42,27 +42,6 @@ def most_watched(since):
     videos = {v.id: v for v in Video.query.filter(Video.id.in_([r[0] for r in rows])).all()} if rows else {}
     return [{"title": videos[r[0]].title if r[0] in videos else "(deleted)", "plays": r[1], "members": r[2]}
             for r in rows]
-
-
-def flagged_accounts():
-    """Accounts with security events nobody has reviewed yet, most events first."""
-    rows = (db.session.query(SecurityEvent.user_id, func.count(SecurityEvent.id), func.max(SecurityEvent.created_at))
-            .filter(SecurityEvent.is_reviewed.is_(False), SecurityEvent.user_id.isnot(None),
-                    SecurityEvent.type.notin_(NOT_FLAGGED))
-            .group_by(SecurityEvent.user_id)
-            .order_by(func.count(SecurityEvent.id).desc()).limit(25).all())
-    users = {u.id: u for u in User.query.filter(User.id.in_([r[0] for r in rows])).all()} if rows else {}
-    result = []
-    for user_id, count, last in rows:
-        user = users.get(user_id)
-        if user is None:
-            continue
-        types = [t for (t,) in db.session.query(SecurityEvent.type).filter(
-            SecurityEvent.user_id == user_id, SecurityEvent.is_reviewed.is_(False),
-            SecurityEvent.type.notin_(NOT_FLAGGED)).distinct()]
-        result.append({"id": user.id, "email": user.email, "name": user.name, "count": count, "last": last,
-                       "reasons": [EVENT_LABELS.get(t, t) for t in types], "is_suspended": user.is_suspended})
-    return result
 
 
 def dashboard_stats(now=None):

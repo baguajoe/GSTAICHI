@@ -21,6 +21,7 @@ from .extensions import limiter
 from .key_vault import decrypt_key, KeyVaultError
 from .media_tokens import sign_media_token, verify_media_token, sign_report, MediaTokenError
 from .security import log_event, count_events
+from .playback_rules import note_pieces, note_heartbeat, check_shared_streams
 from .tcc_auth import role_required, get_current_user
 from .taichi_company import tcc, visible_videos
 
@@ -28,14 +29,10 @@ MAX_STREAMS = 2
 HEARTBEAT_SECONDS = 20
 HEARTBEAT_TIMEOUT = timedelta(seconds=60)
 TOKEN_TTL_SECONDS = 6 * 60 * 60
-SEGMENT_SECONDS = 6
 
-# Anomaly thresholds (Phase 8 shows these in /admin)
-FAST_DOWNLOAD_FACTOR = 3        # more than 3x real-time playback...
-FAST_DOWNLOAD_ALLOWANCE = 20    # ...after the first 20 pieces (start-up buffering and quality switches)
+# Anomaly thresholds shown in /admin. The download-speed and sharing rules are in playback_rules.py.
 KEY_FLOOD_COUNT = 40
 KEY_FLOOD_WINDOW = timedelta(minutes=30)
-MANY_IPS = 3
 REPEATED_LIMIT_HITS = 5
 
 
@@ -61,14 +58,6 @@ def _expire_stale_sessions(user_id):
 def _session_summary(s):
     return {"id": s.id, "device": s.device_label(), "video_title": s.video.title if s.video else "",
             "started_at": s.started_at.isoformat() if s.started_at else None}
-
-
-def _check_many_ips(user):
-    since = datetime.utcnow() - timedelta(hours=24)
-    ips = {ip for (ip,) in db.session.query(PlaybackSession.ip)
-           .filter(PlaybackSession.user_id == user.id, PlaybackSession.started_at >= since).distinct()}
-    if len(ips) > MANY_IPS:
-        log_event(user.id, "many_ips", {"ips": sorted(ips)}, dedupe_hours=24)
 
 
 @tcc.route('/play/<slug>', methods=['POST'])
@@ -113,7 +102,7 @@ def play(slug):
                               last_heartbeat_at=datetime.utcnow())
     db.session.add(session)
     db.session.flush()
-    _check_many_ips(user)
+    check_shared_streams(user, session)
     try:
         token = sign_media_token(slug, session.id, TOKEN_TTL_SECONDS)
     except MediaTokenError as e:
@@ -212,9 +201,11 @@ def heartbeat(session_id):
         db.session.commit()
         return jsonify({"code": "access_lost", "msg": "Your plan no longer includes this video."}), 403
     data = request.get_json(silent=True) or {}
-    session.last_heartbeat_at = datetime.utcnow()
+    now = datetime.utcnow()
     if isinstance(data.get("position"), (int, float)):
+        note_heartbeat(session, int(data["position"]), now)  # counts seeks for the download-speed rule
         session.position_seconds = int(data["position"])
+    session.last_heartbeat_at = now
     db.session.commit()
     return jsonify({"ok": True})
 
@@ -249,15 +240,6 @@ def media_report():
         return jsonify({"msg": "bad report"}), 400
     if session is None:
         return jsonify({"ok": True})
-    session.segment_count = (session.segment_count or 0) + count
-    elapsed = (datetime.utcnow() - session.started_at).total_seconds()
-    allowed = elapsed / SEGMENT_SECONDS * FAST_DOWNLOAD_FACTOR + FAST_DOWNLOAD_ALLOWANCE
-    if session.segment_count > allowed and not session.flagged:
-        session.flagged = True
-        log_event(session.user_id, "fast_download", {
-            "video": session.video.slug if session.video else None, "session": session.id,
-            "pieces": session.segment_count, "seconds_since_start": int(elapsed),
-            "ip": session.ip,
-        })
+    note_pieces(session, count, datetime.utcnow(), device=session.device_label())
     db.session.commit()
     return jsonify({"ok": True})

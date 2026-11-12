@@ -42,7 +42,8 @@
   <div class="row">
     <div class="col-md-6">
       <div class="panel {{ 'panel-danger' if stats.flagged else 'panel-default' }}">
-        <div class="panel-heading">Accounts to check ({{ stats.flagged|length }})</div>
+        <div class="panel-heading">Accounts to check ({{ stats.flagged|length }})
+          <a class="pull-right" href="{{ url_for('.rules_check') }}">How accounts get here</a></div>
         {% if stats.flagged %}
         <table class="table">
           <tr><th>Member</th><th>Why</th></tr>
@@ -53,7 +54,7 @@
           </tr>
           <tr class="flag-actions">
             <td colspan="2" style="border-top:0; padding-top:0">
-              <a class="btn btn-default btn-sm" href="{{ url_for('securityevent.index_view', search=f.email) }}">See events</a>
+              <a class="btn btn-default btn-sm" href="{{ url_for('.account_events', user_id=f.id) }}">See events</a>
               {% if f.is_suspended %}
                 <span class="label label-danger">Suspended</span>
               {% else %}
@@ -73,7 +74,7 @@
           {% endfor %}
         </table>
         {% else %}
-        <div class="panel-body">Nothing to check. Accounts are listed here when videos are downloaded too fast, keys are requested too often, an account is used from more than 3 places in a day, or the two-device limit is hit again and again.</div>
+        <div class="panel-body">Nothing to check. An account is listed here only when the same warning comes up on two or more different days: video fetched far faster than it can be watched for 10 minutes or more, several whole videos fetched within minutes, playing on two devices at the same time, or the video key asked for over and over. Accounts are never suspended automatically.</div>
         {% endif %}
         {% if stats.suspended %}<div class="panel-footer"><a href="{{ url_for('user.index_view', flt1_0=1) }}">{{ stats.suspended }} suspended account(s)</a></div>{% endif %}
       </div>

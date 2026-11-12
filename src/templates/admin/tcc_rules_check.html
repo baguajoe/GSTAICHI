@@ -1,0 +1,50 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+<div style="font-size:16px;max-width:1100px">
+  <p><a href="{{ url_for('.index') }}">&larr; Dashboard</a></p>
+  <h2 style="color:#590d0d">Accounts to check: old rules and new rules</h2>
+  <p>Replayed from the last {{ report.days }} days of logs ({{ report.sessions }} playback sessions).
+    Show <a href="?days=7">7</a> · <a href="?days=30">30</a> · <a href="?days=90">90</a> days.</p>
+
+  <h3>How an account gets listed now</h3>
+  <ul>
+    <li><strong>Copying:</strong> video fetched at more than {{ rules.SPEED_FACTOR }}× playing speed for a whole
+      {{ (rules.RATE_WINDOW.total_seconds() // 60)|int }}-minute stretch. The first {{ rules.WARMUP.seconds }} seconds and the
+      buffer-ahead after each skip are not counted. Or {{ rules.BULK_VIDEOS }} or more different whole videos fetched within
+      {{ (rules.BULK_WINDOW.total_seconds() // 60)|int }} minutes.</li>
+    <li><strong>Sharing:</strong> two or more devices playing on the account at the same time. Internet addresses are no longer counted.</li>
+    <li>Unchanged: the video key asked for over and over; the two-device limit hit again and again.</li>
+    <li>Only listed when the same rule fires on <strong>{{ rules.MIN_DAYS }} or more different days</strong> (last {{ rules.LOOKBACK_DAYS }} days). Nobody is ever suspended automatically.</li>
+  </ul>
+  <p class="text-muted">Old playback logs have no record of skips or of speed minute by minute, so this replay judges each
+    session as a whole. It can list slightly more than the live rules will.</p>
+
+  <p><strong>{{ report.old_listed }}</strong> account(s) had warnings under the old rules; the new rules would list
+    <strong>{{ report.would_list }}</strong>.</p>
+  {% if report.rows %}
+  <table class="table table-bordered">
+    <tr><th>Member</th><th>Old rules</th><th>New rules would list for</th><th>Examples</th></tr>
+    {% for r in report.rows %}
+    <tr{% if r.new %} class="warning"{% endif %}>
+      <td><a href="{{ url_for('.account_events', user_id=r.id) }}">{{ r.name or r.email }}</a><br><span class="text-muted">{{ r.email }}</span>
+        {% if r.is_suspended %}<br><span class="label label-danger">Suspended</span>{% endif %}</td>
+      <td>{% for o in r.old %}<div>{{ o }}</div>{% else %}<span class="text-muted">—</span>{% endfor %}</td>
+      <td>{% for n in r.new %}<div><strong>{{ n }}</strong></div>{% else %}<span class="text-muted">Not listed</span>{% endfor %}
+        {% for b in r.below %}<div class="text-muted">{{ b }} (not enough to list)</div>{% endfor %}</td>
+      <td>{% for x in r.examples %}<div class="small">{{ x }}</div>{% endfor %}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+    <p>No account had warnings under either set of rules.</p>
+  {% endif %}
+
+  <h3>Clear the current flags</h3>
+  <p>{{ unchecked }} warning(s) are not marked as checked yet. Clearing marks them all as checked, so the list starts
+    fresh with the new rules. It does not suspend or change any account.</p>
+  <form method="post" onsubmit="return confirm('Mark all {{ unchecked }} warnings as checked?');">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <button class="btn btn-primary" type="submit"{% if not unchecked %} disabled{% endif %}>Clear all current flags</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+<div style="font-size:16px;max-width:980px">
+  <p><a href="{{ url_for('.index') }}">&larr; Dashboard</a></p>
+  <h2 style="color:#590d0d">{{ member.name or member.email }}</h2>
+  <p>{{ member.email }} · user {{ member.id }} · {{ member.plan_name }}{% if member.is_suspended %} · <span class="label label-danger">Suspended</span>{% endif %}</p>
+
+  <h3>Why this account is listed</h3>
+  {% if summary.rules %}
+    <ul>
+    {% for r in summary.rules %}
+      <li><strong>{{ r.label }}</strong> — on {{ r.days|length }} day{{ '' if r.days|length == 1 else 's' }}:
+        {{ r.days|map('string')|join(', ') }}{% if not r.listed %} <span class="text-muted">(only one day so far, so not listed for this alone)</span>{% endif %}</li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p>No unchecked warnings in the last {{ lookback }} days.</p>
+  {% endif %}
+  <p class="text-muted">Accounts are listed when the same warning comes up on {{ min_days }} or more different days. Nothing here suspends anyone.</p>
+
+  {% if not member.is_suspended %}
+  <p>
+    <form method="post" action="{{ url_for('.dismiss', user_id=member.id) }}" style="display:inline">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button class="btn btn-default" type="submit">Looks fine (mark as checked)</button>
+    </form>
+    <form method="post" action="{{ url_for('.suspend', user_id=member.id) }}" style="display:inline"
+          onsubmit="var r = prompt('Suspend {{ member.email }}? They will be signed out of videos and cannot sign in. Reason (shown only to admins):'); if (r === null) return false; this.reason.value = r; return true;">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="hidden" name="reason" value="">
+      <button class="btn btn-danger" type="submit">Suspend…</button>
+    </form>
+  </p>
+  {% endif %}
+
+  <h3>What happened (last {{ summary.days }} days)</h3>
+  {% if summary.events %}
+    <ul>
+    {% for e in summary.events %}
+      <li style="margin-bottom:6px{% if e.reviewed or not e.flag %};color:#777{% endif %}">{{ e.text }}{% if e.reviewed and e.flag %} <em>(checked)</em>{% endif %}</li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p>Nothing recorded.</p>
+  {% endif %}
+
+  <h3>Recent videos played</h3>
+  <p class="text-muted">“Speed” is how much video was fetched compared with the time the video was open: about 1× is normal
+    watching; a little more is normal at the start and after skipping around.</p>
+  {% if summary.sessions %}
+  <table class="table table-condensed">
+    <tr><th>When</th><th>Video</th><th>Device</th><th>Internet address</th><th>Open for</th><th>Fetched</th><th>Speed</th></tr>
+    {% for s in summary.sessions %}
+    <tr{% if s.fast %} class="danger"{% endif %}>
+      <td>{{ s.started }}</td><td>{{ s.video }}</td><td>{{ s.device }}</td><td>{{ s.ip }}</td>
+      <td>{{ s.length }}</td><td>{{ s.fetched }}</td><td>{{ s.speed }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+    <p>No videos played in this time.</p>
+  {% endif %}
+  <p><a href="{{ url_for('securityevent.index_view', search=member.email) }}">All raw events for this member</a></p>
+</div>
+{% endblock %}

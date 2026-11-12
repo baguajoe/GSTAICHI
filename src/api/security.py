@@ -3,10 +3,14 @@ from datetime import datetime, timedelta
 from .models import db, SecurityEvent, PlaybackSession
 
 # Plain-English descriptions shown in the admin and the dashboard
+# (the rules themselves are in playback_rules.py; nothing here or there ever suspends an account)
 EVENT_LABELS = {
-    "fast_download": "Video pieces downloaded much faster than anyone can watch (possible copying)",
+    "sustained_fast_download": "Fetched video far faster than it can be watched for 10 minutes or more (possible copying)",
+    "bulk_download": "Fetched several whole videos within minutes (possible copying)",
+    "shared_streams": "Playing on two or more devices at the same time (possible account sharing)",
     "key_flood": "Video key requested many times in a short time (possible copying)",
-    "many_ips": "Account used from more than 3 internet addresses in 24 hours (possible account sharing)",
+    "fast_download": "Old rule: video pieces downloaded faster than real time (replaced on 2026-11-12)",
+    "many_ips": "Old rule: more than 3 internet addresses in 24 hours (replaced on 2026-11-12)",
     "stream_limit": "Tried to watch on a third device at the same time",
     "repeated_stream_limit": "Hit the two-device limit many times in 24 hours (possible account sharing)",
     "key_denied": "Video key refused",
@@ -15,7 +19,7 @@ EVENT_LABELS = {
 }
 
 # Logged for the record only; these never flag an account on the dashboard
-NOT_FLAGGED = ("stream_limit", "key_denied", "suspended", "unsuspended")
+NOT_FLAGGED = ("stream_limit", "key_denied", "suspended", "unsuspended", "fast_download", "many_ips")
 
 
 def log_event(user_id, event_type, details=None, dedupe_hours=None, reviewed=False):

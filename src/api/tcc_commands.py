@@ -33,6 +33,27 @@ def setup_tcc_commands(app):
             upgrade()
             print("Database is up to date.")
 
+    @app.cli.command("security-recheck")
+    @click.option("--days", default=30, show_default=True, help="How many days of logs to replay.")
+    @click.option("--clear", is_flag=True, help="Afterwards, mark every current flag as checked (suspends nobody).")
+    def security_recheck(days, clear):
+        """Show which accounts the old and the new "Accounts to check" rules flag, from the existing logs.
+        The same report is in /admin (dashboard > How accounts get here)."""
+        from . import playback_rules
+        report = playback_rules.replay(days=days)
+        print(f"Last {days} days, {report['sessions']} playback sessions. Old rules warned about {report['old_listed']} "
+              f"account(s); the new rules would list {report['would_list']}.")
+        for row in report["rows"]:
+            print(f"\n{row['email']} (user {row['id']}){' SUSPENDED' if row['is_suspended'] else ''}")
+            print("  old rules: " + ("; ".join(row["old"]) or "-"))
+            print("  new rules: " + ("; ".join(row["new"]) or "not listed"))
+            for line in row["below"]:
+                print(f"    {line} (not enough to list)")
+            for line in row["examples"]:
+                print(f"    e.g. {line}")
+        if clear:
+            print(f"\nMarked {playback_rules.clear_flags()} flag(s) as checked. Nobody was suspended.")
+
     @app.cli.command("purge-question-videos")
     @click.option("--member", help="Instead, delete all videos of this member now (their email address).")
     def purge_question_videos_command(member):
