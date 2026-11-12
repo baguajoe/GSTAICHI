@@ -1,5 +1,6 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { apiFetch, getToken, setToken } from "./api";
+import { clearPending, confirmOnce, readPending, retryDelay, RETRY_FOR_MS, savePending } from "./activation";
 
 // Shared data for every Tai Chi Company page: site settings, tiers/plans and the signed-in member.
 const TccContext = createContext(null);
@@ -55,6 +56,57 @@ export const TccProvider = ({ children }) => {
         refreshUser();
     }, [loadSite, refreshUser]);
 
+    // A PayPal subscription waiting for the server to confirm it:
+    // null, or { state: "activating" | "slow" | "failed" | "done", message, result }
+    const [activation, setActivation] = useState(null);
+    const activationRun = useRef(null);
+
+    const runActivation = useCallback(async (subscriptionId) => {
+        if (activationRun.current === subscriptionId) return; // already retrying this one
+        activationRun.current = subscriptionId;
+        setActivation({ state: "activating" });
+        const started = Date.now();
+        try {
+            for (let attempt = 0; ; attempt++) {
+                const outcome = await confirmOnce(subscriptionId);
+                if (outcome.result) {
+                    clearPending();
+                    if (outcome.result.user) setUser(outcome.result.user);
+                    setActivation({ state: "done", message: outcome.result.msg, result: outcome.result });
+                    return;
+                }
+                if (outcome.error) {
+                    clearPending();
+                    setActivation({ state: "failed", message: outcome.error });
+                    return;
+                }
+                if (Date.now() - started > RETRY_FOR_MS) {
+                    // Kept in the browser: the next visit tries again (and the server finishes it at sign-in)
+                    setActivation({ state: "slow" });
+                    return;
+                }
+                await new Promise(resolve => setTimeout(resolve, retryDelay(attempt)));
+            }
+        } finally {
+            activationRun.current = null;
+        }
+    }, []);
+
+    // Called by the PayPal button as soon as PayPal approves the subscription
+    const startActivation = useCallback((subscriptionId, userId) => {
+        savePending(subscriptionId, userId);
+        runActivation(subscriptionId);
+    }, [runActivation]);
+
+    const clearActivation = useCallback(() => setActivation(null), []);
+
+    // After a page reload (or signing in again), carry on with a subscription PayPal approved earlier
+    useEffect(() => {
+        if (!user) return;
+        const pending = readPending(user.id);
+        if (pending) runActivation(pending.subscriptionId);
+    }, [user && user.id, runActivation]);
+
     const login = async (email, password) => {
         const data = await apiFetch("/api/login", { method: "POST", body: { email, password }, auth: false });
         setToken(data.token);
@@ -79,7 +131,8 @@ export const TccProvider = ({ children }) => {
 
     const value = {
         settings, tiers, user, setUser, userLoaded, loadError,
-        loadSite, refreshUser, login, logout, tierName, sectionLabel
+        loadSite, refreshUser, login, logout, tierName, sectionLabel,
+        activation, startActivation, clearActivation
     };
     return <TccContext.Provider value={value}>{children}</TccContext.Provider>;
 };

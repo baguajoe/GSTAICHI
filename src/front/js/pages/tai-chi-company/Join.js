@@ -4,11 +4,11 @@ import { useTcc } from "../../component/tai-chi-company/TccContext";
 import { apiFetch } from "../../component/tai-chi-company/api";
 import TierCards, { IntervalToggle, FoundingBanner } from "../../component/tai-chi-company/TierCards";
 import FormField, { FormMessage } from "../../component/tai-chi-company/FormField";
-import SubscribeButton from "../../component/tai-chi-company/SubscribeButton";
+import SubscribeButton, { ActivationNotice, useActivationDone, useActivationShowing } from "../../component/tai-chi-company/SubscribeButton";
 import { LegalLinks } from "../../component/tai-chi-company/legal";
 
 const Join = () => {
-    const { user, login, setUser, tiers } = useTcc();
+    const { user, login, tiers } = useTcc();
     const [searchParams] = useSearchParams();
     const [billing, setBilling] = useState("month");
     const [chosen, setChosen] = useState(null);
@@ -19,6 +19,8 @@ const Join = () => {
     const [justJoined, setJustJoined] = useState(false);
     const [subscribed, setSubscribed] = useState(null);
     const formRef = useRef(null);
+    const activating = useActivationShowing();
+    useActivationDone((result) => setSubscribed(result.msg));
 
     const scrollToForm = () => {
         if (formRef.current) formRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -88,19 +90,21 @@ const Join = () => {
             <h1>Join</h1>
             <FoundingBanner />
 
-            <section className="tcc-section">
+            {!activating && <section className="tcc-section">
                 <h2>Choose your level</h2>
                 <IntervalToggle interval={billing} onChange={setBilling} />
                 <TierCards interval={billing} onChoose={choose} chosenPlanId={chosen && chosen.plan && chosen.plan.id}
                     onChooseFree={chooseFree} freeChosen={freeChosen} />
                 <LegalLinks className="tcc-center" />
-            </section>
+            </section>}
 
             <section className="tcc-section tcc-form-section" ref={formRef}>
                 {user ? (
                     <div className="tcc-notice">
                         {justJoined && <p className="tcc-success" role="status">Welcome{user.name ? `, ${user.name}` : ""}! Your account is ready.</p>}
-                        {subscribed ? (
+                        {activating ? (
+                            <ActivationNotice />
+                        ) : subscribed ? (
                             <>
                                 <p className="tcc-success" role="status">{subscribed}</p>
                                 <Link to="/tai-chi-company/library" className="custom-btn1 tcc-btn">Go to the Library</Link>
@@ -125,10 +129,7 @@ const Join = () => {
                                 {choice}
                                 <h3>Pay with PayPal</h3>
                                 <p>You can pay with your PayPal account or a credit or debit card. You can cancel any time.</p>
-                                <SubscribeButton plan={chosen.plan} user={user} onSubscribed={(result) => {
-                                    setUser(result.user);
-                                    setSubscribed(result.msg);
-                                }} />
+                                <SubscribeButton plan={chosen.plan} />
                             </>
                         ) : (
                             <>

@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useTcc } from "./TccContext";
 import { apiFetch, formatPrice } from "./api";
 import { FormMessage } from "./FormField";
-import SubscribeButton from "./SubscribeButton";
+import SubscribeButton, { ActivationNotice, useActivationDone, useActivationShowing } from "./SubscribeButton";
 
 const longDate = (iso) => iso
     ? new Date(iso).toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })
@@ -12,7 +12,7 @@ const per = (interval) => (interval === "year" ? "per year" : "per month");
 
 // The plan part of the Account page: current plan, next payment, change plan, cancel, or subscribe.
 const MyPlan = () => {
-    const { user, setUser, refreshUser } = useTcc();
+    const { user, refreshUser } = useTcc();
     const location = useLocation();
     const navigate = useNavigate();
     const [sub, setSub] = useState(null);
@@ -21,6 +21,12 @@ const MyPlan = () => {
     const [busy, setBusy] = useState(false);
     const [confirmCancel, setConfirmCancel] = useState(false);
     const [chosenPlan, setChosenPlan] = useState(null);
+    const activating = useActivationShowing();
+    useActivationDone((result) => {
+        if (result.subscription) setSub(result.subscription);
+        setSuccess(result.msg);
+        setChosenPlan(null);
+    });
 
     useEffect(() => {
         const changed = new URLSearchParams(location.search).get("plan_changed");
@@ -75,7 +81,7 @@ const MyPlan = () => {
     };
 
     const otherOptions = sub.options.filter(o => !plan || o.id !== plan.id);
-    const subscribeOptions = (
+    const subscribeOptions = activating ? <ActivationNotice /> : (
         <div className="tcc-plan-options">
             {sub.options.map(o => (
                 <button key={o.id} type="button" aria-pressed={chosenPlan && chosenPlan.id === o.id}
@@ -87,12 +93,7 @@ const MyPlan = () => {
             {chosenPlan && (
                 <div className="tcc-section">
                     <p>You chose <strong>{chosenPlan.tier_name}</strong> at {formatPrice(chosenPlan.price)} {per(chosenPlan.interval)}.</p>
-                    <SubscribeButton plan={chosenPlan} user={user} onSubscribed={(result) => {
-                        setUser(result.user);
-                        setSub(result.subscription);
-                        setSuccess(result.msg);
-                        setChosenPlan(null);
-                    }} />
+                    <SubscribeButton plan={chosenPlan} />
                 </div>
             )}
         </div>
@@ -164,7 +165,7 @@ const MyPlan = () => {
 
             {!staff && (!paid || sub.status === "cancelled" || sub.status === "expired") && sub.options.length > 0 && (
                 <>
-                    <h3>{paid ? "Start a new plan" : "Choose a plan"}</h3>
+                    <h3>{activating ? "Your new plan" : paid ? "Start a new plan" : "Choose a plan"}</h3>
                     {subscribeOptions}
                 </>
             )}

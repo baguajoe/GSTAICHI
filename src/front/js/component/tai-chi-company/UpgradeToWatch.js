@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTcc } from "./TccContext";
 import { apiFetch, formatPrice } from "./api";
-import SubscribeButton from "./SubscribeButton";
+import SubscribeButton, { ActivationNotice, useActivationDone, useActivationShowing } from "./SubscribeButton";
 
 const per = (interval) => (interval === "year" ? "per year" : "per month");
 
@@ -10,12 +10,17 @@ const per = (interval) => (interval === "year" ? "per year" : "per month");
 // and pay with PayPal right here; a member who already pays changes plan on the Account page.
 // title/reason/freeLine change the wording for other paid features (Ask Vincent).
 const UpgradeToWatch = ({ tierRank, onUpgraded, title, reason, freeLine }) => {
-    const { user, setUser, tierName } = useTcc();
+    const { user, tierName } = useTcc();
     const [options, setOptions] = useState(null);
     const [chosen, setChosen] = useState(null);
     const [done, setDone] = useState(null);
     const needed = tierName(tierRank);
     const paying = user && user.is_paying_member;
+    const activating = useActivationShowing();
+    useActivationDone((result) => {
+        setDone(result.msg);
+        if (onUpgraded) onUpgraded();
+    });
 
     useEffect(() => {
         if (!user || paying) return;
@@ -43,6 +48,10 @@ const UpgradeToWatch = ({ tierRank, onUpgraded, title, reason, freeLine }) => {
                 </div>
             </div>
         );
+    }
+
+    if (activating) {
+        return <div className="tcc-upgrade">{heading}<ActivationNotice /></div>;
     }
 
     if (paying) {
@@ -77,11 +86,7 @@ const UpgradeToWatch = ({ tierRank, onUpgraded, title, reason, freeLine }) => {
             {chosen && (
                 <div className="tcc-section">
                     <p>You chose <strong>{chosen.tier_name}</strong> at {formatPrice(chosen.price)} {per(chosen.interval)}.</p>
-                    <SubscribeButton plan={chosen} user={user} onSubscribed={(result) => {
-                        setUser(result.user);
-                        setDone(result.msg);
-                        if (onUpgraded) onUpgraded();
-                    }} />
+                    <SubscribeButton plan={chosen} />
                 </div>
             )}
         </div>
