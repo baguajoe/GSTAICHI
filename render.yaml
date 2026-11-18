@@ -102,7 +102,14 @@ services:
             value: src/app.py
           - key: FLASK_DEBUG
             value: 0
-          - key: EMAIL_SENDER # the cron job never sends email itself
+          # The email settings come from the same places as gstaichi-api: GMAIL, GMAIL_PASSWORD, BACKEND_URL and
+          # FRONTEND_URL from tai-chi-company-secrets above; the EMAIL_* limits use the same defaults.
+          - key: FLASK_APP_KEY # signs the unsubscribe links: must be the API's own value
+            fromService:
+                type: web
+                name: gstaichi-api
+                envVarKey: FLASK_APP_KEY
+          - key: EMAIL_SENDER # the cron job only queues the email; the API sends it
             value: "off"
 
     - type: worker
