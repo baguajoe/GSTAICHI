@@ -17,7 +17,7 @@ from .extensions import limiter
 from .security import EVENT_LABELS, suspend_user, unsuspend_user
 from .tcc_dashboard import dashboard_stats
 from .tcc_questions import save_answer, mark_answered, reopen
-from .models import EmailLog, VideoAnnouncement
+from .models import EmailLog, VideoAnnouncement, ContentDigest
 from . import member_emails, question_videos, playback_rules
 
 # Only users with role "admin" can use /admin. They sign in with their normal
@@ -378,7 +378,7 @@ SECTION_CHOICES = [("beginner", "Beginner"), ("intermediate", "Intermediate"), (
 
 
 class EmailsView(AdminOnlyMixin, BaseView):
-    """Member emails: what was sent, new-video sending progress, Yes/No for new videos, and test sends."""
+    """Member emails: the weekly "New this week" digest (preview, Send now, log), what was sent, and test sends."""
 
     def _csrf(self):
         session.setdefault("admin_form_csrf", secrets.token_urlsafe(32))
@@ -396,20 +396,46 @@ class EmailsView(AdminOnlyMixin, BaseView):
         if kind:
             logs = logs.filter(EmailLog.kind == kind)
         logs = logs.order_by(EmailLog.created_at.desc(), EmailLog.id.desc()).limit(300).all()
-        announcements = []
-        for a in VideoAnnouncement.query.order_by(VideoAnnouncement.created_at.desc()).limit(20).all():
+        digests = []
+        for d in ContentDigest.query.order_by(ContentDigest.created_at.desc(), ContentDigest.id.desc()).limit(20).all():
+            counts = d.counts()
+            titles = [a.title for a in Article.query.filter(Article.id.in_(d.article_ids or [0])).all()] + \
+                     [v.title for v in Video.query.filter(Video.id.in_(d.video_ids or [0])).all()]
+            digests.append({"d": d, "counts": counts, "titles": titles,
+                            "reason": member_emails.digest_waiting_reason(d, counts)})
+        announcements = []  # the old one-email-per-video announcements, kept as history
+        for a in VideoAnnouncement.query.order_by(VideoAnnouncement.created_at.desc()).limit(10).all():
             counts = a.counts()
             announcements.append({"a": a, "counts": counts, "reason": member_emails.waiting_reason(a, counts)})
-        from .taichi_company import visible_videos
-        to_ask = [v for v in visible_videos().filter(Video.announce_choice.is_(None)).order_by(Video.publish_at.desc()).all()
-                  if not v.is_coming_soon][:20]
-        latest = visible_videos().order_by(Video.publish_at.desc()).all()
+        articles, videos = member_emails.pending_content()
         return self.render('admin/tcc_emails.html', logs=logs, kind=kind, kinds=member_emails.KINDS,
-                           announcements=announcements, to_ask=to_ask, csrf_token=self._csrf(),
+                           digests=digests, announcements=announcements, pending_articles=articles,
+                           pending_videos=videos, csrf_token=self._csrf(),
                            sent_24h=member_emails.sent_last_24h(), daily_limit=member_emails.DAILY_LIMIT,
                            reserve=member_emails.RESERVE, admin=current_admin(),
-                           test_videos=[v for v in latest if not v.is_coming_soon][:30],
                            recipients=member_emails.recipients_query().count())
+
+    @expose('/digest/preview')
+    def digest_preview(self):
+        """The next "New this week" email as a member would get it: ?plan=free or ?plan=top."""
+        articles, videos = member_emails.pending_content()
+        if not articles and not videos:
+            return "<p style=\"font:18px Arial;padding:20px\">Nothing new yet: there is no email to preview.</p>"
+        top = Tier.query.order_by(Tier.rank.desc()).first()
+        rank = (top.rank if top else 1) if request.args.get("plan") == "top" else 0
+        subject, (plain, page), _ = member_emails.digest_email(current_admin(), articles, videos, rank=rank)
+        return page
+
+    @expose('/digest/send', methods=['POST'])
+    def digest_send(self):
+        self._check_csrf()
+        digest, reason = member_emails.queue_digest("manual", current_admin())
+        if digest is None:
+            flash(reason, "error")
+        else:
+            flash(f"\"New this week\" is on its way to {digest.total} member(s), a few at a time "
+                  f"({len(digest.article_ids)} article(s), {len(digest.video_ids)} video(s)).")
+        return redirect(url_for('.index'))
 
     @expose('/test/<kind>', methods=['POST'])
     def send_test(self, kind):
@@ -431,39 +457,22 @@ class EmailsView(AdminOnlyMixin, BaseView):
             subject, content = member_emails.cancelled_email(admin, until=(datetime.utcnow().replace(day=1)).strftime("%B 28, %Y"))
         elif kind == "payment_failed":
             subject, content = member_emails.payment_failed_email(admin)
-        else:
-            video = db.session.get(Video, int(request.form.get("video_id") or 0))
-            if video is None:
-                flash("Please choose a video for the test.", "error")
+        elif kind == "digest":
+            articles, videos = member_emails.pending_content()
+            if not articles and not videos:
+                last = member_emails.latest_digest()  # nothing new: show the last one instead
+                articles, videos = member_emails.digest_content(last) if last else ([], [])
+            if not articles and not videos:
+                flash("There is nothing to put in a test digest yet.", "error")
                 return redirect(url_for('.index'))
-            subject, content, headers = member_emails.new_video_email(admin, video)
+            subject, content, headers = member_emails.digest_email(admin, articles, videos, rank=rank)
+        else:
+            abort(404)
         ok = member_emails.deliver(kind, admin.email, f"[TEST] {subject}", content, user=admin, video=video,
                                    is_test=True, headers=headers)
         flash(f"Test \"{member_emails.KINDS[kind]}\" email sent to {admin.email}." if ok
               else "The test email could not be sent. See the log below.", None if ok else "error")
         return redirect(url_for('.index'))
-
-    @expose('/announce/<int:video_id>', methods=['GET', 'POST'])
-    def announce(self, video_id):
-        video = db.session.get(Video, video_id)
-        if video is None:
-            abort(404)
-        if request.method == 'POST':
-            self._check_csrf()
-            if request.form.get("send") == "yes":
-                a, error = member_emails.announce_video(video, current_admin())
-                flash(error or f"Emailing {a.total} members about \"{video.title}\", a few at a time.",
-                      "error" if error else None)
-            else:
-                if video.announce_choice != "yes":
-                    video.announce_choice = "no"
-                    db.session.commit()
-                flash(f"Members will not be emailed about \"{video.title}\".")
-            return redirect(url_for('.index'))
-        return self.render('admin/tcc_emails_announce.html', video=video, csrf_token=self._csrf(),
-                           recipients=member_emails.recipients_query().count(),
-                           plan=member_emails.video_plan_label(video),
-                           already=member_emails.announcement_for(video))
 
 
 class VideoAdmin(SecureModelView):
@@ -473,23 +482,23 @@ class VideoAdmin(SecureModelView):
     column_filters = ("section", "status", "is_published", "is_free_sample")
     column_default_sort = ("sort_order", False)
     form_excluded_columns = ("encryption_key_enc", "description", "url", "streaming_url", "duration",
-                             "is_downloadable", "price", "purchases", "tags", "upload_id", "uploader")
+                             "is_downloadable", "price", "purchases", "tags", "upload_id", "uploader",
+                             "announce_choice")
     column_exclude_list = ("encryption_key_enc",)
     form_choices = {
         "section": SECTION_CHOICES,
         "status": [(s, s) for s in ("placeholder", "uploading", "processing", "ready", "failed")],
-        "announce_choice": [("", "Not asked yet"), ("yes", "Yes (emailed)"), ("no", "No")],
     }
-    form_args = {"announce_choice": {"label": "Email members about it",
-                                     "description": "Use the Emails page to send. Changing this does not send anything."}}
+    form_args = {"digest_sent_at": {
+        "label": "In the weekly email on",
+        "description": "When this video went into a \"New this week\" email. Empty: it goes into the next one "
+                       "once members can see it. Clear it to include the video again."}}
 
     def after_model_change(self, form, model, is_created):
-        # "Email members about this video?" when a video is published here
         was = getattr(getattr(form, "is_published", None), "object_data", None)
-        if model.is_published and not was and model.announce_choice is None:
-            link = url_for("emails.announce", video_id=model.id)
-            flash(Markup(f'"{Markup.escape(model.title)}" is published. <strong>Email members about this video?</strong> '
-                         f'<a class="btn btn-primary btn-sm" href="{link}">Yes or No</a>'))
+        if model.is_published and not was and model.digest_sent_at is None:
+            flash(f'"{model.title}" is published. It will be in the next "New this week" email to members '
+                  '(Emails page: "Send digest now" to send it today).')
 
 
 class ArticleAdmin(SecureModelView):

@@ -38,6 +38,7 @@ class User(db.Model):
     last_login_at = db.Column(db.DateTime, nullable=True)
     # Private profile: only the member (and admins) ever see these. There is no member list or directory.
     photo_path = db.Column(db.String(500), nullable=True)  # small picture in the streams bucket (article-private/)
+    # "Email me new content": the weekly "New this week" email (the name is from when it was new-video emails only)
     email_new_videos = db.Column(db.Boolean, nullable=False, default=True, server_default=db.true())
     email_answers = db.Column(db.Boolean, nullable=False, default=True, server_default=db.true())
     # When the member agreed to the health disclaimer and the Terms of Use (at sign-up, or in the one-time
@@ -236,8 +237,10 @@ class Video(db.Model):
     is_published = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
     # False for videos made inside an article: they play there but are not listed in the Video Library
     show_in_library = db.Column(db.Boolean, nullable=False, default=True, server_default=db.true())
-    # "Email members about this video?": "yes" (see VideoAnnouncement), "no", or empty (not asked yet)
+    # Old per-video "Email members about this video?" choice (before the weekly digest): "yes", "no" or empty
     announce_choice = db.Column(db.String(10), nullable=True)
+    # When this video went into a "New this week" email (ContentDigest); empty = not emailed yet
+    digest_sent_at = db.Column(db.DateTime, nullable=True)
     uploaded_by = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
     # Studio uploads (browser -> taichi-masters, multipart)
     upload_id = db.Column(db.String(1024), nullable=True)
@@ -334,6 +337,8 @@ class Article(db.Model):
     read_count = db.Column(db.Integer, nullable=False, default=0, server_default="0")
     # The article's number on the old public Articles page (/articles/<id>), so old links still find it
     legacy_id = db.Column(db.Integer, nullable=True, unique=True)
+    # When this article went into a "New this week" email (ContentDigest); empty = not emailed yet
+    digest_sent_at = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -718,6 +723,44 @@ class AnnouncementRecipient(db.Model):
                       db.Index("ix_announcement_recipient_status", "announcement_id", "status"))
     id = db.Column(db.Integer, primary_key=True)
     announcement_id = db.Column(db.Integer, db.ForeignKey("video_announcement.id", ondelete="CASCADE"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
+    status = db.Column(db.String(10), nullable=False, default="pending", server_default="pending")  # pending/sent/failed/skipped
+    sent_at = db.Column(db.DateTime, nullable=True)
+
+    user = db.relationship("User")
+
+
+class ContentDigest(db.Model):
+    """One "New this week" email: the articles and videos that were new, sent to every member who has
+    "Email me new content" on, a little at a time to stay under Gmail's daily limit.
+    kind: "weekly" (the Render cron job) or "manual" ("Send digest now" in /admin > Emails)."""
+    __tablename__ = "content_digest"
+    id = db.Column(db.Integer, primary_key=True)
+    kind = db.Column(db.String(10), nullable=False, default="weekly", server_default="weekly")
+    created_by = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="SET NULL"), nullable=True)
+    article_ids = db.Column(db.JSON, nullable=False, default=list)
+    video_ids = db.Column(db.JSON, nullable=False, default=list)
+    status = db.Column(db.String(10), nullable=False, default="sending", server_default="sending")  # sending / done
+    total = db.Column(db.Integer, nullable=False, default=0, server_default="0")
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, server_default=db.func.now())
+    finished_at = db.Column(db.DateTime, nullable=True)
+
+    starter = db.relationship("User", foreign_keys=[created_by])
+
+    def counts(self):
+        rows = db.session.query(DigestRecipient.status, db.func.count(DigestRecipient.id)) \
+            .filter(DigestRecipient.digest_id == self.id).group_by(DigestRecipient.status).all()
+        counts = {"pending": 0, "sent": 0, "failed": 0, "skipped": 0}
+        counts.update({status: n for status, n in rows})
+        return counts
+
+
+class DigestRecipient(db.Model):
+    __tablename__ = "digest_recipient"
+    __table_args__ = (db.UniqueConstraint("digest_id", "user_id", name="uq_digest_recipient"),
+                      db.Index("ix_digest_recipient_status", "digest_id", "status"))
+    id = db.Column(db.Integer, primary_key=True)
+    digest_id = db.Column(db.Integer, db.ForeignKey("content_digest.id", ondelete="CASCADE"), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
     status = db.Column(db.String(10), nullable=False, default="pending", server_default="pending")  # pending/sent/failed/skipped
     sent_at = db.Column(db.DateTime, nullable=True)

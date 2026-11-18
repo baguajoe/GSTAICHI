@@ -1,11 +1,10 @@
-"""Email routes: the one-click "Stop these emails" link (works without signing in) and the Studio's
-"Email members about this video?" Yes / No."""
+"""Email routes: the one-click "Stop these emails" link for the weekly "New this week" email (works without
+signing in). New videos and articles are no longer emailed one by one: they go into the weekly digest."""
 import html
-from flask import jsonify, request, Response
-from .models import db, Video
+from flask import request, Response
+from .models import db
 from .extensions import limiter
-from .member_emails import user_from_unsubscribe_token, announce_video, announcement_summary, app_url
-from .tcc_auth import role_required, get_current_user
+from .member_emails import user_from_unsubscribe_token, app_url
 from .taichi_company import tcc
 
 PAGE = """<!doctype html><html lang="en"><head><meta charset="utf-8">
@@ -28,7 +27,7 @@ def _page(title, body, status=200):
 @tcc.route('/email/unsubscribe', methods=['GET', 'POST'])
 @limiter.limit("30 per minute")
 def email_unsubscribe():
-    """GET (the link in the email) and POST (one-click from the mail app) both turn off new-video emails.
+    """GET (the link in the email) and POST (one-click from the mail app) both turn off the "New this week" email.
     POST with action=resubscribe turns them back on."""
     token = request.values.get("t", "")
     user = user_from_unsubscribe_token(token)
@@ -40,34 +39,14 @@ def email_unsubscribe():
     db.session.commit()
     account = html.escape(app_url("/account#emails"))
     if resubscribe:
-        return _page("Emails turned on", "<h1>New-video emails are on again</h1>"
-                     "<p>Thank you! We will email you when new videos are added.</p>"
+        return _page("Emails turned on", "<h1>The weekly email is on again</h1>"
+                     "<p>Thank you! Once a week we will email you the new articles and videos.</p>"
                      f"<p><a href=\"{account}\">Manage all your email choices</a></p>")
     safe = html.escape(token)
-    return _page("You will not get these emails", "<h1>Done. You will not get new-video emails</h1>"
-                 f"<p>We have stopped the new-video emails to {html.escape(user.email)}.</p>"
+    return _page("You will not get these emails", "<h1>Done. You will not get the weekly email</h1>"
+                 f"<p>We have stopped the \"New this week\" emails to {html.escape(user.email)}.</p>"
                  "<p>You will still get emails about your account and payments.</p>"
                  f"<form method=\"post\"><input type=\"hidden\" name=\"t\" value=\"{safe}\">"
                  "<button type=\"submit\" name=\"action\" value=\"resubscribe\">Oops, keep sending them</button></form>"
                  f"<p><a href=\"{account}\">Manage all your email choices</a></p>")
 
-
-@tcc.route('/studio/videos/<int:video_id>/announce', methods=['POST'])
-@role_required("teacher", "admin")
-def studio_announce(video_id):
-    """{"send": true} emails members about the video (in batches); {"send": false} records "No"."""
-    video = db.session.get(Video, video_id)
-    if video is None:
-        return jsonify({"msg": "Video not found."}), 404
-    if (request.get_json(silent=True) or {}).get("send"):
-        announcement, error = announce_video(video, get_current_user())
-        if error:
-            return jsonify({"msg": error}), 400
-        msg = (f"Thank you. {announcement.total} members will get an email, a few at a time."
-               if announcement.total else "No members have new-video emails turned on, so no emails were sent.")
-    else:
-        if video.announce_choice != "yes":
-            video.announce_choice = "no"
-            db.session.commit()
-        msg = "OK. Members will not be emailed about this video."
-    return jsonify({"msg": msg, "announcement": announcement_summary(video)})

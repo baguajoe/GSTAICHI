@@ -33,6 +33,19 @@ def setup_tcc_commands(app):
             upgrade()
             print("Database is up to date.")
 
+    @app.cli.command("queue-weekly-digest")
+    def queue_weekly_digest():
+        """Run once a week by the Render cron job (render.yaml: weekly-digest). Queues the "New this week" email
+        with every article and video members can see that was not emailed yet; the API sends it a few at a time.
+        Nothing new: nothing is sent that week. Safe to run twice (a second run within 6 days does nothing)."""
+        from . import member_emails
+        digest, reason = member_emails.queue_digest("weekly")
+        if digest is None:
+            print(f"No weekly email: {reason}")
+            return
+        print(f"Queued \"New this week\" #{digest.id}: {len(digest.article_ids)} article(s), "
+              f"{len(digest.video_ids)} video(s), for {digest.total} member(s). The API sends it in small batches.")
+
     @app.cli.command("security-recheck")
     @click.option("--days", default=30, show_default=True, help="How many days of logs to replay.")
     @click.option("--clear", is_flag=True, help="Afterwards, mark every current flag as checked (suspends nobody).")

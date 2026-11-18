@@ -1,9 +1,10 @@
-"""Member emails: welcome, plan changes, and "new video" announcements.
+"""Member emails: welcome, plan changes, and the weekly "New this week" digest of new articles and videos.
 
 Every email has a designed HTML version and a plain-text version, and is logged in EmailLog (/admin > Emails).
 
-New-video emails go out a little at a time from a small sender loop that runs inside the API itself (no separate
-worker): every minute it sends up to EMAIL_BATCH_SIZE emails, never more than EMAIL_DAILY_LIMIT in any 24 hours
+The digest replaced the old one-email-per-video announcements (VideoAnnouncement), which are still finished if any
+were mid-way. A digest is queued by the Render cron job (flask queue-weekly-digest) or "Send digest now" in /admin,
+then goes out a little at a time from a small sender loop that runs inside the API itself (no separate worker): every minute it sends up to EMAIL_BATCH_SIZE emails, never more than EMAIL_DAILY_LIMIT in any 24 hours
 (counting every email the app sent, keeping EMAIL_RESERVE free for welcome and account emails). Whatever is left
 waits for the next day automatically. A database lock makes sure only one copy of the loop sends at a time.
 """
@@ -15,8 +16,8 @@ from datetime import datetime, timedelta
 from itsdangerous import URLSafeSerializer, BadSignature
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
-from .models import (db, User, Video, Tier, SiteSettings, EmailLog, VideoAnnouncement, AnnouncementRecipient,
-                     CORNER_SECTION)
+from .models import (db, User, Video, Article, Tier, SiteSettings, EmailLog, VideoAnnouncement, AnnouncementRecipient,
+                     ContentDigest, DigestRecipient, CORNER_SECTION)
 from .send_email import send_email
 
 DAILY_LIMIT = int(os.getenv("EMAIL_DAILY_LIMIT") or 400)
@@ -36,8 +37,10 @@ KINDS = {
     "upgrade": "Thank you for joining a plan",
     "cancelled": "Subscription cancelled",
     "payment_failed": "Payment problem",
-    "new_video": "New video",
+    "digest": "New this week",
+    "new_video": "New video (old, one per video)",
 }
+WEEKLY_GAP = timedelta(days=6)  # the cron job never queues two weekly digests closer together than this
 
 
 # ----- links -----
@@ -80,7 +83,7 @@ def unsubscribe_url(user):
 
 def render(heading, blocks, button=None, after_button=None, unsubscribe=None, preheader=""):
     """Builds (plain_text, html). blocks / after_button: ("p", text), ("ul", [texts]), ("h2", text),
-    ("small", text), ("link", label, url), ("img", url, alt). button: (label, url). unsubscribe: url or None."""
+    ("small", text), ("link", label, url), ("img", url, alt), ("item", title, url, meta, summary, link label). button: (label, url). unsubscribe: url or None."""
     settings = SiteSettings.get()
     app_name = settings.app_name or "The Tai Chi Company"
     school = settings.school_name or "Gin Soon Tai Chi Chuan Federation"
@@ -103,6 +106,17 @@ def render(heading, blocks, button=None, after_button=None, unsubscribe=None, pr
             elif b[0] == "link":
                 out.append(f'<p style="margin:0 0 18px;font-size:20px;line-height:1.6;"><a href="{e(b[2])}" '
                            f'style="color:#590d0d;font-weight:bold;">{e(b[1])}</a></p>')
+            elif b[0] == "item":
+                _, title, url, meta, summary, label = b
+                out.append(
+                    '<div style="margin:0 0 26px;">'
+                    f'<a href="{e(url)}" style="font-size:22px;line-height:1.3;font-weight:bold;color:#590d0d;'
+                    f'text-decoration:none;">{e(title)}</a>'
+                    + (f'<div style="margin:4px 0 0;font-size:16px;color:#666666;">{e(meta)}</div>' if meta else "")
+                    + (f'<p style="margin:8px 0 6px;font-size:19px;line-height:1.55;color:#1a1a1a;">{e(summary)}</p>'
+                       if summary else "")
+                    + f'<a href="{e(url)}" style="font-size:19px;font-weight:bold;color:#590d0d;">{e(label)} &rarr;</a>'
+                    '</div>')
             elif b[0] == "img" and b[1]:
                 out.append(f'<img src="{e(b[1])}" alt="{e(b[2])}" width="536" '
                            f'style="display:block;width:100%;max-width:536px;height:auto;border-radius:8px;margin:0 0 18px;">')
@@ -119,6 +133,9 @@ def render(heading, blocks, button=None, after_button=None, unsubscribe=None, pr
                 out.append("\n".join(f"  * {i}" for i in b[1]))
             elif b[0] == "link":
                 out.append(f"{b[1]}: {b[2]}")
+            elif b[0] == "item":
+                _, title, url, meta, summary, label = b
+                out.append("\n".join(x for x in (f"* {title}", meta, summary, f"{label}: {url}") if x))
         return out
 
     button_html = ""
@@ -130,7 +147,7 @@ def render(heading, blocks, button=None, after_button=None, unsubscribe=None, pr
             f'text-decoration:none;border-radius:8px;font-family:Arial,Helvetica,sans-serif;">{e(button[0])}</a></td>'
             '</tr></table>')
     unsubscribe_html = (f'<br><a href="{e(unsubscribe)}" style="color:#590d0d;">Stop these emails</a> '
-                        f'(new-video emails only)') if unsubscribe else ""
+                        f'(the "New this week" email only)') if unsubscribe else ""
     page = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(heading)}</title></head>
@@ -162,7 +179,7 @@ def render(heading, blocks, button=None, after_button=None, unsubscribe=None, pr
     lines += [part + "\n" for part in text_blocks(after_button)]
     lines += ["--", school, address, f"Manage your email preferences: {prefs}"]
     if unsubscribe:
-        lines.append(f"Stop these emails (new-video emails only): {unsubscribe}")
+        lines.append(f'Stop these emails (the "New this week" email only): {unsubscribe}')
     return "\n".join(lines).replace("\n\n\n", "\n\n"), page
 
 
@@ -414,43 +431,179 @@ def plan_status_emails(user, before_status, before_rank, event_type=None):
         print(f"Plan email for user {user.id} failed: {e}")
 
 
-# ----- new-video announcements -----
+# ----- old one-email-per-video announcements (before the digest): only finishes ones that were mid-way -----
 
 def announcement_for(video):
     return VideoAnnouncement.query.filter_by(video_id=video.id).first()
 
 
 def announcement_summary(video):
-    """For the Studio and /admin: the choice and how far the sending has got."""
+    """For the Studio: how far an old per-video email got, and whether the video was in a "New this week" email."""
+    digest = {"digest_sent_at": video.digest_sent_at.isoformat() if video.digest_sent_at else None}
     a = announcement_for(video)
     if a is None:
-        return {"choice": video.announce_choice}
+        return {"choice": video.announce_choice, **digest}
     c = a.counts()
     return {"choice": "yes", "status": a.status, "total": a.total, "sent": c["sent"], "failed": c["failed"],
-            "waiting": c["pending"], "skipped": c["skipped"], "waiting_reason": waiting_reason(a, c)}
+            "waiting": c["pending"], "skipped": c["skipped"], "waiting_reason": waiting_reason(a, c), **digest}
 
 
 def recipients_query():
+    """Members with "Email me new content" on."""
     return User.query.filter(User.email_new_videos.is_(True), User.is_suspended.is_(False))
 
 
-def announce_video(video, starter=None):
-    """"Yes": queues the email for every member with new-video emails turned on. Returns (announcement, error)."""
-    if announcement_for(video):
-        return None, "Members have already been emailed about this video."
-    a = VideoAnnouncement(video_id=video.id, created_by=starter.id if starter else None, status="sending")
-    db.session.add(a)
+# ----- the weekly "New this week" digest -----
+
+def pending_content():
+    """([articles], [videos]) that members can see now and that were not in a digest yet, newest first."""
+    from .tcc_articles import published_member_articles
+    from .taichi_company import library_videos
+    articles = (published_member_articles().filter(Article.digest_sent_at.is_(None))
+                .order_by(Article.publish_at.desc().nullslast(), Article.id.desc()).all())
+    videos = [v for v in library_videos().filter(Video.digest_sent_at.is_(None))
+              .order_by(Video.publish_at.desc().nullslast(), Video.id.desc()).all() if not v.is_coming_soon]
+    return articles, videos
+
+
+def digest_content(digest):
+    """The digest's articles and videos that members can still see (one may have been unpublished since)."""
+    from .tcc_articles import published_member_articles
+    from .taichi_company import library_videos
+    articles = {a.id: a for a in published_member_articles().filter(Article.id.in_(digest.article_ids or [0])).all()}
+    videos = {v.id: v for v in library_videos().filter(Video.id.in_(digest.video_ids or [0])).all()
+              if not v.is_coming_soon}
+    return ([articles[i] for i in digest.article_ids or [] if i in articles],
+            [videos[i] for i in digest.video_ids or [] if i in videos])
+
+
+def _section_label(key):
+    for s in SiteSettings.get().video_sections or []:
+        if s.get("key") == key:
+            return s.get("label") or key
+    return (key or "").replace("-", " ").title()
+
+
+def _minutes(seconds):
+    return f"{max(1, round(seconds / 60))} min" if seconds else ""
+
+
+def digest_email(user, articles, videos, rank=None):
+    """(subject, (plain, html), headers) for one member. rank: the member's plan level (for the admin preview);
+    by default the member's own. Videos the member's plan cannot play are listed apart with "Upgrade to watch"."""
+    from .tcc_articles import reading_minutes
+    rank = user.effective_tier_rank if rank is None else rank
+    watchable = [v for v in videos if v.is_free_sample or rank >= v.tier_rank]
+    locked = [v for v in videos if v not in watchable]
+    items = [i.title for i in articles + watchable + locked]
+    app_name = SiteSettings.get().app_name or "The Tai Chi Company"
+    subject = f"New this week: {items[0]}" + (f" and {len(items) - 1} more" if len(items) > 1 else "")
+    count = []
+    if articles:
+        count.append(f"{len(articles)} new article{'s' if len(articles) != 1 else ''}")
+    if videos:
+        count.append(f"{len(videos)} new video{'s' if len(videos) != 1 else ''}")
+
+    blocks = [("p", _hello(user)), ("p", f"Here is what is new at {app_name}: {' and '.join(count)}.")]
+    if articles:
+        blocks.append(("h2", "New articles"))
+        for a in articles:
+            meta = " · ".join(x for x in (a.category, f"{reading_minutes(a.content)} min read") if x)
+            blocks.append(("item", a.title, app_url(f"/articles/{a.id}"), meta, a.summary or "", "Read the article"))
+    if watchable:
+        blocks.append(("h2", "New videos"))
+        for v in watchable:
+            meta = " · ".join(x for x in (_section_label(v.section), _minutes(v.duration_seconds)) if x)
+            blocks.append(("item", v.title, app_url(f"/watch/{v.slug}"), meta, v.short_description or "", "Watch now"))
+    if locked:
+        blocks.append(("h2", "New on other plans"))
+        blocks.append(("small", "These videos are part of a plan above yours. Open one to see the plans."))
+        for v in locked:
+            meta = " · ".join(x for x in (f"{_tier_name(v.tier_rank)} plan", _minutes(v.duration_seconds)) if x)
+            blocks.append(("item", v.title, app_url(f"/watch/{v.slug}"), meta, v.short_description or "",
+                           "Upgrade to watch"))
+    button = ("See all articles", app_url("/articles")) if articles else ("Open the video library", app_url("/library"))
+    unsubscribe = unsubscribe_url(user)
+    headers = {"List-Unsubscribe": f"<{unsubscribe}>", "List-Unsubscribe-Post": "List-Unsubscribe=One-Click"}
+    return subject, render("New this week", blocks, button, unsubscribe=unsubscribe,
+                           preheader=", ".join(items[:3])), headers
+
+
+def latest_digest(kind=None):
+    q = ContentDigest.query
+    if kind:
+        q = q.filter_by(kind=kind)
+    return q.order_by(ContentDigest.created_at.desc(), ContentDigest.id.desc()).first()
+
+
+def queue_digest(kind="weekly", starter=None, now=None):
+    """Queues a "New this week" email with everything not yet emailed. Returns (digest, None), or (None, reason)
+    when there is nothing new (the week is skipped) or a weekly one already went out in the last 6 days."""
+    now = now or datetime.utcnow()
+    if kind == "weekly":
+        last = latest_digest("weekly")
+        if last and last.created_at and now - last.created_at < WEEKLY_GAP:
+            return None, f"A weekly digest was already queued on {last.created_at:%b %d}."
+    articles, videos = pending_content()
+    if not articles and not videos:
+        return None, "Nothing new since the last email, so no email was sent."
+    digest = ContentDigest(kind=kind, created_by=starter.id if starter else None, status="sending",
+                           article_ids=[a.id for a in articles], video_ids=[v.id for v in videos], created_at=now)
+    db.session.add(digest)
+    for item in articles + videos:
+        item.digest_sent_at = now
     db.session.flush()
     ids = [uid for (uid,) in recipients_query().with_entities(User.id).all()]
-    db.session.bulk_insert_mappings(AnnouncementRecipient,
-                                    [{"announcement_id": a.id, "user_id": uid, "status": "pending"} for uid in ids])
-    a.total = len(ids)
+    db.session.bulk_insert_mappings(DigestRecipient,
+                                    [{"digest_id": digest.id, "user_id": uid, "status": "pending"} for uid in ids])
+    digest.total = len(ids)
     if not ids:
-        a.status, a.finished_at = "done", datetime.utcnow()
-    video.announce_choice = "yes"
+        digest.status, digest.finished_at = "done", now
     db.session.commit()
     kick()
-    return a, None
+    return digest, None
+
+
+def digest_waiting_reason(digest, counts=None, now=None):
+    counts = counts or digest.counts()
+    if digest.status == "done" or not counts["pending"]:
+        return None
+    if DAILY_LIMIT - RESERVE - sent_last_24h(now) <= 0:
+        return "Today's email limit is reached. Sending continues automatically within 24 hours."
+    return "Sending a few at a time (about every minute)."
+
+
+def _send_digest_batch(now):
+    budget = min(BATCH_SIZE, DAILY_LIMIT - RESERVE - sent_last_24h(now))
+    sent_now = 0
+    for digest in ContentDigest.query.filter_by(status="sending").order_by(ContentDigest.id).all():
+        articles, videos = digest_content(digest)
+        while budget > 0:
+            rows = (DigestRecipient.query.filter_by(digest_id=digest.id, status="pending")
+                    .order_by(DigestRecipient.id).limit(min(budget, BATCH_SIZE)).all())
+            if not rows:
+                break
+            for row in rows:
+                user = row.user
+                if user is None or user.is_suspended or not user.email_new_videos or not (articles or videos):
+                    row.status = "skipped"  # turned the emails off (or everything was unpublished) after queueing
+                    db.session.commit()
+                    continue
+                subject, content, headers = digest_email(user, articles, videos)
+                ok = deliver("digest", user.email, subject, content, user=user, headers=headers,
+                             dedupe_key=f"digest:{digest.id}:{user.id}")
+                row.status, row.sent_at = ("sent" if ok else "failed"), datetime.utcnow()
+                db.session.commit()
+                budget -= 1
+                sent_now += 1
+                if budget <= 0:
+                    break
+        if not DigestRecipient.query.filter_by(digest_id=digest.id, status="pending").count():
+            digest.status, digest.finished_at = "done", datetime.utcnow()
+            db.session.commit()
+        if budget <= 0:
+            break
+    return sent_now
 
 
 def video_is_out(video, now=None):
@@ -526,13 +679,13 @@ def process_queue(now=None):
     if db.engine.dialect.name != "postgresql":
         with _local_lock:
             _send_due_welcomes(now)
-            return _send_announcement_batch(now)
+            return _send_announcement_batch(now) + _send_digest_batch(now)
     with db.engine.connect() as lock_conn:
         if not lock_conn.execute(text("SELECT pg_try_advisory_lock(:k)"), {"k": LOCK_KEY}).scalar():
             return 0  # another copy of the API is sending right now
         try:
             _send_due_welcomes(now)
-            return _send_announcement_batch(now)
+            return _send_announcement_batch(now) + _send_digest_batch(now)
         finally:
             lock_conn.execute(text("SELECT pg_advisory_unlock(:k)"), {"k": LOCK_KEY})
             if hasattr(lock_conn, "commit"):
@@ -546,7 +699,7 @@ _started_pid = None
 
 
 def kick():
-    """Run the sender soon (after a sign-up or a "Yes")."""
+    """Run the sender soon (after a sign-up or a digest is queued)."""
     _wake.set()
 
 

@@ -81,6 +81,30 @@ services:
           - key: REDIS_URL # optional: shared rate limits across API instances
             sync: false
 
+    # Every Monday 14:00 UTC (9 or 10 am in Boston): queues the "New this week" email to members. It only puts
+    # the email in the queue; the API (gstaichi-api) sends it a few at a time, within the Gmail daily limit.
+    - type: cron
+      name: weekly-digest
+      runtime: python
+      region: ohio
+      plan: starter
+      schedule: "0 14 * * 1"
+      buildCommand: "./render_build.sh"
+      startCommand: "flask queue-weekly-digest"
+      envVars:
+          - fromGroup: tai-chi-company-shared
+          - fromGroup: tai-chi-company-secrets # dashboard-only, see envVarGroups above
+          - key: DATABASE_URL
+            fromDatabase:
+                name: gstaichi-db
+                property: connectionString
+          - key: FLASK_APP
+            value: src/app.py
+          - key: FLASK_DEBUG
+            value: 0
+          - key: EMAIL_SENDER # the cron job never sends email itself
+            value: "off"
+
     - type: worker
       name: tai-chi-company-worker
       runtime: docker

@@ -214,7 +214,7 @@ const EmailPreferences = () => {
     }, []);
 
     const choices = [
-        ["email_new_videos", "Email me when new videos are added"],
+        ["email_new_videos", "Email me new content (one email a week with the new articles and videos)"],
         ["email_answers", `Email me when ${name} answers my questions`]
     ];
 

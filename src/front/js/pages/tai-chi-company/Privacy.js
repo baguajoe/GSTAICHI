@@ -25,7 +25,7 @@ const Privacy = () => {
             body: <ul className="tcc-legal-list">
                 <li>To run your account</li>
                 <li>To protect the videos{settings.video_watermark ? " (your email and member number appear in the video watermark)" : ""}</li>
-                <li>To send you emails about your account and, if you choose, emails about new videos</li>
+                <li>To send you emails about your account and, if you choose, a weekly email about new articles and videos</li>
             </ul>
         },
         {
