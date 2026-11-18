@@ -133,7 +133,289 @@ def _docx_html(data, photos):
         if photos.saved == 0 and "zip" in str(e).lower():
             raise DocumentError("This file could not be opened as a Word document. Please save it again as .docx and try once more.") from e
         raise
-    return _flatten_tables(result.value)
+    text = _flatten_tables(result.value)
+    try:
+        return _relabel_word_lists(text, docx_number_labels(data))
+    except Exception as e:  # the numbers are a nicety: never fail an upload over them
+        print(f"Word list numbers skipped: {type(e).__name__}: {e}")
+        return text
+
+
+# ----- Word list numbers -----
+# mammoth turns Word's automatic numbering ("I.", "II.", "A.", "a.") into <ol> lists, and a list of one item
+# restarts at 1. So "II. Tai Chi Philosophy" would show as "1. Tai Chi Philosophy". docx_number_labels() works
+# out the number Word shows in front of each numbered paragraph, so the real labels can be put back.
+
+_W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+_ROMAN = [(1000, "m"), (900, "cm"), (500, "d"), (400, "cd"), (100, "c"), (90, "xc"), (50, "l"), (40, "xl"),
+          (10, "x"), (9, "ix"), (5, "v"), (4, "iv"), (1, "i")]
+
+
+def _roman(n):
+    out = ""
+    for value, letters in _ROMAN:
+        while n >= value:
+            out, n = out + letters, n - value
+    return out
+
+
+def _format_number(n, fmt):
+    if fmt in ("upperRoman", "lowerRoman"):
+        r = _roman(max(n, 1))
+        return r.upper() if fmt == "upperRoman" else r
+    if fmt in ("upperLetter", "lowerLetter"):
+        letter = chr(ord("a") + (max(n, 1) - 1) % 26) * ((max(n, 1) - 1) // 26 + 1)
+        return letter.upper() if fmt == "upperLetter" else letter
+    if fmt == "decimalZero":
+        return f"{n:02d}"
+    return str(n)
+
+
+def docx_number_labels(data):
+    """[(label, format, paragraph text)] for every numbered or bulleted paragraph, in document order.
+    label is what Word shows, e.g. "II." or "a)"; format is Word's numFmt (upperRoman, decimal, bullet, ...)."""
+    import zipfile
+    import xml.etree.ElementTree as ET
+
+    z = zipfile.ZipFile(io.BytesIO(data))
+    names = set(z.namelist())
+    if "word/numbering.xml" not in names:
+        return []
+    numbering = ET.fromstring(z.read("word/numbering.xml"))
+    w = _W
+
+    def levels_of(parent):
+        found = {}
+        for lvl in parent.findall(f"{w}lvl"):
+            ilvl = int(lvl.get(f"{w}ilvl", "0"))
+            start = lvl.find(f"{w}start")
+            fmt = lvl.find(f"{w}numFmt")
+            text = lvl.find(f"{w}lvlText")
+            found[ilvl] = {"start": int(start.get(f"{w}val")) if start is not None else 1,
+                           "fmt": fmt.get(f"{w}val") if fmt is not None else "decimal",
+                           "text": text.get(f"{w}val") if text is not None else f"%{ilvl + 1}."}
+        return found
+
+    abstract = {a.get(f"{w}abstractNumId"): levels_of(a) for a in numbering.findall(f"{w}abstractNum")}
+    nums = {}
+    for num in numbering.findall(f"{w}num"):
+        ref = num.find(f"{w}abstractNumId")
+        aid = ref.get(f"{w}val") if ref is not None else None
+        overrides = {}
+        for o in num.findall(f"{w}lvlOverride"):
+            ilvl = int(o.get(f"{w}ilvl", "0"))
+            so = o.find(f"{w}startOverride")
+            inner = levels_of(o)
+            overrides[ilvl] = {"start": int(so.get(f"{w}val")) if so is not None else None, "lvl": inner.get(ilvl)}
+        nums[num.get(f"{w}numId")] = {"abstract": aid, "overrides": overrides}
+
+    # Paragraph styles can carry the numbering too
+    style_num = {}
+    if "word/styles.xml" in names:
+        for style in ET.fromstring(z.read("word/styles.xml")).findall(f"{w}style"):
+            numpr = style.find(f"{w}pPr/{w}numPr")
+            if numpr is not None:
+                nid, il = numpr.find(f"{w}numId"), numpr.find(f"{w}ilvl")
+                style_num[style.get(f"{w}styleId")] = (nid.get(f"{w}val") if nid is not None else None,
+                                                     int(il.get(f"{w}val")) if il is not None else 0)
+
+    counters, started = {}, set()
+    out = []
+    body = ET.fromstring(z.read("word/document.xml")).find(f"{w}body")
+    for p in body.iter(f"{w}p"):
+        ppr = p.find(f"{w}pPr")
+        num_id, ilvl = None, 0
+        if ppr is not None:
+            ps = ppr.find(f"{w}pStyle")
+            if ps is not None and ps.get(f"{w}val") in style_num:
+                num_id, ilvl = style_num[ps.get(f"{w}val")]
+            numpr = ppr.find(f"{w}numPr")
+            if numpr is not None:
+                nid, il = numpr.find(f"{w}numId"), numpr.find(f"{w}ilvl")
+                if nid is not None:
+                    num_id = nid.get(f"{w}val")
+                if il is not None:
+                    ilvl = int(il.get(f"{w}val"))
+        if not num_id or num_id == "0" or num_id not in nums:
+            continue
+        num = nums[num_id]
+        levels = dict(abstract.get(num["abstract"], {}))
+        for lv, o in num["overrides"].items():
+            if o["lvl"]:
+                levels[lv] = o["lvl"]
+        if ilvl not in levels:
+            continue
+        # Word keeps counting across lists made from the same template, unless a list says to restart
+        key = num["abstract"]
+        count = counters.setdefault(key, {})
+        override = num["overrides"].get(ilvl, {}).get("start")
+        if override is not None and (num_id, ilvl) not in started:
+            count[ilvl] = override
+        else:
+            count[ilvl] = count[ilvl] + 1 if ilvl in count else levels[ilvl]["start"]
+        started.add((num_id, ilvl))
+        for deeper in [l for l in count if l > ilvl]:
+            del count[deeper]
+        fmt = levels[ilvl]["fmt"]
+        if fmt == "bullet":
+            label = ""
+        else:
+            def fill(m):
+                lv = int(m.group(1)) - 1
+                lvl = levels.get(lv, {"fmt": "decimal", "start": 1})
+                return _format_number(count.get(lv, lvl["start"]), lvl["fmt"])
+            label = re.sub(r"%(\d)", fill, levels[ilvl]["text"]).strip()
+        text = "".join(t.text or "" for t in p.iter(f"{w}t"))
+        out.append((label, fmt, text))
+    return out
+
+
+def _norm_words(text):
+    return re.sub(r"\s+", " ", text).strip().lower()
+
+
+def _relabel_word_lists(text, labels):
+    """Puts Word's own numbers back. A numbered list that is not simply 1, 2, 3 (Roman numerals, letters, or
+    numbering that carries on from earlier in the document, or a "list" of one line) becomes paragraphs that start with the label, so
+    "II." stays "II."; Auto-format then turns short ones into headings. Plain 1, 2, 3 lists and bullets stay lists."""
+    labels = [l for l in labels if _text_of(_esc(l[2]))]
+    position = 0
+
+    def take(item_html):
+        """The label of the numbered paragraph this list item came from, matched by its words."""
+        nonlocal position
+        words = _norm_words(_text_of(item_html))
+        for i in range(position, min(position + 5, len(labels))):
+            if _norm_words(labels[i][2]) == words:
+                position = i + 1
+                return labels[i]
+        return None
+
+    def one_list(match):
+        tag, inner = match.group(1), match.group(2)
+        items = re.findall(r"<li>(.*?)</li>", inner, re.S)
+        if "<ol" in inner or "<ul" in inner or not items:
+            return match.group(0)  # nested lists: leave as they are
+        found = [take(i) for i in items]
+        if tag == "ul" or any(f is None for f in found):
+            return match.group(0)
+        numbers = [f[0] for f in found]
+        if len(items) > 1 and all(f[1] == "decimal" for f in found) \
+                and numbers == [f"{n}." for n in range(1, len(items) + 1)]:
+            return match.group(0)
+        return "".join(f"<p>{label} {item.strip()}</p>" for (label, _, _), item in zip(found, items))
+    return re.sub(r"<(ol|ul)>((?:(?!</?(?:ol|ul)>).)*?)</\1>", one_list, text, flags=re.S)
+
+
+# ----- Outline headings -----
+# Vincent's articles are laid out as "I. Introduction", "II. ...", with "A. ..." under them. Word files mark
+# those in every possible way (heading styles, bold, plain text). outline_headings() makes them consistent:
+# Roman numerals are sections (h2), capital letters subsections (h3). Documents numbered 1, 2, 3 at the top
+# get h2 for those numbers only where the line was already a heading or bold, so numbered lists stay lists.
+
+UPPER_ROMAN = re.compile(r"^(?=[IVX])(X{0,3})(IX|IV|V?I{0,3})\s*[.)]\s*(?=\S)")
+CAPITAL = re.compile(r"^[A-Z]\s*[.)]\s+(?=\S)")
+ARABIC = re.compile(r"^\d{1,2}\s*[.)]\s+(?=\S)")
+SECTION_MAX_WORDS, SECTION_MAX_LENGTH = 20, 140  # "III. The Formation of the Tai Chi Yin and Yang Symbol and ..."
+BLOCK = re.compile(r"<(p|h[1-4])>(.*?)</\1>", re.S)
+
+
+def _fits(line, words, length):
+    """A line short enough to be a heading. A trailing full stop is allowed ("I. Introduction.")."""
+    t = line.rstrip(". ").strip()
+    return bool(t) and len(t) <= length and len(t.split()) <= words and not re.search(r"[,;:!]$", t)
+
+
+def _split_blank_lines(text):
+    """A blank line inside a Word paragraph (two line breaks) starts a new paragraph."""
+    def split(m):
+        parts = [p.strip() for p in re.split(r"(?:<br\s*/?>\s*){2,}", m.group(1))]
+        return "".join(f"<p>{p}</p>" for p in parts if _text_of(p))
+    return re.sub(r"<p>((?:(?!</?p>).)*?(?:<br\s*/?>\s*){2,}(?:(?!</?p>).)*?)</p>", split, text, flags=re.S)
+
+
+def outline_headings(text):
+    text = _split_blank_lines(text)
+    blocks = list(BLOCK.finditer(text))
+    lines = [re.sub(r"\s+", " ", _text_of(m.group(2))).strip() for m in blocks]
+    roman_top = any(UPPER_ROMAN.match(l) and re.match(r"^[IVX]{2,}", l) for l in lines)
+
+    def kind(i):
+        if not 0 <= i < len(lines):
+            return None
+        l = lines[i]
+        if roman_top and UPPER_ROMAN.match(l):
+            return "roman"
+        if CAPITAL.match(l):
+            return "capital"
+        if ARABIC.match(l):
+            return "arabic"
+        return None
+
+    def is_bold(i):
+        tag, inner = blocks[i].group(1), blocks[i].group(2)
+        return tag != "p" or bool(re.fullmatch(r"\s*(?:<(strong|b)>.*?</\1>\s*[?.:]?\s*)+", inner, re.S))
+
+    def in_a_run(i, k):
+        """Lines like "A. ...", "B. ..." straight after each other are a list of points, not headings."""
+        return kind(i - 1) == k or kind(i + 1) == k
+
+    has_capital_headings = any(kind(i) == "capital" and not in_a_run(i, "capital") for i in range(len(lines)))
+    levels = []
+    for i, line in enumerate(lines):
+        k, level = kind(i), None
+        sub = _fits(line, MAX_HEADING_WORDS, MAX_HEADING_LENGTH) and not line.endswith(".")
+        if k == "roman" and _fits(line, SECTION_MAX_WORDS, SECTION_MAX_LENGTH):
+            level = "h2"
+        elif k == "capital" and sub and not in_a_run(i, k):
+            level = "h3"
+        elif k == "arabic" and not roman_top and is_bold(i) and _fits(line, SECTION_MAX_WORDS, SECTION_MAX_LENGTH):
+            level = "h2"
+        elif k == "arabic" and roman_top and not has_capital_headings and sub and not in_a_run(i, k):
+            level = "h3"
+        levels.append(level)
+
+    out, last = [], 0
+    for m, line, level in zip(blocks, lines, levels):
+        out.append(text[last:m.start()])
+        last = m.end()
+        if level is None:
+            out.append(m.group(0))
+            continue
+        label = re.match(r"^(\S+?)\s*([.)])\s*", line)
+        clean = f"{label.group(1)}{label.group(2)} {line[label.end():]}" if label else line
+        out.append(f"<{level}>{_esc(clean.rstrip('. '))}</{level}>")
+    out.append(text[last:])
+    return "".join(out)
+
+
+def title_from_filename(filename):
+    """ "Chapter 7 Tai Chi and Tai Chi Chuan.doc" -> "Tai Chi and Tai Chi Chuan";
+    "28 Why Practice Tai Chi Chuan Slowly.docx" -> "Why Practice Tai Chi Chuan Slowly"."""
+    name = os.path.splitext(os.path.basename(filename or ""))[0]
+    name = re.sub(r"\s*\(\d+\)\s*$", "", name)  # "Name (1)": a second download of the same file
+    name = re.sub(r"[_]+", " ", name)
+    name = re.sub(r"^\s*(?:chapter|ch\.?)\s*\d+\s*[.:\-–]?\s*|^\s*\d{1,3}\s*[.:\-–]?\s+", "", name, flags=re.I)
+    name = re.sub(r"\s+", " ", name).strip()
+    return (name[:1].upper() + name[1:])[:200]
+
+
+def chapter_number(filename):
+    m = re.match(r"^\s*(?:chapter|ch\.?)?\s*(\d{1,3})\b", os.path.basename(filename or ""), re.I)
+    return int(m.group(1)) if m else None
+
+
+def drop_leading_title(content, *titles):
+    """Removes paragraphs or headings at the start that only repeat the title (or are empty)."""
+    wanted = {_norm_words(re.sub(r"^\s*(?:chapter\s*)?\d+\s*[.:]?\s*", "", t, flags=re.I)) for t in titles if t}
+    while True:
+        m = re.match(r"\s*<(p|h[1-6])>(.*?)</\1>", content, re.S)
+        if not m:
+            return content
+        words = _norm_words(re.sub(r"^\s*(?:chapter\s*)?\d+\s*[.:]?\s*", "", _text_of(m.group(2)), flags=re.I))
+        if words and words not in wanted:
+            return content
+        content = content[m.end():]
 
 
 def _flatten_tables(text):
@@ -413,12 +695,23 @@ def _summary(text):
     return ""
 
 
-def import_document(filename, data, save_photo):
+def _doc_html(data):
+    """An old Word file (.doc): words and paragraphs only (see word97.py)."""
+    from .word97 import paragraphs, DocReadError
+    try:
+        found = paragraphs(data)
+    except DocReadError as e:
+        raise DocumentError(str(e)) from e
+    return "".join("<p>" + "<br>".join(_esc(l) for l in p.split("\n")) + "</p>" for p in found)
+
+
+def import_document(filename, data, save_photo, allow_doc=False):
+    """allow_doc: also read old .doc files (text and paragraphs only). The admin's Bulk import uses it."""
     ext = os.path.splitext((filename or "").lower())[1]
-    if ext == ".doc":
+    if ext == ".doc" and not allow_doc:
         raise DocumentError("This is an older Word file (.doc). In Word, choose File, Save As, and pick "
                             "\"Word Document (.docx)\", then upload that file.")
-    if ext not in EXTENSIONS:
+    if ext not in EXTENSIONS and ext != ".doc":
         raise DocumentError("Please choose a Word (.docx), PDF, text (.txt) or Markdown (.md) file.")
     if not data:
         raise DocumentError("This file is empty.")
@@ -428,6 +721,8 @@ def import_document(filename, data, save_photo):
     photos = _Photos(save_photo)
     if ext == ".docx":
         raw = _docx_html(data, photos)
+    elif ext == ".doc":
+        raw = _doc_html(data)
     elif ext == ".pdf":
         raw = _pdf_html(data, photos)
     elif ext == ".txt":
@@ -435,7 +730,10 @@ def import_document(filename, data, save_photo):
     else:
         raw = _markdown_html(_decode(data))
 
-    title, body = _title_and_body(_tidy(raw), filename)
+    tidy = _tidy(raw.replace("\t", " "))
+    if ext in (".docx", ".doc"):
+        tidy = outline_headings(tidy)
+    title, body = _title_and_body(tidy, filename)
     content = clean_html(body)
     if not _text_of(content) and "<figure" not in content:
         raise DocumentError("No text was found in this file.")
@@ -448,6 +746,8 @@ def import_document(filename, data, save_photo):
         notes.append(f"{photos.skipped} picture{'s' if photos.skipped != 1 else ''} could not be used"
                      + (f" (at most {MAX_PHOTOS} per article)" if photos.saved >= MAX_PHOTOS else "")
                      + ". You can add photos with the Photo button.")
+    if ext == ".doc":
+        notes.append("Old .doc files keep only the words and paragraphs, not italics, bold or Word's list numbers.")
     if ext == ".pdf":
         notes.append("PDFs do not keep bold, italics or links. Please check the article and add them where needed.")
     return {"title": title, "summary": _summary(content), "content": content, "notes": notes}

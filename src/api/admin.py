@@ -499,6 +499,53 @@ class ArticleAdmin(SecureModelView):
     form_choices = {"status": [("draft", "Draft"), ("scheduled", "Scheduled"), ("published", "Published")]}
 
 
+class ArticleBulkImportView(AdminOnlyMixin, BaseView):
+    """Many Word files (.doc or .docx) at once: each becomes a members-only article, converted like the Studio upload."""
+
+    def _csrf(self):
+        session.setdefault("admin_form_csrf", secrets.token_urlsafe(32))
+        return session["admin_form_csrf"]
+
+    @expose('/', methods=['GET', 'POST'])
+    def index(self):
+        from .article_batches import import_word_files, MAX_BULK_FILES, BULK_EXTENSIONS
+        from .article_import import MAX_DOCUMENT_BYTES
+        settings = SiteSettings.query.first()
+        categories = list((settings.article_categories if settings else None) or [])
+        rows, error = None, None
+        if request.method == 'POST':
+            if not session.get("admin_form_csrf") or request.form.get("csrf_token") != session.get("admin_form_csrf"):
+                abort(400)
+            category = request.form.get("category") or ""
+            uploads = [f for f in request.files.getlist("files") if f and f.filename]
+            if category not in categories:
+                error = "Please choose a category."
+            elif not uploads:
+                error = "Please choose one or more Word files."
+            elif len(uploads) > MAX_BULK_FILES:
+                error = f"Please choose at most {MAX_BULK_FILES} files at a time."
+            else:
+                files, too_big = [], []
+                for f in uploads:
+                    data = f.read(MAX_DOCUMENT_BYTES + 1)
+                    (too_big if len(data) > MAX_DOCUMENT_BYTES else files).append((f.filename, data))
+                from .tcc_studio import _store_document_photo
+
+                def save_photo(raw):
+                    try:
+                        return _store_document_photo(raw)
+                    except Exception as e:  # storage not reachable: the article is still saved, without the photo
+                        print(f"Bulk import photo skipped: {type(e).__name__}: {e}")
+                        return None
+                rows = import_word_files(files, category, publish=request.form.get("publish") != "draft",
+                                         save_photo=save_photo)
+                rows += [{"file": name, "title": "", "status": "error", "id": None,
+                          "message": "Bigger than 25 MB."} for name, _ in too_big]
+        return self.render('admin/tcc_article_import.html', categories=categories, rows=rows, error=error,
+                           csrf_token=self._csrf(), accept=",".join(BULK_EXTENSIONS), max_files=MAX_BULK_FILES,
+                           frontend=os.getenv("FRONTEND_URL", "").rstrip("/"))
+
+
 class SiteSettingsAdmin(SecureModelView):
     can_create = False
     can_delete = False
@@ -720,7 +767,8 @@ def setup_admin(app):
     admin.add_view(ReadOnlyAdmin(PlaybackSession, db.session, name="Playback Sessions", category=tcc))
     admin.add_view(ReadOnlyAdmin(WebhookEvent, db.session, name="Webhook Events", category=tcc))
 
-    admin.add_view(ArticleAdmin(Article, db.session))
+    admin.add_view(ArticleAdmin(Article, db.session, name="Article", category="Articles"))
+    admin.add_view(ArticleBulkImportView(name="Bulk import", endpoint="article_import", category="Articles"))
     admin.add_view(SecureModelView(Class, db.session))
     admin.add_view(SecureModelView(Book, db.session))
 

@@ -1,0 +1,63 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+<div style="font-size:18px;max-width:860px">
+  <h1 style="color:#590d0d">Bulk import articles</h1>
+  <p>Choose several Word files at once (.docx or the older .doc). Each one becomes a <strong>members-only</strong>
+    article by Vincent Chu, converted the same way as "Upload an article" in the Teacher Studio.</p>
+  <ul style="color:#444">
+    <li>The title comes from the file name: <em>Chapter 7 Tai Chi and Tai Chi Chuan.doc</em> becomes
+      <em>Tai Chi and Tai Chi Chuan</em>. They are listed in chapter order.</li>
+    <li>A file whose title is already an article is skipped, so nothing is ever added twice or overwritten.</li>
+    <li>Old .doc files keep only the words and paragraphs. For italics and Word's list numbers, save them as .docx first.</li>
+  </ul>
+
+  {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+
+  {% if rows %}
+    {% set added = rows|selectattr('status', 'equalto', 'added')|list %}
+    <div class="alert {{ 'alert-success' if added else 'alert-warning' }}">
+      {{ added|length }} article(s) added, {{ rows|selectattr('status', 'equalto', 'skipped')|list|length }} skipped,
+      {{ rows|selectattr('status', 'equalto', 'error')|list|length }} could not be read.
+    </div>
+    <table class="table table-bordered" style="font-size:16px">
+      <thead><tr><th>File</th><th>Article</th><th>Result</th></tr></thead>
+      <tbody>
+      {% for r in rows %}
+        <tr class="{{ {'added': 'success', 'skipped': 'warning', 'error': 'danger'}[r.status] }}">
+          <td>{{ r.file }}</td>
+          <td>{{ r.title }}
+            {% if r.id %}<br>
+              <a href="{{ url_for('article.edit_view', id=r.id) }}">Edit</a>
+              {% if frontend %} · <a href="{{ frontend }}/tai-chi-company/articles/{{ r.id }}" target="_blank" rel="noopener">View</a>{% endif %}
+            {% endif %}</td>
+          <td>{{ {'added': 'Added', 'skipped': 'Skipped', 'error': 'Not added'}[r.status] }}
+            {% if r.message %}<br><span style="color:#555">{{ r.message }}</span>{% endif %}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+
+  <form method="post" enctype="multipart/form-data" style="background:#f6f3f3;padding:20px;border-radius:8px">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <div class="form-group">
+      <label for="files">Word files (up to {{ max_files }})</label>
+      <input id="files" name="files" type="file" multiple required accept="{{ accept }}" class="form-control" style="height:auto">
+    </div>
+    <div class="form-group">
+      <label for="category">Category</label>
+      <select id="category" name="category" required class="form-control">
+        <option value="">Choose a category</option>
+        {% for c in categories %}<option value="{{ c }}" {{ 'selected' if request.form.get('category') == c }}>{{ c }}</option>{% endfor %}
+      </select>
+      <p class="help-block">To add a category, edit "Article Categories" in Site Settings.</p>
+    </div>
+    <div class="form-group">
+      <label><input type="radio" name="publish" value="publish" checked> Publish now</label>
+      &nbsp;&nbsp;
+      <label><input type="radio" name="publish" value="draft"> Save as drafts (publish later in the Studio)</label>
+    </div>
+    <button class="btn btn-primary btn-lg" type="submit">Import articles</button>
+  </form>
+</div>
+{% endblock %}

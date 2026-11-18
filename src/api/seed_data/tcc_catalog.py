@@ -15,7 +15,7 @@ DEFAULT_SITE_SETTINGS = {
     "copyright_line": "Gin Soon Tai Chi Chuan Federation. All rights reserved.",
     "article_categories": [
         "Application", "Forms", "Health", "Masters", "Philosophy", "Power",
-        "Push Hands", "Qigong", "Technique", "Weapons", "Other",
+        "Push Hands", "Qigong", "Technique", "Training", "Weapons", "Other",
     ],
     "video_sections": [
         {"key": "beginner", "label": "Beginner", "tier_rank": 1},

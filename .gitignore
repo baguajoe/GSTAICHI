@@ -84,3 +84,7 @@ __pycache__/
 # Render env group import file (secrets)
 render-group.env
 render-db.url
+
+# Word files for one-time article imports (converted copies live in src/api/seed_data/)
+/archive/
+/archive (*)/
